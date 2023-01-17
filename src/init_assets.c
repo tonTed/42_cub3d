@@ -4,6 +4,7 @@
 
 int32_t	init_assets(t_vars *vars)
 {
+	WHOAMI
 	(void)vars;
 
 	return (EXIT_SUCCESS);

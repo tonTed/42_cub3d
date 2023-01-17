@@ -12,6 +12,8 @@
  */
 int32_t parse_file_map(char *file, t_vars *vars)
 {
+	WHOAMI
+
 	(void)file;
 	(void)vars;
 

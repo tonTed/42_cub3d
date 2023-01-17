@@ -22,7 +22,9 @@ mlx_image_t	*g_img;
 
 void	hook(void *param)
 {
-    mlx_t	*mlx;
+//	WHOAMI
+
+	mlx_t	*mlx;
 
     mlx = param;
     hook_keyboard(mlx);
@@ -30,6 +32,8 @@ void	hook(void *param)
 
 int32_t init(int ac, char *av[], t_vars *vars)
 {
+	WHOAMI
+
 	//TODO {END} : change `ac > 2` to `ac != 2` : use a default map for developement
 	if (ac > 2)
 		return (EXIT_FAILURE);
@@ -57,12 +61,15 @@ int32_t init(int ac, char *av[], t_vars *vars)
 
 int32_t	main(int ac, char* av[])
 {
+	WHOAMI
+
 	t_vars	vars;
 
     if (init(ac, av, &vars))
         exit(EXIT_FAILURE);
 
     mlx_loop_hook(vars.mlx, &hook, vars.mlx);
+
     mlx_loop(vars.mlx);
 
     mlx_terminate(vars.mlx);

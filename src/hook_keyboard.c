@@ -3,7 +3,9 @@
 
 void    hook_keyboard(mlx_t *mlx)
 {
-    if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
+//	WHOAMI
+
+	if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
         mlx_close_window(mlx);
     if (mlx_is_key_down(mlx, MLX_KEY_W))
         printf("Move Forward\n");

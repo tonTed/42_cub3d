@@ -18,16 +18,13 @@
 #define HEIGHT 704
 #define TITLE "cub3d"
 
-mlx_image_t	*g_img;
-
 void	hook(void *param)
 {
-//	WHOAMI
-
 	mlx_t	*mlx;
 
     mlx = param;
     hook_keyboard(mlx);
+	draw_frame(mlx);
 }
 
 int32_t init(int ac, char *av[], t_vars *vars)

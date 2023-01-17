@@ -28,5 +28,8 @@ int32_t parse_file_map(char *file, t_vars *vars);
 /* initialization */
 int32_t	init_assets(t_vars *vars);
 
+/* frame */
+void	draw_frame(t_vars *vars);
+
 /* development */
 # define WHOAMI printf(GRN"Function "BMAG"%s"GRN" ran "BGRN"SUCCESSFULLY\n"RESET, __func__);

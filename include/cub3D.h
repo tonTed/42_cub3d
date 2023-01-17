@@ -24,3 +24,6 @@ void    hook_keyboard(mlx_t *mlx);
 
 /* parsing */
 int32_t parse_file_map(char *file, t_vars *vars);
+
+/* initialization */
+int32_t	init_assets(t_vars *vars);

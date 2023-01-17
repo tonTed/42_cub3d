@@ -14,3 +14,6 @@
 #include "../libraries/MLX42/include/MLX42/MLX42.h"
 
 #include <stdio.h>
+
+/* hooks */
+void    hook_keyboard(mlx_t *mlx);

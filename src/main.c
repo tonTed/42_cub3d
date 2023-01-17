@@ -28,18 +28,41 @@ void	hook(void *param)
     hook_keyboard(mlx);
 }
 
-
-int32_t	main(void)
+int32_t init(int ac, char *av[], t_vars *vars)
 {
-    mlx_t	*mlx;
+	//TODO {END} : change `ac > 2` to `ac != 2` : use a default map for developement
+	if (ac > 2)
+		return (EXIT_FAILURE);
 
-    mlx = mlx_init(WIDTH, HEIGHT, TITLE, false);
-    if (!mlx)
+	// TODO {END} : keep only `if statement inside else`!
+	if (ac == 1)
+	{
+		if (parse_file_map(NULL, vars))
+			return (EXIT_FAILURE);
+	}
+	else
+	{
+		if (parse_file_map(av[1], vars))
+			return (EXIT_FAILURE);
+	}
+
+	vars->mlx = mlx_init(WIDTH, HEIGHT, TITLE, false);
+	if (!vars->mlx)
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
+}
+
+
+int32_t	main(int ac, char* av[])
+{
+	t_vars	vars;
+
+    if (init(ac, av, &vars))
         exit(EXIT_FAILURE);
 
-    mlx_loop_hook(mlx, &hook, mlx);
-    mlx_loop(mlx);
+    mlx_loop_hook(vars.mlx, &hook, vars.mlx);
+    mlx_loop(vars.mlx);
 
-    mlx_terminate(mlx);
+    mlx_terminate(vars.mlx);
     return (EXIT_SUCCESS);
 }

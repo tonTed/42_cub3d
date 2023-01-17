@@ -15,5 +15,12 @@
 
 #include <stdio.h>
 
+typedef struct s_vars {
+	mlx_t	*mlx;
+}	t_vars;
+
 /* hooks */
 void    hook_keyboard(mlx_t *mlx);
+
+/* parsing */
+int32_t parse_file_map(char *file, t_vars *vars);

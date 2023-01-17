@@ -15,8 +15,24 @@
 
 #include <stdio.h>
 
+typedef struct s_rgb {
+	unsigned char	r;
+	unsigned char	g;
+	unsigned char	b;
+}	t_rgb;
+
+typedef struct s_assets {
+	char	*north_texture;
+	char	*south_texture;
+	char	*west_texture;
+	char	*east_texture;
+	t_rgb	floor;
+	t_rgb	ceiling;
+}	t_assets;
+
 typedef struct s_vars {
-	mlx_t	*mlx;
+	mlx_t		*mlx;
+	t_assets	assets;
 }	t_vars;
 
 /* hooks */

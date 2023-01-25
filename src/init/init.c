@@ -1,4 +1,4 @@
-#include "../include/cub3D.h"
+#include "../../include/cub3D.h"
 
 int32_t init(int ac, char *av[], t_vars *vars)
 {

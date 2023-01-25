@@ -76,9 +76,14 @@ int32_t	init_assets(t_vars *vars);
 /* utils */
 void	*int_memset(void *ptr, int value, size_t num);
 int		rgba_to_int(int r, int g, int b, int a);
+void	free_null(void *ptr);
+void	clean_exit(t_vars *vars);
+
 
 /* minimap */
 void	minimap(t_vars *vars);
+
+
 
 
 /* development */

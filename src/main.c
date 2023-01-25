@@ -20,7 +20,6 @@ void	hook(void *param)
 
     vars = param;
     hook_keyboard(vars);
-//	draw_frame(vars);
 }
 
 int32_t	main(int ac, char* av[])
@@ -37,5 +36,6 @@ int32_t	main(int ac, char* av[])
     mlx_loop(vars.mlx);
 
     mlx_terminate(vars.mlx);
+	clean_exit(&vars);
     return (EXIT_SUCCESS);
 }

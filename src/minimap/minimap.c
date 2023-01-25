@@ -1,22 +1,92 @@
 
 #include "../../include/cub3D.h"
 
+
+// b / g / r
+#define MMAP_SIZE 64
+#define MMAP_COLS 8
+#define MMAP_ROWS 8
+#define MMAP_BLACK 0xFF000000
+#define MMAP_WHITE 0xFFFFFFFF
+#define MMAP_YELLOW 0xFF00FFFF
+#define MMAP_ORANGE 0xFF0080FF
+#define MMAP_RED 0xFF0000FF
+
+void	set_big_pixel(void *img, int color)
+{
+	int y = 1;
+
+	while (y < MMAP_SIZE - 1)
+	{
+		int_memset(&img[y * MMAP_COLS * MMAP_SIZE * 4], color, MMAP_SIZE - 2);
+		y++;
+	}
+}
+
+/**
+ *
+ * from	MMAP_SIZE * MMAP_SIZE * MMAP_COLS * y * 4 + MMAP_SIZE * 4 * x
+ * to	(4 * MMAP_SIZE) * (MMAP_SIZE * MMAP_COLS * y + x)
+ *
+ * @param img
+ * @param map
+ */
+void	set_minimap_img(mlx_image_t *img, int *map)
+{
+	int x;
+	int y;
+
+	y = 0;
+	while (y < MMAP_ROWS)
+	{
+		x = 0;
+		while (x < MMAP_COLS)
+		{
+			if (map[x + y * MMAP_COLS] == 1)
+			{
+				set_big_pixel(&img->pixels[(4 * MMAP_SIZE)
+					* (MMAP_SIZE * MMAP_COLS * y + x)], MMAP_WHITE);
+			}
+			else
+			{
+				set_big_pixel(&img->pixels[(4 * MMAP_SIZE)
+					* (MMAP_SIZE * MMAP_COLS * y + x)], MMAP_BLACK);
+			}
+			x++;
+		}
+		y++;
+	}
+}
+
+int map[]=
+{
+1,1,1,1,1,1,1,1,
+1,0,1,0,0,0,0,1,
+1,0,1,0,0,0,0,1,
+1,0,1,0,0,0,0,1,
+1,0,0,0,0,0,0,1,
+1,0,0,0,0,1,0,1,
+1,0,0,0,0,0,0,1,
+1,1,1,1,1,1,1,1,
+};
+
 void	mock_init(t_vars *vars)
 {
 	vars->map.cols = 8;
 	vars->map.rows = 8;
-	vars->map.map = (int *)malloc(vars->map.rows * vars->map.cols * sizeof(int));
+//	vars->map.map = (int *)malloc(vars->map.rows * vars->map.cols * sizeof(int));
+	vars->map.map = map;
 
-	vars->mmap.bg = mlx_new_image(vars->mlx, WIDTH - 50, HEIGHT - 50);
-	int_memset(vars->mmap.bg->pixels, rgba_to_int(100, 100, 100, 255),
-			   vars->mmap.bg->width * vars->mmap.bg->height);
+	vars->mmap.bg = mlx_new_image(vars->mlx, MMAP_COLS * MMAP_SIZE, MMAP_ROWS * MMAP_SIZE);
+
+	set_minimap_img(vars->mmap.bg, vars->map.map);
 	mlx_image_to_window(vars->mlx, vars->mmap.bg, 25, 25);
 
 	vars->player.coord.x = 300;
 	vars->player.coord.y = 300;
 
 	vars->mmap.player = mlx_new_image(vars->mlx, 8, 8);
-	int_memset(vars->mmap.player->pixels, rgba_to_int(255, 255, 255, 255),
+	int_memset(vars->mmap.player->pixels, MMAP_YELLOW,
 			   vars->mmap.player->width * vars->mmap.player->height);
 	mlx_image_to_window(vars->mlx, vars->mmap.player, vars->player.coord.x - 4, vars->player.coord.y - 4);
 }

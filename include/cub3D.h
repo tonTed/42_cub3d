@@ -48,30 +48,37 @@ typedef struct s_mmap {
 	mlx_image_t	*player;
 }	t_mmap;
 
+typedef struct s_map {
+	int *map;
+	int cols;
+	int rows;
+}	t_map;
+
 typedef struct s_vars {
 	mlx_t		*mlx;
 	mlx_image_t	*bg;
 	t_assets	assets;
 	t_player	player;
 	t_mmap		mmap;
+	t_map		map;
 }	t_vars;
 
 /* hooks */
 void    hook_keyboard(t_vars *vars);
 
-/* parsing */
-int32_t parse_file_map(char *file, t_vars *vars);
+/* parsing_file_map */
+int32_t parsing_file_map(char *file, t_vars *vars);
 
 /* initialization */
 int32_t init(int ac, char *av[], t_vars *vars);
 int32_t	init_assets(t_vars *vars);
 
-/* frame */
-void	draw_frame(t_vars *vars);
-
 /* utils */
 void	*int_memset(void *ptr, int value, size_t num);
 int		rgba_to_int(int r, int g, int b, int a);
+
+/* minimap */
+void	minimap(t_vars *vars);
 
 
 /* development */

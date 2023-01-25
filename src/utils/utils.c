@@ -1,5 +1,5 @@
 
-#include "../include/cub3D.h"
+#include "../../include/cub3D.h"
 
 void *int_memset(void *ptr, int value, size_t num)
 {

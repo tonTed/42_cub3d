@@ -1,30 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   draw_frame.c                                       :+:      :+:    :+:   */
+/*   parse_file_map.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/17 11:03:04 by tonted            #+#    #+#             */
-/*   Updated: 2023/01/17 11:03:09 by tonted           ###   ########.fr       */
+/*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
+/*   Updated: 2023/01/17 11:03:37 by tonted           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/cub3D.h"
+#include "../../include/cub3D.h"
 
-static void	display_background(t_vars *vars)
+/**
+ * This functions open map file, parse it and set the different parameters of
+ * vars.
+ *
+ * @param file relative path to the map file
+ * @param vars global structure of the project
+ * @return Non-negative if error occurred while the parsing
+ */
+int32_t parsing_file_map(char *file, t_vars *vars)
 {
-	(void)vars;
-}
+	WHOAMI
 
-static void	display_minimap(t_vars *vars)
-{
+	(void)file;
 	(void)vars;
-}
 
-void	draw_frame(t_vars *vars)
-{
-	(void)vars;
-	display_background(vars);
-	display_minimap(vars);
+	return (EXIT_SUCCESS);
 }

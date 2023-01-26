@@ -10,7 +10,7 @@
 #define WHITE 0xFFFFFFFF
 #define YELLOW 0x0000FFFF
 #define ORANGE 0xFF0080FF
-#define RED 0xFF0000FF
+#define REDD 0xFF0000FF
 #define GREY 0xFF969696
 
 int worldMap[mapWidth][mapHeight]=
@@ -160,6 +160,11 @@ uint32_t get_index(t_vecInt c, int size, int cols)
 	return (size * size * cols * c.Y * 4 + size * c.X * 4);
 }
 
+uint32_t get_index_dbl(t_vecDbl c, int sizeW, int sizeH, int cols)
+{
+	return (sizeW * sizeH * cols * c.Y * 4 + sizeH * c.X * 4);
+}
+
 void	minimap_draw_square(t_data *d, t_vecInt c)
 {
 	int row;
@@ -169,14 +174,13 @@ void	minimap_draw_square(t_data *d, t_vecInt c)
 	while (row < squareSize - 1)
 	{
 		index = get_index(c, squareSize, mapWidth) + (row * squareSize * mapWidth * 4);
-		printf("index: %d\n", index);
+//		printf("index: %d\n", index);
 		if (worldMap[c.Y][c.X] == 1)
 			int_memset(&d->win->pixels[index + 4], BLACK, squareSize - 2);
 		else
 			int_memset(&d->win->pixels[index + 4], WHITE, squareSize - 2);
 		row++;
 	}
-//	exit(0);
 }
 
 void	minimap_draw_squares(t_data *d)
@@ -194,7 +198,24 @@ void	minimap_draw_squares(t_data *d)
 		}
 		coord.Y++;
 	}
-//	exit(0);
+}
+
+#define MMAP_PLAYER_DOT	9
+
+void	minimap_draw_player(t_data *d)
+{
+	int row;
+	int med;
+	int index;
+
+	med = MMAP_PLAYER_DOT / 2;
+	row = -med;
+	while (row <= med)
+	{
+		index = d->win->width * 4 * (d->p.Y + row) + d->p.X * 4 + (abs(row % MMAP_PLAYER_DOT) - 4) * 4;
+		int_memset(&d->win->pixels[index], ORANGE, MMAP_PLAYER_DOT - abs(row % MMAP_PLAYER_DOT) * 2);
+		row++;
+	}
 }
 
 void	cub_loop(void *data)
@@ -203,17 +224,30 @@ void	cub_loop(void *data)
 
 	//background
 	fill_img_color(d->win, GREY);
+
+	//cells
 	minimap_draw_squares(d);
 
+	//player
+	minimap_draw_player(d);
+
+}
+
+void	init_data(t_data *d)
+{
+
+	d->mlx = mlx_init(screenHeight, screenHeight, "playground", false);
+	d->win = mlx_new_image(d->mlx, screenWidth, screenHeight);
+
+	d->p.X = 300;
+	d->p.Y = 300;
 }
 
 int main(void)
 {
 	t_data data;
 
-	data.mlx = mlx_init(screenHeight, screenHeight, "playground", false);
-	data.win = mlx_new_image(data.mlx, screenWidth, screenHeight);
-
+	init_data(&data);
 	mlx_image_to_window(data.mlx, data.win, 0, 0);
 	mlx_loop_hook(data.mlx, &cub_loop, (void *)&data);
 	mlx_loop(data.mlx);

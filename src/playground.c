@@ -8,7 +8,7 @@
 
 #define BLACK 0xFF000000
 #define WHITE 0xFFFFFFFF
-#define YELLOW 0x0000FFFF
+#define YELLOW 0xFF00FFFF
 #define ORANGE 0xFF0080FF
 #define REDD 0xFF0000FF
 #define GREY 0xFF969696
@@ -37,11 +37,18 @@ typedef struct s_vecInt
 	int	Y;
 }	t_vecInt;
 
+typedef struct s_play
+{
+	t_vecDbl c;
+	t_vecDbl dir;
+	
+} t_play;
+
 typedef struct s_data
 {
 	mlx_t		*mlx;
 	mlx_image_t	*win;
-	t_vecDbl	p;
+	t_play 		p;
 }	t_data;
 
 //void	cub_loop(void *data)
@@ -160,11 +167,6 @@ uint32_t get_index(t_vecInt c, int size, int cols)
 	return (size * size * cols * c.Y * 4 + size * c.X * 4);
 }
 
-uint32_t get_index_dbl(t_vecDbl c, int sizeW, int sizeH, int cols)
-{
-	return (sizeW * sizeH * cols * c.Y * 4 + sizeH * c.X * 4);
-}
-
 void	minimap_draw_square(t_data *d, t_vecInt c)
 {
 	int row;
@@ -174,7 +176,6 @@ void	minimap_draw_square(t_data *d, t_vecInt c)
 	while (row < squareSize - 1)
 	{
 		index = get_index(c, squareSize, mapWidth) + (row * squareSize * mapWidth * 4);
-//		printf("index: %d\n", index);
 		if (worldMap[c.Y][c.X] == 1)
 			int_memset(&d->win->pixels[index + 4], BLACK, squareSize - 2);
 		else
@@ -200,7 +201,24 @@ void	minimap_draw_squares(t_data *d)
 	}
 }
 
+// always odd
 #define MMAP_PLAYER_DOT	9
+#define MMAP_DIR_DOT 5
+
+int 	img_len_row(mlx_image_t *img)
+{
+	return (img->width * 4);
+}
+
+double get_dir_Y(t_play p)
+{
+	return (p.c.Y + p.dir.Y * squareSize);
+}
+
+double get_dir_X(t_play p)
+{
+	return (p.c.X + p.dir.X * squareSize);
+}
 
 void	minimap_draw_player(t_data *d)
 {
@@ -212,8 +230,17 @@ void	minimap_draw_player(t_data *d)
 	row = -med;
 	while (row <= med)
 	{
-		index = d->win->width * 4 * (d->p.Y + row) + d->p.X * 4 + (abs(row % MMAP_PLAYER_DOT) - 4) * 4;
+		index = (d->win->width * 4) * (d->p.c.Y + row) + (d->p.c.X * 4) + (abs(row % MMAP_PLAYER_DOT) - med) * 4;
 		int_memset(&d->win->pixels[index], ORANGE, MMAP_PLAYER_DOT - abs(row % MMAP_PLAYER_DOT) * 2);
+		row++;
+	}
+
+	med = MMAP_DIR_DOT / 2;
+	row = -med;
+	while (row <= med)
+	{
+		index = (d->win->width * 4) * (get_dir_Y(d->p) + row) + (get_dir_X(d->p) * 4) + (abs(row % MMAP_DIR_DOT) - med) * 4;
+		int_memset(&d->win->pixels[index], REDD, MMAP_DIR_DOT - abs(row % MMAP_DIR_DOT) * 2);
 		row++;
 	}
 }
@@ -239,8 +266,11 @@ void	init_data(t_data *d)
 	d->mlx = mlx_init(screenHeight, screenHeight, "playground", false);
 	d->win = mlx_new_image(d->mlx, screenWidth, screenHeight);
 
-	d->p.X = 300;
-	d->p.Y = 300;
+	d->p.c.X = 300;
+	d->p.c.Y = 300;
+
+	d->p.dir.X = 0;
+	d->p.dir.Y = -1;
 }
 
 int main(void)

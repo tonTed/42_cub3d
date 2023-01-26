@@ -239,9 +239,30 @@ void	minimap_draw_player(t_data *d)
 	row = -med;
 	while (row <= med)
 	{
-		index = (d->win->width * 4) * (get_dir_Y(d->p) + row) + (get_dir_X(d->p) * 4) + (abs(row % MMAP_DIR_DOT) - med) * 4;
+		index = (d->win->width * 4) * ((int)get_dir_Y(d->p) + row) + ((int)get_dir_X(d->p) * 4) + (abs(row % MMAP_DIR_DOT) - med) * 4;
 		int_memset(&d->win->pixels[index], REDD, MMAP_DIR_DOT - abs(row % MMAP_DIR_DOT) * 2);
 		row++;
+	}
+}
+
+void	keyboard_hook(t_data *d)
+{
+	double rotSpeed = 0.05;
+	double moveSpeed = 0.1;
+
+	if (mlx_is_key_down(d->mlx, MLX_KEY_LEFT))
+	{
+		double oldDirX = d->p.dir.X;
+		d->p.dir.X = d->p.dir.X * cos(-rotSpeed) - d->p.dir.Y * sin(-rotSpeed);
+		d->p.dir.Y = oldDirX * sin(-rotSpeed) + d->p.dir.Y * cos(-rotSpeed);
+		printf(">> %f - %f\n", d->p.dir.X, d->p.dir.Y);
+	}
+	if (mlx_is_key_down(d->mlx, MLX_KEY_RIGHT))
+	{
+		double oldDirX = d->p.dir.X;
+		d->p.dir.X = d->p.dir.X * cos(rotSpeed) - d->p.dir.Y * sin(rotSpeed);
+		d->p.dir.Y = oldDirX * sin(rotSpeed) + d->p.dir.Y * cos(rotSpeed);
+		printf(">> %f - %f\n", d->p.dir.X, d->p.dir.Y);
 	}
 }
 
@@ -257,6 +278,10 @@ void	cub_loop(void *data)
 
 	//player
 	minimap_draw_player(d);
+	
+	//keyboard_hook
+	keyboard_hook(d);
+	
 
 }
 

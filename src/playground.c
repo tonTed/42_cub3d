@@ -25,17 +25,23 @@ int worldMap[mapWidth][mapHeight]=
 		{1,1,1,1,1,1,1,1},
 		};
 
-typedef struct s_vec
+typedef struct s_vecDbl
 {
 	double	X;
 	double	Y;
-}	t_vec;
+}	t_vecDbl;
+
+typedef struct s_vecInt
+{
+	int	X;
+	int	Y;
+}	t_vecInt;
 
 typedef struct s_data
 {
 	mlx_t		*mlx;
 	mlx_image_t	*win;
-	t_vec		p;
+	t_vecDbl	p;
 }	t_data;
 
 //void	cub_loop(void *data)
@@ -149,13 +155,55 @@ void	fill_img_color(mlx_image_t *img, int color)
 	int_memset(img->pixels, color, img->height * img->height);
 }
 
+uint32_t get_index(t_vecInt c, int size, int cols)
+{
+	return (size * size * cols * c.Y * 4 + size * c.X * 4);
+}
+
+void	minimap_draw_square(t_data *d, t_vecInt c)
+{
+	int row;
+	int index;
+
+	row = 1;
+	while (row < squareSize - 1)
+	{
+		index = get_index(c, squareSize, mapWidth) + (row * squareSize * mapWidth * 4);
+		printf("index: %d\n", index);
+		if (worldMap[c.Y][c.X] == 1)
+			int_memset(&d->win->pixels[index + 4], BLACK, squareSize - 2);
+		else
+			int_memset(&d->win->pixels[index + 4], WHITE, squareSize - 2);
+		row++;
+	}
+//	exit(0);
+}
+
+void	minimap_draw_squares(t_data *d)
+{
+	t_vecInt 	coord;
+
+	coord.Y = 0;
+	while (coord.Y < mapHeight)
+	{
+		coord.X = 0;
+		while (coord.X < mapWidth)
+		{
+			minimap_draw_square(d, coord);
+			coord.X++;
+		}
+		coord.Y++;
+	}
+//	exit(0);
+}
+
 void	cub_loop(void *data)
 {
 	t_data *d = data;
 
 	//background
 	fill_img_color(d->win, GREY);
-
+	minimap_draw_squares(d);
 
 }
 

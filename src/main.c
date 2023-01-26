@@ -23,7 +23,7 @@ void	hook(void *param)
 	draw_player_minimap(vars);
 }
 
-int32_t	main(int ac, char* av[])
+int32_t	main2(int ac, char* av[])
 {
 	WHOAMI
 

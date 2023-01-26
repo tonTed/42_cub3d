@@ -18,13 +18,15 @@ void    hook_keyboard(t_vars *vars)
         mlx_close_window(vars->mlx);
     if (mlx_is_key_down(vars->mlx, MLX_KEY_W))
 	{
-		vars->player.coord.y -= 5;
+		vars->player.coord.y -= vars->player.delta.y;
+		vars->player.coord.x -= vars->player.delta.x;
 		vars->mmap.player->instances[0].y -= 5;
         printf("Move Forward\n");
 	}
     if (mlx_is_key_down(vars->mlx, MLX_KEY_S))
 	{
-		vars->player.coord.y += 5;
+		vars->player.coord.y += vars->player.delta.y;
+		vars->player.coord.x += vars->player.delta.x;
 		vars->mmap.player->instances[0].y += 5;
         printf("Move Back\n");
 	}
@@ -42,10 +44,20 @@ void    hook_keyboard(t_vars *vars)
 	}
     if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
 	{
-        printf("Rotate Left\n");
+        vars->player.angle -= 0.1;
+		if (vars->player.angle < 0)
+			vars->player.angle += 2 * PI;
+		vars->player.delta.x = cos(vars->player.angle);
+		vars->player.delta.y = sin(vars->player.angle);
+		printf("Rotate Left\n");
 	}
     if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT))
 	{
+        vars->player.angle += 0.1;
+		if (vars->player.angle > 2 * PI)
+			vars->player.angle -= 2 * PI;
+		vars->player.delta.x = cos(vars->player.angle);
+		vars->player.delta.y = sin(vars->player.angle);
         printf("Rotate Right\n");
 	}
 }

@@ -8,7 +8,7 @@
 #define MMAP_ROWS 8
 #define MMAP_BLACK 0xFF000000
 #define MMAP_WHITE 0xFFFFFFFF
-#define MMAP_YELLOW 0xFF00FFFF
+#define MMAP_YELLOW 0x0000FFFF
 #define MMAP_ORANGE 0xFF0080FF
 #define MMAP_RED 0xFF0000FF
 
@@ -80,10 +80,13 @@ void	mock_init(t_vars *vars)
 	vars->mmap.bg = mlx_new_image(vars->mlx, MMAP_COLS * MMAP_SIZE, MMAP_ROWS * MMAP_SIZE);
 
 	set_minimap_img(vars->mmap.bg, vars->map.map);
-	mlx_image_to_window(vars->mlx, vars->mmap.bg, 25, 25);
+	mlx_image_to_window(vars->mlx, vars->mmap.bg, 0, 0);
 
 	vars->player.coord.x = 300;
 	vars->player.coord.y = 300;
+	vars->player.angle = PI / 2;
+	vars->player.delta.x = cos(vars->player.angle) * 5;
+	vars->player.delta.y = sin(vars->player.angle) * 5;
 
 	vars->mmap.player = mlx_new_image(vars->mlx, 8, 8);
 	int_memset(vars->mmap.player->pixels, MMAP_YELLOW,
@@ -95,4 +98,22 @@ void	minimap(t_vars *vars)
 {
 	mock_init(vars);
 	(void)vars;
+}
+
+
+void	draw_player_minimap(t_vars *vars)
+{
+	int x = (int)vars->player.coord.x - 4;
+	int y = (int)vars->player.coord.y - 4;
+
+	int i = 0;
+
+	set_minimap_img(vars->mmap.bg, map);
+
+	while (i < 8)
+	{
+//		int_memset(&vars->mmap.bg->pixels[(MMAP_SIZE * MMAP_COLS * 4) * i], MMAP_ORANGE, 64);
+		int_memset(&vars->mmap.bg->pixels[((y * 64 * 8 * 4) + x * 4) + i * 64 * 8 * 4], MMAP_ORANGE, 8);
+		i++;
+	}
 }

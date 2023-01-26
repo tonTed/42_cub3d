@@ -20,6 +20,7 @@ void	hook(void *param)
 
     vars = param;
     hook_keyboard(vars);
+	draw_player_minimap(vars);
 }
 
 int32_t	main(int ac, char* av[])

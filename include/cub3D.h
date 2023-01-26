@@ -14,10 +14,13 @@
 #include "../libraries/MLX42/include/MLX42/MLX42.h"
 
 #include <stdio.h>
+#include <math.h>
 
 #define WIDTH 1024
 #define HEIGHT 704
 #define TITLE "cub3d"
+
+#define PI 3.1415926535
 
 typedef struct s_rgb {
 	unsigned char	r;
@@ -41,6 +44,8 @@ typedef struct s_coord {
 
 typedef struct s_player {
 	t_coord coord;
+	t_coord delta;
+	float 	angle;
 }	t_player;
 
 typedef struct s_mmap {
@@ -82,6 +87,7 @@ void	clean_exit(t_vars *vars);
 
 /* minimap */
 void	minimap(t_vars *vars);
+void	draw_player_minimap(t_vars *vars);
 
 
 

@@ -262,8 +262,8 @@ void draw_line(t_data *d, t_vecDbl v1, t_vecDbl v2)
 			error -= dy;
 			x += x_inc;
 		}
-		printf("index: %d\tdx + dy: %d\tx: %d\ty: %d\tdirX: %d\tdirY: %d\n", index, dx+dy, x, y,
-			   (int)get_dir_X(d->p), (int) get_dir_Y(d->p));
+//		printf("index: %d\tdx + dy: %d\tx: %d\ty: %d\tdirX: %d\tdirY: %d\n", index, dx+dy, x, y,
+//			   (int)get_dir_X(d->p), (int) get_dir_Y(d->p));
 		int_memset(&d->win->pixels[d->win->width * 4 * y + x * 4], REDD, 1);
 //		mlx_pixel_put(mlx, x, y, 0xFFFFFF);
 	}
@@ -279,7 +279,7 @@ void	minimap_draw_player(t_data *d)
 	row = -med;
 	while (row <= med)
 	{
-		index = (d->win->width * 4) * (d->p.c.Y + row) + (d->p.c.X * 4) + (abs(row % MMAP_PLAYER_DOT) - med) * 4;
+		index = (d->win->width * 4) * ((int)d->p.c.Y + row) + ((int)d->p.c.X * 4) + (abs(row % MMAP_PLAYER_DOT) - med) * 4;
 		int_memset(&d->win->pixels[index], ORANGE, MMAP_PLAYER_DOT - abs(row % MMAP_PLAYER_DOT) * 2);
 		row++;
 	}
@@ -299,23 +299,33 @@ void	minimap_draw_player(t_data *d)
 void	keyboard_hook(t_data *d)
 {
 	double rotSpeed = 0.05;
-	double moveSpeed = 0.1;
+	double moveSpeed = 1;
 
 	if (mlx_is_key_down(d->mlx, MLX_KEY_LEFT))
 	{
 		double oldDirX = d->p.dir.X;
 		d->p.dir.X = d->p.dir.X * cos(-rotSpeed) - d->p.dir.Y * sin(-rotSpeed);
 		d->p.dir.Y = oldDirX * sin(-rotSpeed) + d->p.dir.Y * cos(-rotSpeed);
-		printf(">> %f - %f\n", d->p.dir.X, d->p.dir.Y);
+		printf(">> %f - %f\n", d->p.c.X, d->p.c.Y);
 	}
 	if (mlx_is_key_down(d->mlx, MLX_KEY_RIGHT))
 	{
 		double oldDirX = d->p.dir.X;
 		d->p.dir.X = d->p.dir.X * cos(rotSpeed) - d->p.dir.Y * sin(rotSpeed);
 		d->p.dir.Y = oldDirX * sin(rotSpeed) + d->p.dir.Y * cos(rotSpeed);
-		printf(">> %f - %f\n", d->p.dir.X, d->p.dir.Y);
+		printf(">> %f - %f\n", d->p.c.X, d->p.c.Y);
 	}
-
+	if (mlx_is_key_down(d->mlx, MLX_KEY_W))
+	{
+		d->p.c.X += d->p.dir.X * moveSpeed;
+		d->p.c.Y += d->p.dir.Y * moveSpeed;
+	}
+	if (mlx_is_key_down(d->mlx, MLX_KEY_S))
+	{
+		d->p.c.X -= d->p.dir.X * moveSpeed;
+		d->p.c.Y -= d->p.dir.Y * moveSpeed;
+		printf(">> %f - %f\n", d->p.c.X, d->p.c.Y);
+	}
 }
 
 void	cub_loop(void *data)

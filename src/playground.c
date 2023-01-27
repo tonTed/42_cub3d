@@ -13,6 +13,8 @@
 #define REDD 0xFF0000FF
 #define GREY 0xFF969696
 
+#define PI 3.1415926535
+
 int worldMap[mapWidth][mapHeight]=
 		{
 		{1,1,1,1,1,1,1,1},
@@ -39,8 +41,9 @@ typedef struct s_vecInt
 
 typedef struct s_play
 {
-	t_vecDbl c;
-	t_vecDbl dir;
+	t_vecDbl	c;
+	t_vecDbl	dir;
+	double		a;
 	
 } t_play;
 
@@ -220,6 +223,52 @@ double get_dir_X(t_play p)
 	return (p.c.X + p.dir.X * squareSize);
 }
 
+void draw_line(t_data *d, t_vecDbl v1, t_vecDbl v2)
+{
+	int dx, dy, x, y, x_inc, y_inc, error, index;
+
+	v2.X = get_dir_X(d->p);
+	v2.Y = get_dir_Y(d->p);
+
+	dx = abs((int)v2.X - (int)v1.X);
+	dy = abs((int)v2.Y - (int)v1.Y);
+
+	x = (int)v1.X;
+	y = (int)v1.Y;
+
+	if((int)v2.X >= (int)v1.X)
+		x_inc = 1;
+	else
+		x_inc = -1;
+
+	if((int)v2.Y >= (int)v1.Y)
+		y_inc = 1;
+	else
+		y_inc = -1;
+
+	error = dx - dy;
+
+	int_memset(&d->win->pixels[d->win->width * 4 * y + x * 4], REDD, 1);
+
+	for(index = 0; index < dx + dy; index++)
+	{
+		if(error < 0)
+		{
+			error += dx;
+			y += y_inc;
+		}
+		else
+		{
+			error -= dy;
+			x += x_inc;
+		}
+		printf("index: %d\tdx + dy: %d\tx: %d\ty: %d\tdirX: %d\tdirY: %d\n", index, dx+dy, x, y,
+			   (int)get_dir_X(d->p), (int) get_dir_Y(d->p));
+		int_memset(&d->win->pixels[d->win->width * 4 * y + x * 4], REDD, 1);
+//		mlx_pixel_put(mlx, x, y, 0xFFFFFF);
+	}
+}
+
 void	minimap_draw_player(t_data *d)
 {
 	int row;
@@ -243,6 +292,8 @@ void	minimap_draw_player(t_data *d)
 		int_memset(&d->win->pixels[index], REDD, MMAP_DIR_DOT - abs(row % MMAP_DIR_DOT) * 2);
 		row++;
 	}
+
+	draw_line(d, d->p.c, d->p.dir);
 }
 
 void	keyboard_hook(t_data *d)
@@ -264,6 +315,7 @@ void	keyboard_hook(t_data *d)
 		d->p.dir.Y = oldDirX * sin(rotSpeed) + d->p.dir.Y * cos(rotSpeed);
 		printf(">> %f - %f\n", d->p.dir.X, d->p.dir.Y);
 	}
+
 }
 
 void	cub_loop(void *data)
@@ -284,7 +336,12 @@ void	cub_loop(void *data)
 	
 
 }
-
+/*
+ * EAST		-> 2 * PI / 0
+ * NORTH	-> PI/2
+ * WEST		-> PI
+ * SUD		-> 3 * PI / 2
+ * */
 void	init_data(t_data *d)
 {
 
@@ -296,6 +353,8 @@ void	init_data(t_data *d)
 
 	d->p.dir.X = 0;
 	d->p.dir.Y = -1;
+
+	d->p.a = PI / 2;
 }
 
 int main(void)

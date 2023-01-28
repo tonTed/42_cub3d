@@ -306,14 +306,12 @@ void	keyboard_hook(t_data *d)
 		double oldDirX = d->p.dir.X;
 		d->p.dir.X = d->p.dir.X * cos(-rotSpeed) - d->p.dir.Y * sin(-rotSpeed);
 		d->p.dir.Y = oldDirX * sin(-rotSpeed) + d->p.dir.Y * cos(-rotSpeed);
-		printf(">> %f - %f\n", d->p.c.X, d->p.c.Y);
 	}
 	if (mlx_is_key_down(d->mlx, MLX_KEY_RIGHT))
 	{
 		double oldDirX = d->p.dir.X;
 		d->p.dir.X = d->p.dir.X * cos(rotSpeed) - d->p.dir.Y * sin(rotSpeed);
 		d->p.dir.Y = oldDirX * sin(rotSpeed) + d->p.dir.Y * cos(rotSpeed);
-		printf(">> %f - %f\n", d->p.c.X, d->p.c.Y);
 	}
 	if (mlx_is_key_down(d->mlx, MLX_KEY_W))
 	{
@@ -324,7 +322,16 @@ void	keyboard_hook(t_data *d)
 	{
 		d->p.c.X -= d->p.dir.X * moveSpeed;
 		d->p.c.Y -= d->p.dir.Y * moveSpeed;
-		printf(">> %f - %f\n", d->p.c.X, d->p.c.Y);
+	}
+	if (mlx_is_key_down(d->mlx, MLX_KEY_A))
+	{
+		d->p.c.X += d->p.dir.Y * moveSpeed;
+		d->p.c.Y -= d->p.dir.X * moveSpeed;
+	}
+	if (mlx_is_key_down(d->mlx, MLX_KEY_D))
+	{
+		d->p.c.X -= d->p.dir.Y * moveSpeed;
+		d->p.c.Y += d->p.dir.X * moveSpeed;
 	}
 }
 

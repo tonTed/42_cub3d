@@ -43,6 +43,8 @@ typedef struct s_play
 {
 	t_vecDbl	c;
 	t_vecDbl	dir;
+    t_vecDbl    left_FOV;
+    t_vecDbl    right_FOV;
 	double		a;
 	
 } t_play;
@@ -53,112 +55,6 @@ typedef struct s_data
 	mlx_image_t	*win;
 	t_play 		p;
 }	t_data;
-
-//void	cub_loop(void *data)
-//{
-//	t_data *d = data;
-//	int x = 0;
-//
-//	while (x < mapWidth)
-//	{
-//		//calculer la position et la directio du rayon
-//		double camX = 2 * x / (double) mapWidth - 1; //coordonnée x dans l'espace caméra
-//		double rayDirX = d->dirX + d->planeX * camX;
-//		double rayDirY = d->dirY + d->planeY * camX;
-//		printf("x: %d\tcamX: %f\trayDirX: %f\trayDirY: %f\n", x, camX, rayDirX, rayDirY);
-//
-//		//dans quelle case de la carte nous sommes
-//		int mapX = (int)d->posX;
-//		int mapY = (int)d->posY;
-//
-//		//longueur du rayon de la position actuelle au côté x ou y suivant
-//		double sideDistX ;
-//		double sideDistY ;
-//
-//		//longueur du rayon d'un côté x ou y au côté x ou y suivant
-//		double deltaDistX = (rayDirX == 0) ? 1e30 : abs(1 / rayDirX);
-//		double deltaDistY = (rayDirY == 0) ? 1e30 : abs(1 / rayDirY);
-//
-//		double perpWallDist ;
-//
-//		//dans quelle direction aller dans la direction x ou y (soit +1 ou -1)
-//		int stepX ;
-//		int stepY ;
-//
-//		int hit = 0 ; // y a-t-il eu un coup de mur ?
-//
-//		// est-ce qu'un mur NS ou EW a été touché ?
-//		int side ;
-//
-//		//calculate step and initial sideDist
-//		if (rayDirX < 0)
-//		{
-//			stepX = -1;
-//			sideDistX = (d->posX - mapX) * deltaDistX;
-//		}
-//		else
-//		{
-//			stepX = 1;
-//			sideDistX = (mapX + 1.0 - d->posX) * deltaDistX;
-//		}
-//		if (rayDirY < 0)
-//		{
-//			stepY = -1;
-//			sideDistY = (d->posY - mapY) * deltaDistY;
-//		}
-//		else
-//		{
-//			stepY = 1;
-//			sideDistY = (mapY + 1.0 - d->posY) * deltaDistY;
-//		}
-//
-//		x++;
-//
-//	//perform DDA
-//	while (hit == 0)
-//	{
-//		//jump to next map square, either in x-direction, or in y-direction
-//		if (sideDistX < sideDistY)
-//		{
-//			sideDistX += deltaDistX;
-//			mapX += stepX;
-//			side = 0;
-//		}
-//		else
-//		{
-//			sideDistY += deltaDistY;
-//			mapY += stepY;
-//			side = 1;
-//		}
-//		//Check if ray has hit a wall
-//		if (worldMap[mapX][mapY] > 0)
-//			hit = 1;
-//	}
-//
-//	//Calculate distance projected on camera direction (Euclidean distance would give fisheye effect!)
-//	if(side == 0)
-//		perpWallDist = (sideDistX - deltaDistX);
-//	else
-//		perpWallDist = (sideDistY - deltaDistY);
-//
-//	exit(0);
-//	}
-//}
-
-//int main(void)
-//{
-//	t_data d;
-//	d.posX = 22, d.posY = 12;		//x et y position de départ
-//	d.dirX = -1, d.dirY = 0;		//vecteur direction initial
-//	d.planeX = 0, d.planeY = 0.66;	//la version 2d raycaster du plan caméra
-//
-//	mlx_t	*mlx = mlx_init(screenHeight, screenHeight, "raycasting", false);
-//	mlx_loop_hook(mlx, &cub_loop, (void *)&d);
-//
-//	mlx_loop(mlx);
-//
-//	return (EXIT_SUCCESS);
-//}
 
 void	fill_img_color(mlx_image_t *img, int color)
 {
@@ -227,9 +123,6 @@ void draw_line(t_data *d, t_vecDbl v1, t_vecDbl v2)
 {
 	int dx, dy, x, y, x_inc, y_inc, error, index;
 
-	v2.X = get_dir_X(d->p);
-	v2.Y = get_dir_Y(d->p);
-
 	dx = abs((int)v2.X - (int)v1.X);
 	dy = abs((int)v2.Y - (int)v1.Y);
 
@@ -293,7 +186,24 @@ void	minimap_draw_player(t_data *d)
 		row++;
 	}
 
-	draw_line(d, d->p.c, d->p.dir);
+    // Draw ray player
+    t_vecDbl tmp;
+    tmp.X = get_dir_X(d->p);
+    tmp.Y = get_dir_Y(d->p);
+	draw_line(d, d->p.c, tmp);
+
+    // Draw ray left FOV
+    t_vecDbl left_fov;
+    left_fov.X = d->p.c.X + d->p.left_FOV.X * squareSize;
+    left_fov.Y = d->p.c.Y + d->p.left_FOV.Y * squareSize;
+	draw_line(d, d->p.c, left_fov);
+
+    // Draw ray right FOV
+    t_vecDbl right_fov;
+    right_fov.X = d->p.c.X + d->p.right_FOV.X * squareSize;
+    right_fov.Y = d->p.c.Y + d->p.right_FOV.Y * squareSize;
+	draw_line(d, d->p.c, right_fov);
+
 }
 
 void	keyboard_hook(t_data *d)
@@ -304,14 +214,32 @@ void	keyboard_hook(t_data *d)
 	if (mlx_is_key_down(d->mlx, MLX_KEY_LEFT))
 	{
 		double oldDirX = d->p.dir.X;
+		double oldLeftFOVX = d->p.left_FOV.X;
+		double oldRightFOVX = d->p.right_FOV.X;
+
 		d->p.dir.X = d->p.dir.X * cos(-rotSpeed) - d->p.dir.Y * sin(-rotSpeed);
 		d->p.dir.Y = oldDirX * sin(-rotSpeed) + d->p.dir.Y * cos(-rotSpeed);
+
+		d->p.left_FOV.X = d->p.left_FOV.X * cos(-rotSpeed) - d->p.left_FOV.Y * sin(-rotSpeed);
+		d->p.left_FOV.Y = oldLeftFOVX * sin(-rotSpeed) + d->p.left_FOV.Y * cos(-rotSpeed);
+
+		d->p.right_FOV.X = d->p.right_FOV.X * cos(-rotSpeed) - d->p.right_FOV.Y * sin(-rotSpeed);
+		d->p.right_FOV.Y = oldRightFOVX * sin(-rotSpeed) + d->p.right_FOV.Y * cos(-rotSpeed);
 	}
 	if (mlx_is_key_down(d->mlx, MLX_KEY_RIGHT))
 	{
 		double oldDirX = d->p.dir.X;
+		double oldLeftFOVX = d->p.left_FOV.X;
+		double oldRightFOVX = d->p.right_FOV.X;
+
 		d->p.dir.X = d->p.dir.X * cos(rotSpeed) - d->p.dir.Y * sin(rotSpeed);
 		d->p.dir.Y = oldDirX * sin(rotSpeed) + d->p.dir.Y * cos(rotSpeed);
+
+		d->p.left_FOV.X = d->p.left_FOV.X * cos(rotSpeed) - d->p.left_FOV.Y * sin(rotSpeed);
+		d->p.left_FOV.Y = oldLeftFOVX * sin(rotSpeed) + d->p.left_FOV.Y * cos(rotSpeed);
+
+		d->p.right_FOV.X = d->p.right_FOV.X * cos(rotSpeed) - d->p.right_FOV.Y * sin(rotSpeed);
+		d->p.right_FOV.Y = oldRightFOVX * sin(rotSpeed) + d->p.right_FOV.Y * cos(rotSpeed);
 	}
 	if (mlx_is_key_down(d->mlx, MLX_KEY_W))
 	{
@@ -370,6 +298,11 @@ void	init_data(t_data *d)
 
 	d->p.dir.X = 0;
 	d->p.dir.Y = -1;
+
+	d->p.left_FOV.X = d->p.dir.X - 0.66;
+	d->p.left_FOV.Y = d->p.dir.Y;
+	d->p.right_FOV.X = d->p.dir.X + 0.66;
+	d->p.right_FOV.Y = d->p.dir.Y;
 
 	d->p.a = PI / 2;
 }

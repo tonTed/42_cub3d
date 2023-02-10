@@ -1,5 +1,7 @@
 #include "../../include/cub3D.h"
 
+
+
 int32_t init(int ac, char *av[], t_vars *vars)
 {
 	WHOAMI
@@ -12,9 +14,9 @@ int32_t init(int ac, char *av[], t_vars *vars)
 	vars->mlx = mlx_init(WIDTH, HEIGHT, TITLE, false);
 	if (!vars->mlx)
 		return (EXIT_FAILURE);
-//	if (init_assets(vars))
-//		return (EXIT_FAILURE);
-	minimap(vars);
+	if (init_assets(vars))
+		return (EXIT_FAILURE);
+	// minimap(vars);
 
 	return (EXIT_SUCCESS);
 }

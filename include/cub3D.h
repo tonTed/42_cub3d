@@ -6,7 +6,7 @@
 /*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 13:09:41 by tonted            #+#    #+#             */
-/*   Updated: 2023/01/14 13:13:13 by tonted           ###   ########.fr       */
+/*   Updated: 2023/02/09 18:34:41 by tonted           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ void	clean_exit(t_vars *vars);
 void	minimap(t_vars *vars);
 void	draw_player_minimap(t_vars *vars);
 
+int32_t init_assets(t_vars *vars);
 
 
 

@@ -6,7 +6,7 @@
 /*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/01/17 11:03:37 by tonted           ###   ########.fr       */
+/*   Updated: 2023/02/09 18:31:58 by tonted           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int32_t parsing_file_map(char *file, t_vars *vars)
 	 * 		- [] missing data (use flag)
 	 * 		- [] too many data (use flag)
 	 * 		- [] file can't be open
-	 * 		-
+	 * 		- [] errors maps
 	 * */
 
 	/* TODO parse map

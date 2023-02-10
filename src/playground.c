@@ -15,7 +15,7 @@
 
 #define PI 3.1415926535
 
-int worldMap[mapWidth][mapHeight]=
+int worldMap[mapHeight][mapWidth]=
 		{
 		{1,1,1,1,1,1,1,1},
 		{1,0,1,0,0,0,0,1},
@@ -191,18 +191,101 @@ void	minimap_draw_player(t_data *d)
     tmp.X = get_dir_X(d->p);
     tmp.Y = get_dir_Y(d->p);
 	draw_line(d, d->p.c, tmp);
+	double planeX = 0, planeY = 0.66;
 
-    // Draw ray left FOV
-    t_vecDbl left_fov;
-    left_fov.X = d->p.c.X + d->p.left_FOV.X * squareSize;
-    left_fov.Y = d->p.c.Y + d->p.left_FOV.Y * squareSize;
-	draw_line(d, d->p.c, left_fov);
+	for(int x = 0; x < 8; x++)
+    {
+      //calculate ray position and direction
+		double cameraX = 2 * x / 8.0 - 1; //x-coordinate in camera space
+		double rayDirX = d->p.dir.X + planeX * cameraX;
+		double rayDirY = d->p.dir.Y + planeY * cameraX;
 
-    // Draw ray right FOV
-    t_vecDbl right_fov;
-    right_fov.X = d->p.c.X + d->p.right_FOV.X * squareSize;
-    right_fov.Y = d->p.c.Y + d->p.right_FOV.Y * squareSize;
-	draw_line(d, d->p.c, right_fov);
+		//which box of the map we're in
+		int mapX = (int)d->p.c.X / squareSize;
+		int mapY = (int)d->p.c.Y / squareSize;
+
+		//length of ray from current position to next x or y-side
+		double sideDistX;
+		double sideDistY;
+
+//		length of ray from one x or y-side to next x or y-side
+		double deltaDistX = (rayDirX == 0) ? 1e30 : fabs(1 / rayDirX);
+		double deltaDistY = (rayDirY == 0) ? 1e30 : fabs(1 / rayDirY);
+		double perpWallDist;
+//
+		//what direction to step in x or y-direction (either +1 or -1)
+		int stepX;
+		int stepY;
+//
+		int hit = 0; //was there a wall hit?
+		int side; //was a NS or a EW wall hit?
+
+		//calculate step and initial sideDist
+		if (rayDirX < 0)
+		{
+			stepX = -1;
+			sideDistX = ((d->p.c.X - (double)mapX * 64.0) * deltaDistX);
+		}
+		else
+		{
+			stepX = 1;
+			sideDistX = (((double)mapX + 1) * 64.0 - d->p.c.X) * deltaDistX;
+		}
+		if (rayDirY < 0)
+		{
+			stepY = -1;
+			sideDistY = (d->p.c.Y - (double)mapY * 64.0) * deltaDistY;
+		}
+		else
+		{
+			stepY = 1;
+			sideDistY = (((double)mapY + 1) * 64 - d->p.c.Y) * deltaDistY;
+		}
+//		printf("x: %d\t rayDirX: %f\trayDirY: %f\tstepX: %d\tstepY: %d\tsideDistX: %f\tsideDistY: %f\n", x , rayDirX, rayDirY, stepX, stepY, sideDistX, sideDistY);
+		//perform DDA
+		double length;
+		while (hit == 0)
+		{
+			//jump to next map square, either in x-direction, or in y-direction
+			if (sideDistX < sideDistY)
+			{
+				sideDistX += deltaDistX;
+				mapX += stepX;
+				length = sideDistX;
+				side = 0;
+			}
+			else
+			{
+				sideDistY += deltaDistY;
+				length = sideDistY;
+				mapY += stepY;
+				side = 1;
+			}
+			//Check if ray has hit a wall
+			if (worldMap[mapY][mapX] > 0) hit = 1;
+		}
+		printf("x: %d\tmapX: %d\tmapY: %d\t hit: %d\n", x, mapX, mapY, hit);
+
+		t_vecDbl tmpp;
+
+		tmpp.X = d->p.c.X + length * rayDirX;
+		tmpp.Y = d->p.c.Y + length * rayDirY;
+		draw_line(d, d->p.c, tmpp);
+
+	}
+//	exit(0);
+
+    // // Draw ray left FOV
+    // t_vecDbl left_fov;
+    // left_fov.X = d->p.c.X + d->p.left_FOV.X * squareSize;
+    // left_fov.Y = d->p.c.Y + d->p.left_FOV.Y * squareSize;
+	// draw_line(d, d->p.c, left_fov);
+
+    // // Draw ray right FOV
+    // t_vecDbl right_fov;
+    // right_fov.X = d->p.c.X + d->p.right_FOV.X * squareSize;
+    // right_fov.Y = d->p.c.Y + d->p.right_FOV.Y * squareSize;
+	// draw_line(d, d->p.c, right_fov);
 
 }
 

@@ -20,7 +20,11 @@
 #define HEIGHT 704
 #define TITLE "cub3d"
 
-#define PI 3.1415926535
+/* Colors */
+#define REDD 0xFF0000FF
+#define GREY 0xFF969696
+#define YELLOW 0xFF00FFFF
+
 
 typedef struct s_rgb {
 	unsigned char	r;
@@ -37,35 +41,61 @@ typedef struct s_assets {
 	t_rgb	ceiling;
 }	t_assets;
 
-typedef struct s_coord {
-	float	x;
-	float	y;
-}	t_coord;
+typedef struct s_vectorD {
+	double	X;
+	double 	Y;
+}	t_vectorD;
 
+typedef struct s_vectorI {
+	int32_t	X;
+	int32_t	Y;
+}	t_vectorI;
+
+typedef struct s_size {
+	uint16_t	w;
+	uint32_t 	h;
+}	t_size;
+
+/**
+ * @brief Player struct
+ *
+ * @param c Player position
+ * @apram d Player direction
+ */
 typedef struct s_player {
-	t_coord coord;
-	t_coord delta;
-	float 	angle;
+	t_vectorD	c;
+	t_vectorI	d;
 }	t_player;
 
-typedef struct s_mmap {
-	mlx_image_t *bg;
-	mlx_image_t	*player;
-}	t_mmap;
+/**
+ * @brief Mini map struct
+ *
+ * @param pos Mini map position
+ * @param size Mini map size
+ */
+typedef struct s_mini_map {
+	mlx_image_t	*win;
+	t_vectorI	pos;
+	t_size		size;
+}	t_mini_map;
 
-typedef struct s_map {
-	int *map;
-	int cols;
-	int rows;
-}	t_map;
+/**
+ * @brief Map configuration struct
+ *
+ * @param m Map
+ * @param s Map size
+ */
+typedef struct s_map_config {
+	int		**m;
+	t_size	s;
+}	t_map_config;
 
 typedef struct s_vars {
-	mlx_t		*mlx;
-	mlx_image_t	*bg;
-	t_assets	assets;
-	t_player	player;
-	t_mmap		mmap;
-	t_map		map;
+	mlx_t			*mlx;
+	mlx_image_t		*win;
+	t_player		p;
+	t_map_config	m;
+	t_mini_map		mm;
 }	t_vars;
 
 /* hooks */
@@ -84,13 +114,13 @@ int		rgba_to_int(int r, int g, int b, int a);
 void	free_null(void *ptr);
 void	clean_exit(t_vars *vars);
 
+/* utils image */
+void	fill_image(mlx_image_t *img, int color);
 
-/* minimap */
-void	minimap(t_vars *vars);
-void	draw_player_minimap(t_vars *vars);
-
-int32_t init_assets(t_vars *vars);
-
+/* draw */
+void	draw_main_window(t_vars *vars);
+void	draw_minimap(t_vars *vars);
+void	draw_bonus(t_vars *vars);
 
 
 /* development */

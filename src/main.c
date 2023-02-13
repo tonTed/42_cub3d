@@ -20,12 +20,12 @@ void	hook(void *param)
 
     vars = param;
     hook_keyboard(vars);
-    // draw_minimap(vars);
-    // draw_raycasting(vars);
-    // draw_bonus(vars);
+	draw_main_window(vars);
+	draw_minimap(vars);
+	draw_bonus(vars);
 }
 
-int32_t	main2(int ac, char* av[])
+int32_t	main(int ac, char* av[])
 {
 	WHOAMI
 

@@ -14,8 +14,6 @@
 
 void    hook_keyboard(t_vars *vars)
 {
-	// WHOAMI
-	
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
         mlx_close_window(vars->mlx);
     if (mlx_is_key_down(vars->mlx, MLX_KEY_W))

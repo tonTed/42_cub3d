@@ -21,7 +21,6 @@ int32_t init_assets(t_vars *vars)
 {
     WHOAMI
 
-    
     return (EXIT_SUCCESS);
 }
 

@@ -346,7 +346,6 @@
 //	}
 //}
 //
-//
 //void	cub_loop(void *data)
 //{
 //	t_data *d = data;

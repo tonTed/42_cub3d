@@ -6,46 +6,96 @@
 /*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:15 by tonted            #+#    #+#             */
-/*   Updated: 2023/01/17 11:03:17 by tonted           ###   ########.fr       */
+/*   Updated: 2023/02/09 18:48:22 by tonted           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/cub3D.h"
+#define ROT_SPEED 0.05
+#define MOVE_SPEED 1
+#define POSITIVE 1
+#define NEGATIVE 0
+
+void	update_player_pos(t_player *p, int sign, double add_to_angle)
+{
+	if (sign == POSITIVE)
+	{
+		p->c.X += cos(p->angle + add_to_angle) * MOVE_SPEED;
+		p->c.Y += sin(p->angle + add_to_angle) * MOVE_SPEED;
+	}
+	else
+	{
+		p->c.X -= cos(p->angle + add_to_angle) * MOVE_SPEED;
+		p->c.Y -= sin(p->angle + add_to_angle) * MOVE_SPEED;
+	}
+}
+
+void	hook_moves(t_vars *vars)
+{
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_W))
+		update_player_pos(&vars->p, POSITIVE, 0);
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_S))
+		update_player_pos(&vars->p, NEGATIVE, 0);
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_A))
+		update_player_pos(&vars->p, NEGATIVE, M_PI / 2);
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_D))
+		update_player_pos(&vars->p, POSITIVE, M_PI / 2);
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
+	{
+		if (vars->p.angle < 0)
+			vars->p.angle = 2 * M_PI;
+		else
+			vars->p.angle -= ROT_SPEED;
+	}
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT))
+	{
+		if (vars->p.angle > 2 * M_PI)
+			vars->p.angle = 0;
+		else
+			vars->p.angle += ROT_SPEED;
+	}
+}
+
+/**
+ * @brief Hook configs
+ *
+ * @param vars
+ *
+ * TODO BONUS: Add config hook
+ * 	- Toggle minimap/map
+ * 	- Toggle position minimap (top left, top right, bottom left, bottom right, remove)
+ */
+void	hook_configs(t_vars *vars)
+{
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_M))
+	{
+		printf("Toggle Minimap/Map\n");
+	}
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_P))
+	{
+		printf("Toggle position minimap\n");
+	}
+}
+
+/**
+ * @brief Hook mouse
+ *
+ * @param vars
+ *
+ * TODO BONUS: Add mouse hook
+ * 	- Mouse cursor position rotation lateral
+ * 	- Mouse click to shoot, launch sprite
+ */
+void	hook_mouse(t_vars *vars)
+{
+	(void)vars;
+}
 
 void    hook_keyboard(t_vars *vars)
 {
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
         mlx_close_window(vars->mlx);
-    if (mlx_is_key_down(vars->mlx, MLX_KEY_W))
-	{
-		vars->player.coord.y -= 5;
-		vars->mmap.player->instances[0].y -= 5;
-        printf("Move Forward\n");
-	}
-    if (mlx_is_key_down(vars->mlx, MLX_KEY_S))
-	{
-		vars->player.coord.y += 5;
-		vars->mmap.player->instances[0].y += 5;
-        printf("Move Back\n");
-	}
-    if (mlx_is_key_down(vars->mlx, MLX_KEY_A))
-	{
-		vars->player.coord.x -= 5;
-		vars->mmap.player->instances[0].x -= 5;
-        printf("Strafe Left\n");
-	}
-    if (mlx_is_key_down(vars->mlx, MLX_KEY_D))
-	{
-		vars->player.coord.x += 5;
-		vars->mmap.player->instances[0].x += 5;
-        printf("Strafe Right\n");
-	}
-    if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
-	{
-        printf("Rotate Left\n");
-	}
-    if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT))
-	{
-        printf("Rotate Right\n");
-	}
+	hook_moves(vars);
+	hook_configs(vars);
+	hook_mouse(vars);
 }

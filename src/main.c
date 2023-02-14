@@ -6,7 +6,7 @@
 /*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 13:07:38 by tonted            #+#    #+#             */
-/*   Updated: 2023/01/14 13:12:12 by tonted           ###   ########.fr       */
+/*   Updated: 2023/02/09 19:06:12 by tonted           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ void	hook(void *param)
 
     vars = param;
     hook_keyboard(vars);
+	draw_minimap(vars);
+	draw_main_window(vars);
+	draw_bonus(vars);
 }
 
 int32_t	main(int ac, char* av[])

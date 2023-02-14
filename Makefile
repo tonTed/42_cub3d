@@ -21,6 +21,7 @@ LIBFTLIB	= -L$(LIBFTDIR) -lft
 
 # mlx
 MLXDIR		= libraries/MLX42
+#MLXLIB		= -L$(MLXDIR) -lmlx42 -lglfw -L /Users/tblanco/.brew/Cellar/glfw/3.3.8/lib/ -framework OpenGL -framework AppKit
 MLXLIB		= -L$(MLXDIR) -lmlx42 -lglfw -L /opt/homebrew/Cellar/glfw/3.3.8/lib/ -framework OpenGL -framework AppKit
 
 # Name of the final executable
@@ -28,8 +29,6 @@ NAME = cub3d
 
 # Decide whether the commands will be shown or not
 VERBOSE = TRUE
-
-# ENTRYPOINT = src/so_long.c
 
 # Unit Test management
 UTEST = .test/_test_main.c

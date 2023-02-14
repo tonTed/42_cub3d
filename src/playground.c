@@ -403,3 +403,95 @@
 //
 //	return (EXIT_SUCCESS);
 //}
+
+
+/*
+
+#include <stdio.h>
+#include <math.h>
+
+#define MAP_WIDTH 10
+#define MAP_HEIGHT 10
+
+int map[MAP_WIDTH][MAP_HEIGHT] = {
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+};
+
+int player_x = 1;
+int player_y = 1;
+double player_dir = M_PI / 4; // Player's initial direction is 45 degrees (in radians)
+double fov = M_PI / 3; // Field of view is 60 degrees (in radians)
+
+void cast_ray(double ray_angle) {
+	double dist_to_wall = 0;
+	int hit_wall = 0;
+	int wall_x, wall_y;
+
+	// Find the slope of the ray
+	double angle_sin = sin(ray_angle);
+	double angle_cos = cos(ray_angle);
+
+	// Initialize the ray's starting position
+	double ray_x = player_x;
+	double ray_y = player_y;
+
+	// Move the ray until it hits a wall or goes out of bounds
+	while (!hit_wall && ray_x >= 0 && ray_x < MAP_WIDTH && ray_y >= 0 && ray_y < MAP_HEIGHT) {
+		// Check if the ray hit a wall
+		wall_x = (int)ray_x;
+		wall_y = (int)ray_y;
+		if (map[wall_x][wall_y] == 1) {
+			hit_wall = 1;
+		} else {
+			// Move the ray to the next cell
+			ray_x += angle_cos;
+			ray_y += angle_sin;
+		}
+	}
+
+	// Calculate the distance to the wall
+	if (hit_wall) {
+		double dist_x = ray_x - player_x;
+		double dist_y = ray_y - player_y;
+		dist_to_wall = sqrt(dist_x * dist_x + dist_y * dist_y);
+	}
+
+	// Draw the wall slice on the screen
+	int wall_height = (int)(MAP_HEIGHT / dist_to_wall);
+	int draw_start = (
+			int)((MAP_HEIGHT / 2) - (wall_height / 2));
+	int draw_end = (int)((MAP_HEIGHT / 2) + (wall_height / 2));
+	for (int y = 0; y < MAP_HEIGHT; y++) {
+		for (int x = 0; x < MAP_WIDTH; x++) {
+			if (y >= draw_start && y <= draw_end) {
+				if (x == wall_x && y == wall_y) {
+					printf("#");
+				} else {
+					printf(".");
+				}
+			} else {
+				printf(" ");
+			}
+		}
+		printf("\n");
+	}
+}
+
+int main() {
+// Cast rays for each column of the screen
+	for (int i = 0; i < MAP_WIDTH; i++) {
+		double ray_angle = player_dir - (fov / 2) + ((double)i / (double)MAP_WIDTH) * fov;
+		cast_ray(ray_angle);
+	}
+	return 0;
+}
+*/

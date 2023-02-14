@@ -13,29 +13,33 @@
 #include "../../include/cub3D.h"
 #define ROT_SPEED 0.05
 #define MOVE_SPEED 1
+#define POSITIVE 1
+#define NEGATIVE 0
+
+void	update_player_pos(t_player *p, int sign, double add_to_angle)
+{
+	if (sign == POSITIVE)
+	{
+		p->c.X += cos(p->angle + add_to_angle) * MOVE_SPEED;
+		p->c.Y += sin(p->angle + add_to_angle) * MOVE_SPEED;
+	}
+	else
+	{
+		p->c.X -= cos(p->angle + add_to_angle) * MOVE_SPEED;
+		p->c.Y -= sin(p->angle + add_to_angle) * MOVE_SPEED;
+	}
+}
 
 void	hook_moves(t_vars *vars)
 {
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_W))
-	{
-		vars->p.c.X += cos(vars->p.angle) * MOVE_SPEED;
-		vars->p.c.Y += sin(vars->p.angle) * MOVE_SPEED;
-	}
+		update_player_pos(&vars->p, POSITIVE, 0);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_S))
-	{
-		vars->p.c.X -= cos(vars->p.angle) * MOVE_SPEED;
-		vars->p.c.Y -= sin(vars->p.angle) * MOVE_SPEED;
-	}
+		update_player_pos(&vars->p, NEGATIVE, 0);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_A))
-	{
-		vars->p.c.X -= cos(vars->p.angle + M_PI / 2) * MOVE_SPEED;
-		vars->p.c.Y -= sin(vars->p.angle + M_PI / 2) * MOVE_SPEED;
-	}
+		update_player_pos(&vars->p, NEGATIVE, M_PI / 2);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_D))
-	{
-		vars->p.c.X += cos(vars->p.angle + M_PI / 2) * MOVE_SPEED;
-		vars->p.c.Y += sin(vars->p.angle + M_PI / 2) * MOVE_SPEED;
-	}
+		update_player_pos(&vars->p, POSITIVE, M_PI / 2);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
 	{
 		if (vars->p.angle < 0)

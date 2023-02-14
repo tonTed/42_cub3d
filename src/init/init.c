@@ -3,6 +3,18 @@
 // TODO remove this function in production.
 bool	mock_init(t_vars *vars);
 
+/**
+ * @brief check if the arguments are valid and call the right function for initialize the project.
+ *
+ * @param ac	arguments count
+ * @param av	arguments values (av[1] is the .cube file)
+ * @param vars	global variables
+ *
+ * @return EXIT_SUCCESS if all is ok
+ * @return EXIT_FAILURE if an error occurred
+ *
+ * TODO: manage errors messages: replace all EXIT_FAILURE by function that print error message and return EXIT_FAILURE.
+ */
 bool	check_args(int ac, char *av[], t_vars *vars)
 {
 	if (ac != 2)
@@ -13,6 +25,14 @@ bool	check_args(int ac, char *av[], t_vars *vars)
 		return (parsing_file_map(av[2], vars));
 }
 
+/**
+ * @brief initialize main window and minimap window and display them.
+ *
+ * @param vars	global variables
+ *
+ * @return EXIT_SUCCESS if all is ok, EXIT_FAILURE if an error occurred.
+ *
+ */
 bool	init_win_images(t_vars *vars)
 {
 	vars->win = mlx_new_image(vars->mlx, WIDTH, HEIGHT);
@@ -29,6 +49,14 @@ bool	init_win_images(t_vars *vars)
 	return (EXIT_SUCCESS);
 }
 
+/**
+ * @brief initialize mlx
+ *
+ * @param vars	global variables
+ *
+ * @return EXIT_SUCCESS if all is ok, EXIT_FAILURE if an error occurred.
+ *
+ */
 bool	init_mlx(t_vars *vars)
 {
 	vars->mlx = mlx_init(WIDTH, HEIGHT, TITLE, false);
@@ -37,12 +65,18 @@ bool	init_mlx(t_vars *vars)
 	return (EXIT_SUCCESS);
 }
 
-
-int32_t init(int ac, char *av[], t_vars *vars)
+/**
+ * @brief init all project
+ *
+ * @param vars	global variables
+ *
+ * @return EXIT_SUCCESS if all is ok
+ * @return EXIT_FAILURE if an error occurred
+ *
+ * TODO: manage errors messages: replace all EXIT_FAILURE by function that print error message and return EXIT_FAILURE.
+ */
+bool init(int ac, char *av[], t_vars *vars)
 {
-	WHOAMI
-
-	// TODO manage errors messages: replace all EXIT_FAILURE by function that print error message.
 	if (check_args(ac, av, vars))
 		return (EXIT_FAILURE);
 	if (init_assets(vars))
@@ -51,6 +85,5 @@ int32_t init(int ac, char *av[], t_vars *vars)
 		return (EXIT_FAILURE);
 	if (init_win_images(vars))
 		return (EXIT_FAILURE);
-
 	return (EXIT_SUCCESS);
 }

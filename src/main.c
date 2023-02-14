@@ -20,8 +20,8 @@ void	hook(void *param)
 
     vars = param;
     hook_keyboard(vars);
-	draw_main_window(vars);
 	draw_minimap(vars);
+	draw_main_window(vars);
 	draw_bonus(vars);
 }
 

@@ -13,39 +13,37 @@
 #include "../../include/cub3D.h"
 
 /**
- * This functions open map file, parse it and set the different parameters of
- * vars.
+ * @brief Parse the file map and fill the vars struct
  *
- * @param file relative path to the map file
- * @param vars global structure of the project
- * @return Non-negative if error occurred while the parsing
+ * @param file	path to the file
+ * @param vars	pointer to the global vars struct
+ *
+ * @return EXIT_SUCCESS if success, EXIT_FAILURE if error.
+ *
+ * TODO: check if the file is valid.
+ * 	ERRORS to manage:
+ * 		- [] extension is not .cub
+ * 		- [] file can't be open (do function reusable for other files).
+ *
+ * TODO: parsing assets description and set vars->assets
+ * 	ERRORS to manage:
+ * 		- [] missing data (use flag) [NO, SO, WE, EA, F, C]
+ * 			- FORMAT TEXTURE: [ID] [relative path to file] (sample: SO ./path_to_the_south_texture)
+ * 			- FORMAT COLOR: [ID] [R,G,B] (sample: F 220,100,0)
+ * 		- [] too many data (use flag)
+ * 		- [] NO (north), SO (south), WE (west), EA (east) with path to texture file valid.
+ * 		- [] F (floor), C (ceiling) with color valid.
+ *
+ * 	TODO: parsing map and set vars->map (2D array, player position, player direction)
+ * 		ERRORS to manage:
+ * 			- [] map is not closed
+ * 			- [] only 1 player
+ * 			- [] player position is valid (N, S, E, W)
+ *
  */
-int32_t parsing_file_map(char *file, t_vars *vars)
+bool	parsing_file_map(char *file, t_vars *vars)
 {
 	WHOAMI
-	//TODO Open file and manage errors
-
-	/* TODO parse assets description
-	 * Get every line and parse it:
-	 * 		path to texture:
-	 * 			- [ID] [relative path to file] (sample: SO ./path_to_the_south_texture)
-	 * 			- ID valid: NO (north), SO (south), WE (west), EA (east)
-	 * 			- set vars->assets.(...)_texture.
-	 * 		colors:
-	 * 			- [ID] [R,G,B] (sample: F 220,100,0)
-	 * 			- ID valid: F (floor), C (ceiling)
-	 * 			- set vars->assets.floor/ceiling
-	 * 	Errors to manage:
-	 * 		- [] missing data (use flag)
-	 * 		- [] too many data (use flag)
-	 * 		- [] file can't be open
-	 * 		- [] errors maps
-	 * */
-
-	/* TODO parse map
-	 *
-	 * */
-
 	(void)file;
 	(void)vars;
 

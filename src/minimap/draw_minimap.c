@@ -54,7 +54,17 @@ void	mm_draw_squares(t_vars *vars)
 }
 
 
-// function for draw line direction with vector and angle
+/**
+ * @brief Draw a ray from a position with a given angle and length
+ *
+ * @param color		Color of the ray
+ * @param win		Window to draw on
+ * @param pos		Position of the start ray
+ * @param angle		Angle of the ray
+ * @param length	Length of the ray
+ *
+ * TODO: remove one parameter
+ */
 void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int color)
 {
 	t_vectorD	coord;
@@ -78,7 +88,7 @@ void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int col
 void	mm_draw_player(t_vars *vars)
 {
 	draw_dot(9, ORANGE, vars->mm.win, vars->p.c);
-	draw_ray(vars->mm.win, vars->p.c, vars->p.angle, 64, 0xFF0000FF);
+	draw_ray(vars->mm.win, vars->p.c, vars->p.angle, 16, 0xFF0000FF);
 
 }
 

@@ -17,7 +17,7 @@
 #include <math.h>
 
 #define WIDTH 1024
-#define HEIGHT 704
+#define HEIGHT WIDTH / 3 * 2
 #define TITLE "cub3d"
 
 /* Colors */
@@ -106,11 +106,11 @@ typedef struct s_vars {
 void    hook_keyboard(t_vars *vars);
 
 /* parsing_file_map */
-int32_t parsing_file_map(char *file, t_vars *vars);
+bool	parsing_file_map(char *file, t_vars *vars);
 
 /* initialization */
-int32_t init(int ac, char *av[], t_vars *vars);
-int32_t	init_assets(t_vars *vars);
+bool	init(int ac, char *av[], t_vars *vars);
+bool	init_assets(t_vars *vars);
 
 /* utils */
 void	*int_memset(void *ptr, int value, size_t num);
@@ -123,6 +123,7 @@ void	fill_image(mlx_image_t *img, int color);
 
 /* utils draw */
 void	draw_dot(int size, int color, mlx_image_t *win, t_vectorD pos);
+void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int color);
 
 /* draw */
 void	draw_main_window(t_vars *vars);

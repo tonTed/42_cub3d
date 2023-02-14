@@ -16,8 +16,7 @@
 // TODO = Copy Solong here :D
 
 
-
-int32_t init_assets(t_vars *vars)
+bool init_assets(t_vars *vars)
 {
     WHOAMI
 

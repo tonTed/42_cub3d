@@ -119,7 +119,7 @@
 //	return (p.c.X + p.dir.X * squareSize);
 //}
 //
-//void draw_line(t_data *d, t_vecDbl v1, t_vecDbl v2)
+//void draw_ray(t_data *d, t_vecDbl v1, t_vecDbl v2)
 //{
 //	int dx, dy, x, y, x_inc, y_inc, error, index;
 //
@@ -190,7 +190,7 @@
 //    t_vecDbl tmp;
 //    tmp.X = get_dir_X(d->p);
 //    tmp.Y = get_dir_Y(d->p);
-//	draw_line(d, d->p.c, tmp);
+//	draw_ray(d, d->p.c, tmp);
 //	double planeX = 0, planeY = 0.66;
 //
 //	for(int x = 0; x < 8; x++)
@@ -270,7 +270,7 @@
 //
 //		tmpp.X = d->p.c.X + length * rayDirX;
 //		tmpp.Y = d->p.c.Y + length * rayDirY;
-//		draw_line(d, d->p.c, tmpp);
+//		draw_ray(d, d->p.c, tmpp);
 //
 //	}
 ////	exit(0);
@@ -279,13 +279,13 @@
 //    // t_vecDbl left_fov;
 //    // left_fov.X = d->p.c.X + d->p.left_FOV.X * squareSize;
 //    // left_fov.Y = d->p.c.Y + d->p.left_FOV.Y * squareSize;
-//	// draw_line(d, d->p.c, left_fov);
+//	// draw_ray(d, d->p.c, left_fov);
 //
 //    // // Draw ray right FOV
 //    // t_vecDbl right_fov;
 //    // right_fov.X = d->p.c.X + d->p.right_FOV.X * squareSize;
 //    // right_fov.Y = d->p.c.Y + d->p.right_FOV.Y * squareSize;
-//	// draw_line(d, d->p.c, right_fov);
+//	// draw_ray(d, d->p.c, right_fov);
 //
 //}
 //

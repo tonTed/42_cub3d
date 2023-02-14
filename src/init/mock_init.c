@@ -45,6 +45,7 @@ bool	mock_init(t_vars *vars)
 	vars->p.c.Y = 300.0;
 	vars->p.d.X = 0;
 	vars->p.d.Y = -1;
+	vars->p.angle = 0.0;
 
 	// init minimap data
 	vars->mm.size.w = 8 * 64;

@@ -68,6 +68,7 @@ typedef struct s_size {
 typedef struct s_player {
 	t_vectorD	c;
 	t_vectorI	d;
+	double 		angle;
 }	t_player;
 
 /**

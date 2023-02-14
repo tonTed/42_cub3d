@@ -11,32 +11,44 @@
 /* ************************************************************************** */
 
 #include "../../include/cub3D.h"
+#define ROT_SPEED 0.05
+#define MOVE_SPEED 1
 
 void	hook_moves(t_vars *vars)
 {
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_W))
 	{
-		printf("Move Forward\n");
+		vars->p.c.X += cos(vars->p.angle) * MOVE_SPEED;
+		vars->p.c.Y += sin(vars->p.angle) * MOVE_SPEED;
 	}
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_S))
 	{
-		printf("Move Back\n");
+		vars->p.c.X -= cos(vars->p.angle) * MOVE_SPEED;
+		vars->p.c.Y -= sin(vars->p.angle) * MOVE_SPEED;
 	}
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_A))
 	{
-		printf("Strafe Left\n");
+		vars->p.c.X -= cos(vars->p.angle + M_PI / 2) * MOVE_SPEED;
+		vars->p.c.Y -= sin(vars->p.angle + M_PI / 2) * MOVE_SPEED;
 	}
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_D))
 	{
-		printf("Strafe Right\n");
+		vars->p.c.X += cos(vars->p.angle + M_PI / 2) * MOVE_SPEED;
+		vars->p.c.Y += sin(vars->p.angle + M_PI / 2) * MOVE_SPEED;
 	}
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
 	{
-		printf("Rotate Left\n");
+		if (vars->p.angle < 0)
+			vars->p.angle = 2 * M_PI;
+		else
+			vars->p.angle -= ROT_SPEED;
 	}
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT))
 	{
-		printf("Rotate Right\n");
+		if (vars->p.angle > 2 * M_PI)
+			vars->p.angle = 0;
+		else
+			vars->p.angle += ROT_SPEED;
 	}
 }
 

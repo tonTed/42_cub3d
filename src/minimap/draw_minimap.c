@@ -55,7 +55,7 @@ void	mm_draw_squares(t_vars *vars)
 
 
 // function for draw line direction with vector and angle
-void	draw_line(mlx_image_t *win, t_vectorD pos, double angle, int length, int color)
+void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int color)
 {
 	t_vectorD	coord;
 	t_vectorD	inc;
@@ -78,10 +78,8 @@ void	draw_line(mlx_image_t *win, t_vectorD pos, double angle, int length, int co
 void	mm_draw_player(t_vars *vars)
 {
 	draw_dot(9, ORANGE, vars->mm.win, vars->p.c);
-	draw_line(vars->mm.win, vars->p.c, M_PI * 2, 64, 0xFF0000FF);
-	draw_line(vars->mm.win, vars->p.c, M_PI / 2, 64, 0x00FF00FF);
-	draw_line(vars->mm.win, vars->p.c, M_PI, 64, 0x0000FFFF);
-	draw_line(vars->mm.win, vars->p.c, M_PI * 3 / 2, 64, 0xFFFF00FF);
+	draw_ray(vars->mm.win, vars->p.c, vars->p.angle, 64, 0xFF0000FF);
+
 }
 
 void	draw_minimap(t_vars *vars)

@@ -4,45 +4,6 @@
 #define squareSize 64
 #define SHIFT 1
 
-#define BLACK 0xFF000000
-#define WHITE 0xFFFFFFFF
-#define ORANGE 0xFF0080FF
-
-int	mm_get_index_raw(int width_img, t_vectorI pos)
-{
-	int	len_y;
-	int	len_x;
-
-	int	len_line = width_img * 4;
-
-	printf("pos: %d, %d", pos.X, pos.Y);
-
-	len_y = len_line * pos.Y;
-	len_x = pos.X * 4;
-
-	printf("len_y: %d, len_x: %d = %d\n", len_y, len_x, len_y + len_x);
-
-	return (len_y + len_x);
-}
-
-void	draw_dot(int size, int color, mlx_image_t *win, t_vectorD pos)
-{
-	WHOAMI
-
-	int row;
-	int med;
-	int index;
-
-	med = size / 2;
-	row = -med;
-	while (row <= med)
-	{
-		index = mm_get_index_raw(win->width, (t_vectorI){pos.X, pos.Y + row});
-		int_memset(&win->pixels[index + (abs(row % size) - med) * 4], color, size - abs(row % size) * 2);
-		row++;
-	}
-}
-
 int	mm_get_index(int width_img, t_vectorI pos, int row)
 {
 	int	len_y;
@@ -92,9 +53,35 @@ void	mm_draw_squares(t_vars *vars)
 	}
 }
 
+
+// function for draw line direction with vector and angle
+void	draw_line(mlx_image_t *win, t_vectorD pos, double angle, int length, int color)
+{
+	t_vectorD	coord;
+	t_vectorD	inc;
+	int			i;
+
+	inc.X = cos(angle);
+	inc.Y = sin(angle);
+	coord.X = pos.X;
+	coord.Y = pos.Y;
+	i = 0;
+	while (i < length)
+	{
+		mlx_put_pixel(win, coord.X, coord.Y, color);
+		coord.X += inc.X;
+		coord.Y += inc.Y;
+		i++;
+	}
+}
+
 void	mm_draw_player(t_vars *vars)
 {
 	draw_dot(9, ORANGE, vars->mm.win, vars->p.c);
+	draw_line(vars->mm.win, vars->p.c, M_PI * 2, 64, 0xFF0000FF);
+	draw_line(vars->mm.win, vars->p.c, M_PI / 2, 64, 0x00FF00FF);
+	draw_line(vars->mm.win, vars->p.c, M_PI, 64, 0x0000FFFF);
+	draw_line(vars->mm.win, vars->p.c, M_PI * 3 / 2, 64, 0xFFFF00FF);
 }
 
 void	draw_minimap(t_vars *vars)

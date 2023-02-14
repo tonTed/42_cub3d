@@ -24,6 +24,9 @@
 #define REDD 0xFF0000FF
 #define GREY 0xFF969696
 #define YELLOW 0xFF00FFFF
+#define BLACK 0xFF000000
+#define WHITE 0xFFFFFFFF
+#define ORANGE 0xFF0080FF
 
 
 typedef struct s_rgb {
@@ -116,6 +119,9 @@ void	clean_exit(t_vars *vars);
 
 /* utils image */
 void	fill_image(mlx_image_t *img, int color);
+
+/* utils draw */
+void	draw_dot(int size, int color, mlx_image_t *win, t_vectorD pos);
 
 /* draw */
 void	draw_main_window(t_vars *vars);

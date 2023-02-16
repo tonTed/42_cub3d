@@ -25,25 +25,32 @@
  * 		- [] extension is not .cub
  * 		- [] file can't be open (do function reusable for other files).
  *
- * TODO: parsing assets description and set vars->assets
+ * TODO: parsing assets description and set [[vars->a]]
  * 	ERRORS to manage:
  * 		- [] missing data (use flag) [NO, SO, WE, EA, F, C]
  * 			- FORMAT TEXTURE: [ID] [relative path to file] (sample: SO ./path_to_the_south_texture)
  * 			- FORMAT COLOR: [ID] [R,G,B] (sample: F 220,100,0)
  * 		- [] too many data (use flag)
  * 		- [] NO (north), SO (south), WE (west), EA (east) with path to texture file valid.
+ * 				- files can be PNG or XPM convert to mlx_texture
  * 		- [] F (floor), C (ceiling) with color valid.
+ * 				- convert to int.
  *
- * 	TODO: parsing map and set vars->map (2D array, player position, player direction)
+ * 	TODO: parsing map and set [[vars->m]] and [[vars.p]] (2D array, player position, player direction)
  * 		ERRORS to manage:
  * 			- [] map is not closed
- * 			- [] only 1 player
+ * 			- [] amount player different to 1
  * 			- [] player position is valid (N, S, E, W)
  *
+ * 	DATA TO SET:
+ * 	    - [[vars->a]]
+ * 	    - [[vars->m]]
+ * 	    - [[vars.p]]
  */
-bool	parsing_file_map(char *file, t_vars *vars)
+bool	fparsing_file_map(char *file, t_vars *vars)
 {
-	WHOAMI
+
+    WHOAMI
 	(void)file;
 	(void)vars;
 

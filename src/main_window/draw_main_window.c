@@ -37,10 +37,14 @@ void draw_walls_texture(t_vars *vars)
 	(void)vars;
 }
 
+void draw_walls(t_vars *vars)
+{
+	draw_walls_color(vars);
+}
 
 void draw_main_window(t_vars *vars)
 {
 	fill_image(vars->win, YELLOW);
 	draw_ceiling_floor_color(vars);
-	draw_walls_color(vars);
+	draw_walls(vars);
 }

@@ -36,12 +36,12 @@ typedef struct s_rgb {
 }	t_rgb;
 
 typedef struct s_assets {
-	char	*north_texture;
-	char	*south_texture;
-	char	*west_texture;
-	char	*east_texture;
-	t_rgb	floor;
-	t_rgb	ceiling;
+    mlx_texture_t   *north_texture;
+    mlx_texture_t   *south_texture;
+    mlx_texture_t	*west_texture;
+    mlx_texture_t	*east_texture;
+	int             floor;
+	int             ceiling;
 }	t_assets;
 
 typedef struct s_vectorD {
@@ -84,9 +84,10 @@ typedef struct s_mini_map {
 }	t_mini_map;
 
 /**
- * @brief Map configuration struct
+ * @brief Map configuration struct.
+ * [0][0] is on top left and direction is to bottom right.
  *
- * @param m Map
+ * @param m Map[y][x]
  * @param s Map size
  */
 typedef struct s_map_config {
@@ -94,12 +95,24 @@ typedef struct s_map_config {
 	t_size	s;
 }	t_map_config;
 
+
+/**
+ * @brief Map configuration struct
+ *
+ * @param mlx   mlx structure variables
+ * @param win   main win to display (size equals to mlx size)
+ * @param p     player structure data
+ * @param m     map structure data
+ * @param mm    minimap structure data
+ * @param a		asset structure data
+ */
 typedef struct s_vars {
 	mlx_t			*mlx;
 	mlx_image_t		*win;
 	t_player		p;
 	t_map_config	m;
 	t_mini_map		mm;
+    t_assets        a;
 }	t_vars;
 
 /* hooks */

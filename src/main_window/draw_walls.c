@@ -51,9 +51,6 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation)
  */
 void draw_walls(t_vars *vars)
 {
-	double	angle;
-	char	orientation;
-
 
 	int hit_wall = 0;
 	int wall_x, wall_y;
@@ -65,22 +62,21 @@ void draw_walls(t_vars *vars)
 	double angle_cos = cos(vars->p.angle);
 
 
-	printf("ray_x: %f, ray_y: %f\n", ray_x, ray_y);
-	printf("width: %d, height: %d\n", vars->m.s.w, vars->m.s.h);
 	while (!hit_wall && ray_x >= 0 && ray_x < (vars->m.s.w * 64) && ray_y >= 0 && ray_y < (vars->m.s.h * 64)) {
-		// Check if the ray hit a wall
-		wall_x = (int)ray_x;
-		wall_y = (int)ray_y;
-		if (vars->m.m[wall_y][wall_x] == 1) {
+		wall_x = (int)ray_x / 64;
+		wall_y = (int)ray_y / 64;
+		if (vars->m.m[wall_y][wall_x] == 1)
+		{
 			hit_wall = 1;
-//			printf("hit wall at %d, %d\n", wall_x, wall_y);
-		} else {
-			// Move the ray to the next cell
+			printf("hit wall at %d, %d\n", wall_x, wall_y);
+		}
+		else
+		{
 			ray_x += angle_cos;
 			ray_y += angle_sin;
 		}
 	}
-
+/*
 	//loop for each angle
 	double len_ray_to_wall = length_of_ray_to_wall(&vars->p, angle, &vars->m, &orientation);
 
@@ -91,4 +87,5 @@ void draw_walls(t_vars *vars)
 	draw_ray(vars->mm.win, vars->p.c, angle, len_ray_to_wall, REDD);
 
 	(void)vars;
+ */
 }

@@ -28,13 +28,6 @@
 #define WHITE 0xFFFFFFFF
 #define ORANGE 0xFF0080FF
 
-
-typedef struct s_rgb {
-	unsigned char	r;
-	unsigned char	g;
-	unsigned char	b;
-}	t_rgb;
-
 typedef struct s_assets {
     mlx_texture_t   *north_texture;
     mlx_texture_t   *south_texture;

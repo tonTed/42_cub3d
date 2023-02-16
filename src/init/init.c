@@ -79,8 +79,6 @@ bool init(int ac, char *av[], t_vars *vars)
 {
 	if (check_args(ac, av, vars))
 		return (EXIT_FAILURE);
-	if (init_assets(vars))
-		return (EXIT_FAILURE);
 	if (init_mlx(vars))
 		return (EXIT_FAILURE);
 	if (init_win_images(vars))

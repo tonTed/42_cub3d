@@ -47,7 +47,7 @@
  * 	    - [[vars->m]]
  * 	    - [[vars.p]]
  */
-bool	fparsing_file_map(char *file, t_vars *vars)
+bool	parsing_file_map(char *file, t_vars *vars)
 {
 
     WHOAMI

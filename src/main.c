@@ -6,7 +6,7 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 13:07:38 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/17 18:14:58 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/02/17 18:26:28 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	hook(void *param)
 
     vars = param;
     hook_keyboard(vars);
-	// draw_minimap(vars);
 	draw_main_window(vars);
+	// draw_minimap(vars);
 	draw_bonus(vars);
 }
 

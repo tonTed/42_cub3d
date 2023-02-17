@@ -6,12 +6,12 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:15 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/17 17:27:02 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/02/17 18:35:32 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/cub3D.h"
-#define ROT_SPEED 0.02
+#define ROT_SPEED 0.05
 #define MOVE_SPEED 1
 #define POSITIVE 1
 #define NEGATIVE 0
@@ -43,14 +43,14 @@ void	hook_moves(t_vars *vars)
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
 	{
 		if (vars->p.angle < 0)
-			vars->p.angle = 2 * M_PI;
+			vars->p.angle += 2 * M_PI;
 		else
 			vars->p.angle -= ROT_SPEED;
 	}
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT))
 	{
 		if (vars->p.angle > 2 * M_PI)
-			vars->p.angle = 0;
+			vars->p.angle -= 2 * M_PI;
 		else
 			vars->p.angle += ROT_SPEED;
 	}

@@ -60,19 +60,27 @@ double length_of_ray_to_wall(t_vars *vars, double angle)
  * TODO: Function to draw a line vertically on the screen
  *
  */
-void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, int y )
+void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, int y, double angle_left )
 {
+
+	//manage fish eye effect
+	float ca = vars->p.angle-angle_left;
+	if ( ca < 0){
+		ca +=2*M_PI;
+	}
+	if (ca > 2 * M_PI){
+		ca -= 2 * M_PI;
+	}
+	len_ray_to_wall = len_ray_to_wall * cos(ca);
 	float lineH = (64 * HEIGHT)/len_ray_to_wall;
 	if (lineH > HEIGHT)
 		lineH = HEIGHT;
 	int half_wall = lineH / 2;
 	for (int i = 0; i < half_wall; i++){
-		for (int j = 0; j < 64; j++){
+		for (int j = 0; j <= 64; j++){
 		mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j,REDD);
 		mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, REDD);
-			
 		}
-		
 	}
 }
 
@@ -89,29 +97,16 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 void draw_walls(t_vars *vars)
 {
 	double dist_to_wall;
-	// double angle_right = vars->p.angle + FOV / 2;
-	double angle_left = vars->p.angle - FOV / 2;
 	int i = 0;
 	int nb_of_rays = 1024;
+	double angle_left = vars->p.angle - FOV / 2;
 	while(i < nb_of_rays)
 	{
 		dist_to_wall = length_of_ray_to_wall(vars, angle_left);
+		// if (nb_of_rays%2 == 0)
 		// draw_ray(vars->mm.win, vars->p.c, angle_left, dist_to_wall, YELLOW);
-		draw_line_vertical(vars, dist_to_wall, 'B', i);
+		draw_line_vertical(vars, dist_to_wall, 'B', i, angle_left);
 		angle_left += FOV/nb_of_rays;
 		i++;
 	}
-/*
-	//loop for each angle
-	double len_ray_to_wall = length_of_ray_to_wall(&vars->p, angle, &vars->m, &orientation);
-
-	// draw a line vertically on the screen
-	draw_line_vertical(vars, len_ray_to_wall, orientation);
-
-	// draw a line in the minimap
-	draw_ray(vars->mm.win, vars->p.c, angle, len_ray_to_wall, REDD);
-
-	(void)vars;
- */
-
 }

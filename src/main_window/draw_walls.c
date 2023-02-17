@@ -60,10 +60,20 @@ double length_of_ray_to_wall(t_vars *vars, double angle)
  * TODO: Function to draw a line vertically on the screen
  *
  */
-void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation)
+void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, int y )
 {
-	(void)vars;
-	(void)len_ray_to_wall;
+	float lineH = (64 * HEIGHT)/len_ray_to_wall;
+	if (lineH > HEIGHT)
+		lineH = HEIGHT;
+	int half_wall = lineH / 2;
+	for (int i = 0; i < half_wall; i++){
+		for (int j = 0; j < 64; j++){
+		mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j,REDD);
+		mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, REDD);
+			
+		}
+		
+	}
 }
 
 
@@ -81,18 +91,13 @@ void draw_walls(t_vars *vars)
 	double dist_to_wall;
 	// double angle_right = vars->p.angle + FOV / 2;
 	double angle_left = vars->p.angle - FOV / 2;
-	// dist_to_wall = length_of_ray_to_wall(vars, angle_left);
-	// draw_ray(vars->mm.win, vars->p.c, angle_left, dist_to_wall, YELLOW);
-	// dist_to_wall = length_of_ray_to_wall(vars, vars->p.angle);
-	// draw_ray(vars->mm.win, vars->p.c, vars->p.angle, dist_to_wall, YELLOW);
-	// dist_to_wall = length_of_ray_to_wall(vars, angle_right);
-	// draw_ray(vars->mm.win, vars->p.c, angle_right, dist_to_wall, YELLOW);
 	int i = 0;
-	int nb_of_rays = 120;
+	int nb_of_rays = 1024;
 	while(i < nb_of_rays)
 	{
 		dist_to_wall = length_of_ray_to_wall(vars, angle_left);
-		draw_ray(vars->mm.win, vars->p.c, angle_left, dist_to_wall, YELLOW);
+		// draw_ray(vars->mm.win, vars->p.c, angle_left, dist_to_wall, YELLOW);
+		draw_line_vertical(vars, dist_to_wall, 'B', i);
 		angle_left += FOV/nb_of_rays;
 		i++;
 	}

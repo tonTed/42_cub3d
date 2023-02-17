@@ -44,7 +44,7 @@ bool	init_win_images(t_vars *vars)
 		return (EXIT_FAILURE);
 
 	mlx_image_to_window(vars->mlx, vars->win, 0, 0);
-	mlx_image_to_window(vars->mlx, vars->mm.win, vars->mm.pos.X, vars->mm.pos.Y);
+	// mlx_image_to_window(vars->mlx, vars->mm.win, vars->mm.pos.X, vars->mm.pos.Y);
 
 	return (EXIT_SUCCESS);
 }

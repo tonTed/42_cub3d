@@ -16,13 +16,36 @@
  * TODO: use dda algorithm to get length of ray to wall
  *
  */
-double length_of_ray_to_wall(t_player *player, double angle, t_map_config *map, char *orientation)
+double length_of_ray_to_wall(t_vars *vars, double angle)
 {
-	(void)player;
-	(void)angle;
-	(void)map;
-	(void)orientation;
-	return (0);
+	int hit_wall = 0;
+	int wall_x, wall_y;
+	double ray_x = vars->p.c.X;
+	double ray_y = vars->p.c.Y;
+
+	while (!hit_wall && ray_x >= 0 && ray_x < (vars->m.s.w * 64) && ray_y >= 0 && ray_y < (vars->m.s.h * 64)) {
+		wall_x = (int)ray_x / 64;
+		wall_y = (int)ray_y / 64;
+		if (vars->m.m[wall_y][wall_x] == 1)
+		{
+			hit_wall = 1;
+		}
+		else
+		{
+			ray_x += cos(angle);
+			ray_y += sin(angle);
+		}
+	}
+
+	double dist_to_wall = 0;
+
+	if (hit_wall) {
+		double dist_x = ray_x - vars->p.c.X;
+		double dist_y = ray_y - vars->p.c.Y;
+		dist_to_wall = sqrt(dist_x * dist_x + dist_y * dist_y);
+	}
+
+	return (dist_to_wall);
 }
 
 /**
@@ -41,6 +64,8 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation)
 	(void)len_ray_to_wall;
 }
 
+
+
 /**
  * @brief Draw walls using ray casting
  *
@@ -51,31 +76,15 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation)
  */
 void draw_walls(t_vars *vars)
 {
-
-	int hit_wall = 0;
-	int wall_x, wall_y;
-	double ray_x = vars->p.c.X;
-	double ray_y = vars->p.c.Y;
-
-	// Find the slope of the ray
-	double angle_sin = sin(vars->p.angle);
-	double angle_cos = cos(vars->p.angle);
-
-
-	while (!hit_wall && ray_x >= 0 && ray_x < (vars->m.s.w * 64) && ray_y >= 0 && ray_y < (vars->m.s.h * 64)) {
-		wall_x = (int)ray_x / 64;
-		wall_y = (int)ray_y / 64;
-		if (vars->m.m[wall_y][wall_x] == 1)
-		{
-			hit_wall = 1;
-			printf("hit wall at %d, %d\n", wall_x, wall_y);
-		}
-		else
-		{
-			ray_x += angle_cos;
-			ray_y += angle_sin;
-		}
-	}
+	double dist_to_wall;
+	double angle_right = vars->p.angle + FOV / 2;
+	double angle_left = vars->p.angle - FOV / 2;
+	dist_to_wall = length_of_ray_to_wall(vars, angle_left);
+	draw_ray(vars->mm.win, vars->p.c, angle_left, dist_to_wall, YELLOW);
+	dist_to_wall = length_of_ray_to_wall(vars, vars->p.angle);
+	draw_ray(vars->mm.win, vars->p.c, vars->p.angle, dist_to_wall, YELLOW);
+	dist_to_wall = length_of_ray_to_wall(vars, angle_right);
+	draw_ray(vars->mm.win, vars->p.c, angle_right, dist_to_wall, YELLOW);
 /*
 	//loop for each angle
 	double len_ray_to_wall = length_of_ray_to_wall(&vars->p, angle, &vars->m, &orientation);
@@ -88,4 +97,5 @@ void draw_walls(t_vars *vars)
 
 	(void)vars;
  */
+
 }

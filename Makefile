@@ -6,7 +6,7 @@
 #    By: tonted <tonted@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/01 19:36:25 by tonted            #+#    #+#              #
-#    Updated: 2023/01/14 13:07:15 by tonted           ###   ########.fr        #
+#    Updated: 2023/02/17 16:46:32 by tonted           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,7 +48,7 @@ SRCS += $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.c))
 OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
 # Name the compiler & flags
-CC = clang
+CC = gcc
 # CFLAGS = -Wall -Wextra -Werror -g
 
 

@@ -28,6 +28,8 @@
 #define WHITE 0xFFFFFFFF
 #define ORANGE 0xFF0080FF
 
+#define FOV M_PI / 3
+
 typedef struct s_assets {
     mlx_texture_t   *north_texture;
     mlx_texture_t   *south_texture;

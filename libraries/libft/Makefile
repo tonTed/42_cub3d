@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tblanco <tblanco@student.42.fr>            +#+  +:+       +#+         #
+#    By: tonted <tonted@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/03/26 11:20:34 by tblanco           #+#    #+#              #
-#    Updated: 2021/12/16 14:50:21 by tblanco          ###   ########.fr        #
+#    Updated: 2023/02/17 16:46:51 by tonted           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ SRCS = $(foreach dir,$(SRCDIRS),$(wildcard $(dir)/*.c))
 OBJS = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 
 # Name the compiler & flags
-CC = clang
+CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 CFLAGS += -iquote$(INCDIR)
 

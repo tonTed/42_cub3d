@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   hook_keyboard.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:15 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/09 18:48:22 by tonted           ###   ########.fr       */
+/*   Updated: 2023/02/17 17:27:02 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/cub3D.h"
-#define ROT_SPEED 0.05
+#define ROT_SPEED 0.02
 #define MOVE_SPEED 1
 #define POSITIVE 1
 #define NEGATIVE 0

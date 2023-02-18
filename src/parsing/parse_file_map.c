@@ -6,7 +6,7 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/18 11:08:51 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/02/18 11:26:45 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,12 +98,14 @@ bool	set_texture(t_vars *vars, char ***raw_file)
 	while(*(*raw_file))
 	{
 		if (all_texture_set(vars))
+		{
+			printf("NO [%s]\nSO [%s]\nWE [%s]\nEA [%s]\nF [%D]\nC [%D]\n", north,south,west,east,vars->a.floor,vars->a.ceiling);
 			return(true);
-		printf("Parsing print - %s\n",*(*raw_file));
+		}
 		if (ft_strncmp(*(*raw_file), "NO ./", 4) == 0)
 		{
-			// vars->a->north_texture->path = ft_calloc(1, ft_strlen(*(*raw_file)) + 1);
-			// ft_strcpy(vars->a->north_texture->path, *(*raw_file));
+			// vars->a.north_texture->path = ft_calloc(1, ft_strlen(*(*raw_file)) + 1);
+			// ft_strcpy(vars->a.north_texture->path, *(*raw_file));
 			// vars->a.north_texture->path = *(*raw_file);
 			north = *(*raw_file);
 			vars->m.north = true;
@@ -143,7 +145,6 @@ bool	set_texture(t_vars *vars, char ***raw_file)
 		(*raw_file)++;
 	}
 	// printf("NO [%s]\nSO [%s]\nWE [%s]\nEA [%s]\nF [%D]\nC [%D]\n", vars->a.north_texture->path,vars->a.south_texture->path,vars->a.west_texture->path,vars->a.east_texture->path,vars->a.floor,vars->a.ceiling);
-	printf("NO [%s]\nSO [%s]\nWE [%s]\nEA [%s]\nF [%D]\nC [%D]\n", north,south,west,east,vars->a.floor,vars->a.ceiling);
 	return (false);
 }
 
@@ -174,10 +175,10 @@ void get_map_size(t_vars *vars, char **raw_file)
 
 void allocate_map_array(t_vars *vars, char **raw_file)
 {	
-	vars->m.m = (int **)malloc(sizeof(int *) * vars->m.s.h);
+	vars->m.m = (int **)ft_calloc(1, sizeof(int *) * vars->m.s.h);
 	int i = 0;
 	while (i < (int)vars->m.s.h)
-		vars->m.m[i++] = (int *)malloc(sizeof(int) * vars->m.s.w);
+		vars->m.m[i++] = (int *)ft_calloc(1, sizeof(int) * vars->m.s.w);
 	int x = 0;
 	int y = 0;
 	while (y < (int)vars->m.s.h)
@@ -235,7 +236,7 @@ bool	parsing_file_map(char *file, t_vars *vars)
 	printf("Before you send to set_texture your pointer is at [%s]\n", *raw_file);
 	if (set_texture(vars, &raw_file))
 	{
-		printf("YOU CAN NOW START TO LOOK FOR THE MAP your pointer is at [%s]\n", *raw_file);
+		printf("YOU CAN NOW START TO LOOK FOR THE MAP your pointer is at [%s]\nHere is vars->a.ceiling [%d]\nHere is vars->a.floor [%d]\n", *raw_file,vars->a.ceiling,vars->a.floor);
 		init_map(vars, raw_file);
 	}
 

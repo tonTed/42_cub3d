@@ -63,7 +63,6 @@ double length_of_ray_to_wall(t_vars *vars, double angle)
 void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, int y, double angle_left )
 {
 
-	//manage fish eye effect
 	float ca = vars->p.angle-angle_left;
 	if ( ca < 0){
 		ca +=2*M_PI;
@@ -71,17 +70,29 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	if (ca > 2 * M_PI){
 		ca -= 2 * M_PI;
 	}
+	//manage fish eye effect
 	len_ray_to_wall = len_ray_to_wall * cos(ca);
-	float lineH = (64 * HEIGHT)/len_ray_to_wall;
-	if (lineH > HEIGHT)
-		lineH = HEIGHT;
+	float lineH = (64 * (float)HEIGHT)/len_ray_to_wall;
+	if (lineH > (float)HEIGHT)
+		lineH = (float)HEIGHT;
 	int half_wall = lineH / 2;
-	for (int i = 0; i < half_wall; i++){
+	int i = 0;
+	while(i < half_wall)
+	{
 		for (int j = 0; j <= 64; j++){
 		mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j,REDD);
 		mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, REDD);
 		}
+		i++;
 	}
+	// while (i < HEIGHT/2){
+	// 	for (int j = 0; j <= 64; j++){
+	// 	mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j, BLACK);
+	// 	mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, WHITE);
+	// 	}
+	// 	i++;
+	// }
+	
 }
 
 

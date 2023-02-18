@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_file_map.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/09 18:31:58 by tonted           ###   ########.fr       */
+/*   Updated: 2023/02/17 23:40:51 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,64 @@
  * 	    - [[vars->m]]
  * 	    - [[vars.p]]
  */
+
+
 bool	parsing_file_map(char *file, t_vars *vars)
 {
-
     WHOAMI
-	(void)file;
-	(void)vars;
+	int ret;
+	char *buffer;
+	char **tmp;
+	char **raw_file;
+	// open the map and put it into an array
+	printf("Path to file = [%s]\n", file);
+	int fd = open(file, O_RDONLY);
+	if (fd == -1)
+	{
+		perror("open");
+		return (1);
+	}
+	printf("fd = [%d]\n",fd);
+	ret = read(fd, buffer, 4000);
+	if (buffer == NULL)
+	{
+		perror("read");
+		return (1);
+	}
+	printf("This is buffer = [%s]\n",buffer);
+	//split the array into an array of strings
+	raw_file = ft_split(buffer,'\n');
+	tmp = raw_file;
+	//get all the texture path - advance the pointer but 
+	int i = 0;
+	while(*raw_file++)
+	{
+		printf("%s\n",*raw_file);
+		// if (ft_strncmp(*raw_file, "NO ./", 5) == 0)
+		// {
+		// 	// vars->a.north_texture = tmp[i];
+		// }
+		raw_file++;
+	}
+	//get map height and width
+
+	//malloc the vars
+	// int i = 0;
+	// while (i < vars->m.s.h)
+	// 	vars->m.m[i++] = (int *)malloc(sizeof(int) * vars->m.s.w);
+	// int x = 0;
+	// int y = 0;
+	// char **rtn = ft_split(file,'\n');
+	// while (y < vars->m.s.h)
+	// {
+	// 	x = 0;
+	// 	while (x < vars->m.s.w)
+	// 	{
+	// 		vars->m.m[y][x] = rtn[y][x];
+	// 		x++;
+	// 	}
+	// 	y++;
+	// }
 
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 13:09:41 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/17 23:09:17 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/02/18 00:45:15 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <sys/types.h>
+#include <sys/uio.h>
 #include <unistd.h>
 #include <fcntl.h>
 
@@ -90,6 +92,12 @@ typedef struct s_mini_map {
 typedef struct s_map_config {
 	int		**m;
 	t_size	s;
+	bool north;
+	bool south;
+	bool west;
+	bool east;
+	bool ceiling;
+	bool floor;
 }	t_map_config;
 
 

@@ -6,5 +6,6 @@
 
 void fill_image(mlx_image_t *img, int color)
 {
+	
 	int_memset(img->pixels, color, img->height * img->width);
 }

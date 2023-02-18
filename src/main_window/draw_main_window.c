@@ -9,7 +9,9 @@
  */
 void draw_ceiling_floor_color(t_vars *vars)
 {
-	(void)vars;
+	int median = vars->win->width * vars->win->height/2;
+	int_memset(vars->win->pixels, GREY, median);
+	int_memset(&vars->win->pixels[median * 4] , WHITE, median);
 }
 
 /**
@@ -39,7 +41,6 @@ void draw_walls_texture(t_vars *vars)
 
 void draw_main_window(t_vars *vars)
 {
-	fill_image(vars->win, YELLOW);
 	draw_ceiling_floor_color(vars);
 	draw_walls(vars);
 }

@@ -3,54 +3,82 @@
 /*                                                        :::      ::::::::   */
 /*   hook_keyboard.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:15 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/09 18:48:22 by tonted           ###   ########.fr       */
+/*   Updated: 2023/02/17 20:57:10 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/cub3D.h"
 #define ROT_SPEED 0.05
-#define MOVE_SPEED 1
+#define MOVE_SPEED 3
 #define POSITIVE 1
 #define NEGATIVE 0
 
-void	update_player_pos(t_player *p, int sign, double add_to_angle)
+
+// double check_collision_y(t_vars *vars, double new_pos){
+// 	int temp;
+	
+// 	temp = (int)new_pos/64;
+// 	if (vars->m.m[temp][(int)vars->p.c.X/64] == 1)
+// 	{
+// 		return (vars->p.c.Y);
+// 	}
+// 	else
+// 		return (new_pos);
+// }
+
+// double check_collision_x(t_vars *vars, double new_pos){
+// 	int temp;
+	
+// 	temp = (int)new_pos/64;
+// 	if (vars->m.m[(int)vars->p.c.Y/64][temp] == 1)
+// 	{
+// 		return (vars->p.c.X);
+// 	}
+// 	else
+// 		return (new_pos);
+// }
+
+void	update_player_pos(t_vars *vars, int sign, double add_to_angle)
 {
+	// TODO Function to check position and update if possible
 	if (sign == POSITIVE)
 	{
-		p->c.X += cos(p->angle + add_to_angle) * MOVE_SPEED;
-		p->c.Y += sin(p->angle + add_to_angle) * MOVE_SPEED;
+		// vars->p.c.X = check_collision_x(vars, vars->p.c.X + cos(vars->p.angle + add_to_angle) * MOVE_SPEED);
+		vars->p.c.X += cos(vars->p.angle + add_to_angle) * MOVE_SPEED;
+		// vars->p.c.Y = check_collision_y(vars, vars->p.c.Y + cos(vars->p.angle + add_to_angle) * MOVE_SPEED);
+		vars->p.c.Y += sin(vars->p.angle + add_to_angle) * MOVE_SPEED;
 	}
 	else
 	{
-		p->c.X -= cos(p->angle + add_to_angle) * MOVE_SPEED;
-		p->c.Y -= sin(p->angle + add_to_angle) * MOVE_SPEED;
+		vars->p.c.X -= cos(vars->p.angle + add_to_angle) * MOVE_SPEED;
+		vars->p.c.Y -= sin(vars->p.angle + add_to_angle) * MOVE_SPEED;
 	}
 }
 
 void	hook_moves(t_vars *vars)
 {
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_W))
-		update_player_pos(&vars->p, POSITIVE, 0);
+		update_player_pos(vars, POSITIVE, 0);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_S))
-		update_player_pos(&vars->p, NEGATIVE, 0);
+		update_player_pos(vars, NEGATIVE, 0);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_A))
-		update_player_pos(&vars->p, NEGATIVE, M_PI / 2);
+		update_player_pos(vars, NEGATIVE, M_PI / 2);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_D))
-		update_player_pos(&vars->p, POSITIVE, M_PI / 2);
+		update_player_pos(vars, POSITIVE, M_PI / 2);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
 	{
 		if (vars->p.angle < 0)
-			vars->p.angle = 2 * M_PI;
+			vars->p.angle += 2 * M_PI;
 		else
 			vars->p.angle -= ROT_SPEED;
 	}
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT))
 	{
 		if (vars->p.angle > 2 * M_PI)
-			vars->p.angle = 0;
+			vars->p.angle -= 2 * M_PI;
 		else
 			vars->p.angle += ROT_SPEED;
 	}

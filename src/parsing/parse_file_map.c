@@ -6,7 +6,7 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/18 01:18:05 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/02/18 02:02:57 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,18 +62,25 @@ void	free_strrarr(char **to_free)
 	free(to_free);
 }
 
-void	get_data(t_vars *vars, char ***raw_file)
+bool	set_texture(t_vars *vars, char ***raw_file)
 {
 	char *north,*south,*east,*west;
+	vars->m.east = false;
+	vars->m.west = false;
+	vars->m.north = false;
+	vars->m.south = false;
+	vars->m.floor = false;
+	vars->m.ceiling = false;
 	int i = 0;
 	while(*(*raw_file))
 	{
-		printf("Parsing print - %s\n",*(*raw_file));
+		if (vars->m.north == true && vars->m.south == true && vars->m.east == true && vars->m.west == true && vars->m.ceiling == true && vars->m.floor == true)
+			return(true);
+		// printf("Parsing print - %s\n",*(*raw_file));
 		if (ft_strncmp(*(*raw_file), "NO ./", 4) == 0)
 		{
 			// vars->a.north_texture->path = *(*raw_file);
 			north = *(*raw_file);
-			// ft_strlcpy(vars->a.north_texture->path, (*raw_file)[i], ft_strlen((*raw_file)[i]));
 			printf("north path set\n");
 			vars->m.north = true;
 		}
@@ -101,6 +108,7 @@ void	get_data(t_vars *vars, char ***raw_file)
 		if (ft_strncmp(*(*raw_file), "F ", 2) == 0)
 		{
 			// vars->a.floor = ft_atoi(*(*raw_file));
+			// TODO find a way of getting the numbers in a logical way
 			vars->a.floor = 100;
 			printf("Floor color set\n");
 			vars->m.floor = true;
@@ -108,14 +116,17 @@ void	get_data(t_vars *vars, char ***raw_file)
 		if (ft_strncmp(*(*raw_file), "C ", 2) == 0)
 		{
 			// vars->a.ceiling = ft_atoi(*(*raw_file));
+			// TODO find a way of getting the numbers in a logical way
 			vars->a.ceiling = 1000;
-			vars->m.ceiling = true;
 			printf("Ceiling color set\n");
+			vars->m.ceiling = true;
 		}
 		(*raw_file)++;
 		i++;
 	}
 	// printf("NO [%s]\nSO [%s]\nWE [%s]\nEA [%s]\nF [%D]\nC [%D]\n", vars->a.north_texture->path,vars->a.south_texture->path,vars->a.west_texture->path,vars->a.east_texture->path,vars->a.floor,vars->a.ceiling);
+	// printf("NO [%s]\nSO [%s]\nWE [%s]\nEA [%s]\nF [%D]\nC [%D]\n", north,south,west,east,vars->a.floor,vars->a.ceiling);
+	return (false);
 }
 
 
@@ -147,10 +158,10 @@ bool	parsing_file_map(char *file, t_vars *vars)
 	raw_file = ft_split(buffer,'\n');
 	free(buffer);
 	tmp = raw_file;
-	//get all the texture path - advance the pointer but 
-	get_data(vars, &raw_file);
+	//get all the texture path - advance the pointer but stop before the map
+	if (set_texture(vars, &raw_file))
+		printf("YOU CAN NOW START TO LOOK FOR THE MAP your pointer is at %s\n", *raw_file);
 	//get map height and width
-
 	//malloc the vars
 	// int i = 0;
 	// while (i < vars->m.s.h)

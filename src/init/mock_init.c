@@ -7,7 +7,7 @@ void	mock_map(t_vars *vars)
 
 	vars->m.m = (int **)malloc(sizeof(int *) * vars->m.s.h);
 	int i = 0;
-	while (i < vars->m.s.h)
+	while (i < (int)vars->m.s.h)
 		vars->m.m[i++] = (int *)malloc(sizeof(int) * vars->m.s.w);
 
 	int worldMap[8][8]=
@@ -23,10 +23,10 @@ void	mock_map(t_vars *vars)
 			};
 	int x = 0;
 	int y = 0;
-	while (y < vars->m.s.h)
+	while (y < (int)vars->m.s.h)
 	{
 		x = 0;
-		while (x < vars->m.s.w)
+		while (x < (int)vars->m.s.w)
 		{
 			vars->m.m[y][x] = worldMap[y][x];
 			x++;

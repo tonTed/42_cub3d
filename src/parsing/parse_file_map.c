@@ -241,5 +241,103 @@ bool	parsing_file_map(char *file, t_vars *vars)
 	}
 
 	// free_strrarr(tmp);
+	(void)tmp;
+	(void)ret;
 	return (EXIT_SUCCESS);
+}
+
+
+/***************TED*****************/
+
+
+bool	open_file(char *file, int *fd)
+{
+	*fd = open(file, O_RDONLY) == -1;
+	if (*fd == -1)
+		return (false);
+	return (true);
+}
+
+typedef char* str;
+
+bool	get_next_line(int fd, str *line)
+{
+	(void)fd;
+	(void)line;
+	return (true);
+}
+
+#define NORTH 0x1
+#define SOUTH 0x2
+#define WEST 0x4
+#define EAST 0x8
+#define FLOOR 0x10
+#define CEILING 0x20
+#define TOTAL 0x3F
+bool	parsing_file_map2(char *file, t_vars *vars)
+{
+	// open file and check if it's valid
+	int		fd;
+	if (!open_file(file, &fd))
+		return (false);
+
+	// read file line by line
+	char	flag = 0x0;
+	str		line;
+	// while as long as the line is not empty and we haven't found all the textures/floor/ceiling
+	while (get_next_line(fd, &line) > 0 && flag != TOTAL)
+	{
+		if (ft_strncmp(line, "NO ", 3) == 0)
+		{
+			if (flag & NORTH)
+				return (false);
+			flag |= NORTH;
+			vars->a.north_texture = mlx_load_png(line + 3);
+			if (vars->a.north_texture == NULL)
+				return (false);
+		}
+		else if (ft_strncmp(line, "SO ", 3) == 0)
+		{
+			if (flag & SOUTH)
+				return (false);
+			flag |= SOUTH;
+			vars->a.south_texture = mlx_load_png(line + 3);
+			if (vars->a.south_texture == NULL)
+				return (false);
+		}
+		else if (ft_strncmp(line, "WE ", 3) == 0)
+		{
+			if (flag & WEST)
+				return (false);
+			flag |= WEST;
+			vars->a.west_texture = mlx_load_png(line + 3);
+			if (vars->a.west_texture == NULL)
+				return (false);
+		}
+		else if (ft_strncmp(line, "EA ", 3) == 0)
+		{
+			if (flag & EAST)
+				return (false);
+			flag |= EAST;
+			vars->a.east_texture = mlx_load_png(line + 3);
+			//xpm_t *tmp = mlx_load_xpm42(line + 3)
+			if (vars->a.east_texture == NULL)
+				return (false);
+		}
+		else if (ft_strncmp(line, "C ", 2) == 0)
+		{
+			//manage color
+		}
+		else if (ft_strncmp(line, "F ", 2) == 0)
+		{
+			//manage color
+		}
+		free(line);
+	}
+
+	while (get_next_line(fd, &line) > 0)
+	{
+		//manage map
+	}
+	return (true);
 }

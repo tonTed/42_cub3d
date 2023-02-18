@@ -1,7 +1,7 @@
 
 #include "../../include/cub3D.h"
 
-#define squareSize 64
+#define squareSize 16
 #define SHIFT 1
 
 int	mm_get_index(int width_img, t_vectorI pos, int row)
@@ -87,8 +87,12 @@ void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int col
 
 void	mm_draw_player(t_vars *vars)
 {
-	draw_dot(9, ORANGE, vars->mm.win, vars->p.c);
-	draw_ray(vars->mm.win, vars->p.c, vars->p.angle, 16, 0xFF0000FF);
+	t_vectorD sa_mere;
+
+	sa_mere.X = vars->p.c.X/4;
+	sa_mere.Y = vars->p.c.Y/4;
+	draw_dot(9, ORANGE, vars->mm.win, sa_mere);
+	draw_ray(vars->mm.win, sa_mere, vars->p.angle, 16, 0xFF0000FF);
 
 }
 

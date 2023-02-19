@@ -16,7 +16,7 @@
  * TODO: use dda algorithm to get length of ray to wall
  *
  */
-double length_of_ray_to_wall(t_vars *vars, double angle)
+double length_of_ray_to_wall(t_vars *vars, double angle, char *orientation)
 {
 	int		hit_wall = 0;
 
@@ -86,16 +86,16 @@ double length_of_ray_to_wall(t_vars *vars, double angle)
 	if (side == 0)
 	{
 		if (step_x == -1)
-			printf("orientation = W\n");
+			*orientation = 'W';
 		else
-			printf("orientation = E\n");
+			*orientation = 'E';
 	}
 	else
 	{
 		if (step_y == -1)
-			printf("orientation = N\n");
+			*orientation = 'N';
 		else
-			printf("orientation = S\n");
+			*orientation = 'S';
 	}
 
 	if (side == 0)
@@ -116,6 +116,15 @@ double length_of_ray_to_wall(t_vars *vars, double angle)
  */
 void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, int y, double angle_left )
 {
+	int color;
+	if (orientation == 'N')
+		color = 0x348b3d;
+	else if (orientation == 'S')
+		color = 0xed7876;
+	else if (orientation == 'E')
+		color = 0x0187f1;
+	else if (orientation == 'W')
+		color = 0x045bf3;
 
 	float ca = vars->p.angle-angle_left;
 	if ( ca < 0){
@@ -133,19 +142,19 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	int i = 0;
 	while(i < half_wall)
 	{
-		for (int j = 0; j <= 64; j++){
-		mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j,REDD);
-		mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, REDD);
+		for (int j = 0; j < 64; j++){
+		mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j, color);
+		mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, color);
 		}
 		i++;
 	}
-	// while (i < HEIGHT/2){
-	// 	for (int j = 0; j <= 64; j++){
-	// 	mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j, BLACK);
-	// 	mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, WHITE);
-	// 	}
-	// 	i++;
-	// }
+	 while (i < HEIGHT/2){
+	 	for (int j = 0; j < 64; j++){
+	 	mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j, BLACK);
+	 	mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, WHITE);
+	 	}
+	 	i++;
+	 }
 	
 }
 
@@ -165,12 +174,15 @@ void draw_walls(t_vars *vars)
 	int i = 0;
 	int nb_of_rays = 1024;
 	double angle_left = vars->p.angle - FOV / 2;
+
+	char orientation;
+
 	while(i < nb_of_rays)
 	{
-		dist_to_wall = length_of_ray_to_wall(vars, angle_left);
+		dist_to_wall = length_of_ray_to_wall(vars, angle_left, &orientation);
 		// if (nb_of_rays%2 == 0)
-		draw_ray(vars->mm.win, vars->p.c, angle_left, dist_to_wall, YELLOW);
-		draw_line_vertical(vars, dist_to_wall, 'B', i, angle_left);
+//		draw_ray(vars->mm.win, vars->p.c, angle_left, dist_to_wall, YELLOW);
+		draw_line_vertical(vars, dist_to_wall, orientation, i, angle_left);
 		angle_left += FOV/nb_of_rays;
 		i++;
 	}

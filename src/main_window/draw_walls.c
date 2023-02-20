@@ -133,12 +133,22 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	if (ca > 2 * M_PI){
 		ca -= 2 * M_PI;
 	}
-	//manage fish eye effect
+	// Manage the fisheye effect
 	len_ray_to_wall = len_ray_to_wall * cos(ca);
+
+	// Calculate height of line to draw on screen
 	float lineH = (64 * (float)HEIGHT)/len_ray_to_wall;
+
+	// Make sure line is not too big
 	if (lineH > (float)HEIGHT)
 		lineH = (float)HEIGHT;
+
+	// TODO: fix for manage overflows (even numbers)
+
+	// Calculate the median of the line
 	int half_wall = lineH / 2;
+
+	// Draw the line color by color
 	int i = 0;
 	while(i < half_wall)
 	{
@@ -148,6 +158,21 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 		}
 		i++;
 	}
+
+	//draw the line with texture
+	double wall_x;
+	if (orientation == 'N' || orientation == 'S')
+		wall_x = (int)(vars->p.c.X + len_ray_to_wall * cos(angle_left)) % 64;
+	else
+		wall_x = (int)(vars->p.c.Y + len_ray_to_wall * sin(angle_left)) % 64;
+	printf("wall_x = %f\n", wall_x);
+//	exit(0);
+
+
+
+
+
+	// Draw the top and bottom of the screen (ceiling and floor)
 	 while (i < HEIGHT/2){
 	 	for (int j = 0; j < 64; j++){
 	 	mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j, BLACK);
@@ -155,7 +180,6 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	 	}
 	 	i++;
 	 }
-	
 }
 
 
@@ -177,11 +201,15 @@ void draw_walls(t_vars *vars)
 
 	char orientation;
 
+	t_vectorD tmp;
+	tmp.X = vars->p.c.X / 4;
+	tmp.Y = vars->p.c.Y / 4;
+
 	while(i < nb_of_rays)
 	{
 		dist_to_wall = length_of_ray_to_wall(vars, angle_left, &orientation);
-		// if (nb_of_rays%2 == 0)
-//		draw_ray(vars->mm.win, vars->p.c, angle_left, dist_to_wall, YELLOW);
+		 if ( i % 32 == 0)
+			draw_ray(vars->mm.win, tmp, angle_left, dist_to_wall / 4, REDD);
 		draw_line_vertical(vars, dist_to_wall, orientation, i, angle_left);
 		angle_left += FOV/nb_of_rays;
 		i++;

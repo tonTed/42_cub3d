@@ -9,9 +9,10 @@
  */
 void draw_ceiling_floor_color(t_vars *vars)
 {
-	int median = vars->win->width * vars->win->height/2;
-	int_memset(vars->win->pixels, GREY, median);
-	int_memset(&vars->win->pixels[median * 4] , WHITE, median);
+//	int median = vars->win->width * vars->win->height/2;
+//	int_memset(vars->win->pixels, GREY, median);
+//	int_memset(&vars->win->pixels[median * 4] , WHITE, median);
+	(void)vars;
 }
 
 /**

@@ -16,38 +16,92 @@
  * TODO: use dda algorithm to get length of ray to wall
  *
  */
-double length_of_ray_to_wall(t_vars *vars, double angle)
+double length_of_ray_to_wall(t_vars *vars, double angle, char *orientation)
 {
-	int hit_wall = 0;
-	int wall_x, wall_y;
-	double ray_x = vars->p.c.X;
-	double ray_y = vars->p.c.Y;
+	int		hit_wall = 0;
 
-	while (!hit_wall && ray_x >= 0 && ray_x < (vars->m.s.w * 64) && ray_y >= 0 && ray_y < (vars->m.s.h * 64))
+	double	side_dist_x;
+	double	side_dist_y;
+
+	double	delta_dist_x = fabs(1 / cos(angle));
+	double	delta_dist_y = fabs(1 / sin(angle));
+	double	delta_dist_x_2 = fabs(64 / cos(angle));
+	double	delta_dist_y_2 = fabs(64 / sin(angle));
+
+	double	ray_dir_x = cos(angle);
+	double	ray_dir_y = sin(angle);
+
+	int 	step_x;
+	int 	step_y;
+
+	int 	wall_x = (int)vars->p.c.X / 64;
+	int 	wall_y = (int)vars->p.c.Y / 64;
+
+	double	map_x = (int)vars->p.c.X / 64 * 64;
+	double	map_y = (int)vars->p.c.Y / 64 * 64;
+
+	if (ray_dir_x < 0)
 	{
-		wall_x = (int)ray_x / 64;
-		wall_y = (int)ray_y / 64;
-		if (vars->m.m[wall_y][wall_x] == 1)
+		step_x = -1;
+		side_dist_x = (vars->p.c.X - map_x) * delta_dist_x;
+	}
+	else
+	{
+		step_x = 1;
+		side_dist_x = (map_x + 64 - vars->p.c.X) * delta_dist_x;
+	}
+	if (ray_dir_y < 0)
+	{
+		step_y = -1;
+		side_dist_y = (vars->p.c.Y - map_y) * delta_dist_y;
+	}
+	else
+	{
+		step_y = 1;
+		side_dist_y = (map_y + 64 - vars->p.c.Y) * delta_dist_y;
+	}
+
+	int side;
+
+	while (!hit_wall)
+	{
+		if (side_dist_x < side_dist_y)
 		{
-			hit_wall = 1;
+			side_dist_x += delta_dist_x_2;
+			wall_x += step_x;
+			side = 0;
+
 		}
 		else
 		{
-			ray_x += cos(angle);
-			ray_y += sin(angle);
+			side_dist_y += delta_dist_y_2;
+			wall_y += step_y;
+			side = 1;
 		}
+		if (vars->m.m[wall_y][wall_x] == 1)
+			hit_wall = 1;
 	}
 
-	double dist_to_wall = 0;
-
-	if (hit_wall)
+	//define orientation
+	if (side == 0)
 	{
-		double dist_x = ray_x - vars->p.c.X;
-		double dist_y = ray_y - vars->p.c.Y;
-		dist_to_wall = sqrt(dist_x * dist_x + dist_y * dist_y);
+		if (step_x == -1)
+			*orientation = 'W';
+		else
+			*orientation = 'E';
+	}
+	else
+	{
+		if (step_y == -1)
+			*orientation = 'N';
+		else
+			*orientation = 'S';
 	}
 
-	return (dist_to_wall);
+	if (side == 0)
+		return (side_dist_x - delta_dist_x_2);
+	else
+		return (side_dist_y - delta_dist_y_2);
 }
 
 /**
@@ -62,10 +116,19 @@ double length_of_ray_to_wall(t_vars *vars, double angle)
  */
 void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, int y, double angle_left )
 {
-	(void)orientation;
+
+	int color;
+	if (orientation == 'N')
+		color = 0xd3ab9eff;
+	else if (orientation == 'S')
+		color = 0xffee93ff;
+	else if (orientation == 'E')
+		color = 0xa0ced9ff;
+	else if (orientation == 'W')
+		color = 0xadf7b6ff;
 	float ca = vars->p.angle-angle_left;
 	if ( ca < 0){
-		ca +=2*M_PI;
+		ca += 2* M_PI;
 	}
 	if (ca > 2 * M_PI){
 		ca -= 2 * M_PI;
@@ -79,19 +142,19 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	int i = 0;
 	while(i < half_wall)
 	{
-		for (int j = 0; j <= 64; j++){
-		mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j,REDD);
-		mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, REDD);
+		for (int j = 0; j < 64; j++){
+		mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j, color);
+		mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, color);
 		}
 		i++;
 	}
-	// while (i < HEIGHT/2){
-	// 	for (int j = 0; j <= 64; j++){
-	// 	mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j, BLACK);
-	// 	mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, WHITE);
-	// 	}
-	// 	i++;
-	// }
+	 while (i < HEIGHT/2){
+	 	for (int j = 0; j < 64; j++){
+	 	mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j, BLACK);
+	 	mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, WHITE);
+	 	}
+	 	i++;
+	 }
 	
 }
 
@@ -111,13 +174,17 @@ void draw_walls(t_vars *vars)
 	int i = 0;
 	int nb_of_rays = 1024;
 	double angle_left = vars->p.angle - FOV / 2;
+
+	char orientation;
+
 	while(i < nb_of_rays)
 	{
-		dist_to_wall = length_of_ray_to_wall(vars, angle_left);
+		dist_to_wall = length_of_ray_to_wall(vars, angle_left, &orientation);
 		// if (nb_of_rays%2 == 0)
-		// draw_ray(vars->mm.win, vars->p.c, angle_left, dist_to_wall, YELLOW);
-		draw_line_vertical(vars, dist_to_wall, 'B', i, angle_left);
+//		draw_ray(vars->mm.win, vars->p.c, angle_left, dist_to_wall, YELLOW);
+		draw_line_vertical(vars, dist_to_wall, orientation, i, angle_left);
 		angle_left += FOV/nb_of_rays;
 		i++;
 	}
+//	exit(EXIT_SUCCESS);
 }

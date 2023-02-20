@@ -56,7 +56,13 @@ bool	mock_init(t_vars *vars)
 	// init map data
 	mock_map(vars);
 
-
+	// init textures data
+	vars->a.east_texture = mlx_load_png("./assets/east_64_64.png");
+	if (!vars->a.east_texture)
+	{
+		printf("Error with texture: %s\n", "./assets/east_64_64.png");
+		return (EXIT_FAILURE);
+	}
 	return (EXIT_SUCCESS);
 
 

@@ -114,7 +114,7 @@ double length_of_ray_to_wall(t_vars *vars, double angle, char *orientation)
  * TODO: Function to draw a line vertically on the screen
  *
  */
-void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, int y, double angle_left )
+void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, int x, double angle_left )
 {
 
 	int color;
@@ -148,13 +148,31 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	// Calculate the median of the line
 	int half_wall = lineH / 2;
 
+	//calculate lowest and highest pixel to fill in current stripe
+	int drawStart = -lineH / 2 + HEIGHT / 2;
+	if(drawStart < 0)
+		drawStart = 0;
+
+	int cpy_drawStart = drawStart;
+
+	int drawEnd = lineH / 2 + HEIGHT / 2;
+	if(drawEnd >= HEIGHT)
+		drawEnd = HEIGHT - 1;
+
+	while (drawStart < drawEnd)
+	{
+		mlx_put_pixel(vars->win, x, drawStart, color);
+		drawStart++;
+	}
+
+
 	// Draw the line color by color
 	int i = 0;
 	while(i < half_wall)
 	{
 		for (int j = 0; j < 64; j++){
-		mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j, color);
-		mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, color);
+		mlx_put_pixel(vars->win, x, HEIGHT / 2 + i + j, color);
+		mlx_put_pixel(vars->win, x, HEIGHT / 2 - i + j, color);
 		}
 		i++;
 	}
@@ -171,23 +189,30 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	mlx_texture_t *texture = vars->a.east_texture;
 	int texture_x = wall_x * texture->width / 64;
 
-	printf("width: %d ,texture_x = %d, wall_x = %d\n",texture->width ,texture_x, wall_x);
-	exit(EXIT_FAILURE);
+	//get the step to increase the y of the texture
+	float step = texture->height / lineH;
+
+	//start and and of the screen
+
+//	printf("drawStart : %d, drawEnd : %d\n", drawStart, drawEnd);
+	(void)texture_x;
+	(void)step;
+
+//	exit(EXIT_FAILURE);
 
 
 
-
-
-
-
-	// Draw the top and bottom of the screen (ceiling and floor)
-	 while (i < HEIGHT/2){
-	 	for (int j = 0; j < 64; j++){
-	 	mlx_put_pixel(vars->win, y, HEIGHT/2 + i + j, BLACK);
-	 	mlx_put_pixel(vars->win, y, HEIGHT/2 - i + j, WHITE);
-	 	}
-	 	i++;
-	 }
+	//draw ceiling and floor
+	while (cpy_drawStart > 0)
+	{
+		mlx_put_pixel(vars->win, x, cpy_drawStart, WHITE);
+		cpy_drawStart--;
+	}
+	while (drawEnd < HEIGHT)
+	{
+		mlx_put_pixel(vars->win, x, drawEnd, BLACK);
+		drawEnd++;
+	}
 }
 
 

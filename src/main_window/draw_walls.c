@@ -160,13 +160,21 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	}
 
 	//draw the line with texture
-	double wall_x;
+	//get the x of the wall to get the beginning of the texture
+	int wall_x;
 	if (orientation == 'N' || orientation == 'S')
 		wall_x = (int)(vars->p.c.X + len_ray_to_wall * cos(angle_left)) % 64;
 	else
 		wall_x = (int)(vars->p.c.Y + len_ray_to_wall * sin(angle_left)) % 64;
-	printf("wall_x = %f\n", wall_x);
-//	exit(0);
+
+	//get the x of the texture
+	mlx_texture_t *texture = vars->a.east_texture;
+	int texture_x = wall_x * texture->width / 64;
+
+	printf("width: %d ,texture_x = %d, wall_x = %d\n",texture->width ,texture_x, wall_x);
+	exit(EXIT_FAILURE);
+
+
 
 
 

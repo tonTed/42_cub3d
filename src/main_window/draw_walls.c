@@ -104,6 +104,16 @@ double length_of_ray_to_wall(t_vars *vars, double angle, char *orientation)
 		return (side_dist_y - delta_dist_y_2);
 }
 
+int get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y) {
+
+	uint32_t index = (y * texture->width + x) * texture->bytes_per_pixel;
+
+	return ((int)texture->pixels[index + 0] << 0) |
+		   ((int)texture->pixels[index + 1] << 8) |
+		   ((int)texture->pixels[index + 2] << 16) |
+		   ((int)texture->pixels[index + 3] << 24);
+}
+
 /**
  * @brief Draw a line vertically on the screen
  *
@@ -185,18 +195,34 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	else
 		wall_x = (int)(vars->p.c.Y + len_ray_to_wall * sin(angle_left)) % 64;
 
-	//get the x of the texture
+	(void)wall_x;
+//	//get the x of the texture
 	mlx_texture_t *texture = vars->a.east_texture;
-	int texture_x = wall_x * texture->width / 64;
+//	int texture_x = wall_x * texture->width / 64;
+//
+//	//get the step to increase the y of the texture
+//	float step = texture->height / lineH;
+//
+//	//draw the line
+//	texture_x = texture->width - texture_x;
+//	while (cpy_drawStart <= drawEnd)
+//	{
+//		//get the y of the texture
+//		int texture_y = (int)((float)cpy_drawStart + step);
+//		printf("drawend: %d, texture_y = %d\n", drawEnd, texture_y);
+//		//get the color of the pixel
+//		//int color = mlx_get_pixel(texture, texture_x, texture_y);
+//		//draw the pixel
+//		//mlx_put_pixel(vars->win, x, drawStart, color);
+//		cpy_drawStart++;
+//	}
+//	(void)(texture_x);
 
-	//get the step to increase the y of the texture
-	float step = texture->height / lineH;
+	printf("color texture: %x\n", get_pixel_color(texture, 10, 10));
 
-	//start and and of the screen
+	printf("#%08X\n", get_pixel_color(texture, 10, 10));
+	fill_image(vars->win, get_pixel_color(texture, 10, 10));
 
-//	printf("drawStart : %d, drawEnd : %d\n", drawStart, drawEnd);
-	(void)texture_x;
-	(void)step;
 
 //	exit(EXIT_FAILURE);
 

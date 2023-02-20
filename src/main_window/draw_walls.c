@@ -216,12 +216,7 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 //		//mlx_put_pixel(vars->win, x, drawStart, color);
 //		cpy_drawStart++;
 //	}
-//	(void)(texture_x);
-
-	printf("color texture: %x\n", get_pixel_color(texture, 10, 10));
-
-	printf("#%08X\n", get_pixel_color(texture, 10, 10));
-	fill_image(vars->win, get_pixel_color(texture, 10, 10));
+	(void)(texture);
 
 
 //	exit(EXIT_FAILURE);

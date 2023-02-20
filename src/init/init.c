@@ -17,12 +17,33 @@ bool	mock_init(t_vars *vars);
  */
 bool	check_args(int ac, char *av[], t_vars *vars)
 {
+	WHOAMI
+
 	if (ac != 2)
 		return (EXIT_FAILURE);
 	if (!ft_strncmp(av[1], "-d", ft_strlen(av[1])))
 		return (mock_init(vars));
 	else
-		return (parsing_file_map(av[2], vars));
+	{
+		{// Block to test mlx_load_png
+
+			printf("Parsing file: %s\n", av[1]);
+			mlx_texture_t *texture = mlx_load_png("./assets/north_texture.png");
+			if (!texture)
+			{
+				printf("Error: texture not found.\n");
+				exit(EXIT_FAILURE);
+			}
+			else
+			{
+				printf("Texture found.\n");
+				printf("Texture size: %d x %d\n", texture->width, texture->height);
+				printf("Texture path: %s\n", texture->path);
+				exit(EXIT_SUCCESS);
+			}
+		}
+		return (parsing_file_map(av[1], vars));
+	}
 }
 
 /**

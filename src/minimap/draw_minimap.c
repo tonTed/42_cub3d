@@ -41,10 +41,10 @@ void	mm_draw_squares(t_vars *vars)
 	t_vectorI	coord;
 
 	coord.Y = 0;
-	while (coord.Y < vars->m.s.h)
+	while (coord.Y < (int)vars->m.s.h)
 	{
 		coord.X = 0;
-		while (coord.X < vars->m.s.w)
+		while (coord.X < (int)vars->m.s.w)
 		{
 			mm_draw_square(vars, coord);
 			coord.X++;

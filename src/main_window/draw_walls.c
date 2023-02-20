@@ -62,7 +62,7 @@ double length_of_ray_to_wall(t_vars *vars, double angle)
  */
 void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, int y, double angle_left )
 {
-
+	(void)orientation;
 	float ca = vars->p.angle-angle_left;
 	if ( ca < 0){
 		ca +=2*M_PI;

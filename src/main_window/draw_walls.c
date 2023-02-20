@@ -119,16 +119,16 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 
 	int color;
 	if (orientation == 'N')
-		color = 0x348b3d;
+		color = 0xd3ab9eff;
 	else if (orientation == 'S')
-		color = 0xed7876;
+		color = 0xffee93ff;
 	else if (orientation == 'E')
-		color = 0x0187f1;
+		color = 0xa0ced9ff;
 	else if (orientation == 'W')
-		color = 0x045bf3;
+		color = 0xadf7b6ff;
 	float ca = vars->p.angle-angle_left;
 	if ( ca < 0){
-		ca +=2*M_PI;
+		ca += 2* M_PI;
 	}
 	if (ca > 2 * M_PI){
 		ca -= 2 * M_PI;

@@ -116,6 +116,7 @@ double length_of_ray_to_wall(t_vars *vars, double angle, char *orientation)
  */
 void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, int y, double angle_left )
 {
+
 	int color;
 	if (orientation == 'N')
 		color = 0x348b3d;
@@ -125,7 +126,6 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 		color = 0x0187f1;
 	else if (orientation == 'W')
 		color = 0x045bf3;
-
 	float ca = vars->p.angle-angle_left;
 	if ( ca < 0){
 		ca +=2*M_PI;

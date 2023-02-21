@@ -160,16 +160,7 @@ uint32_t get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y) {
  */
 void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, int x, double angle_left )
 {
-
-	int color;
-	if (orientation == 'N')
-		color = 0xd3ab9eff;
-	else if (orientation == 'S')
-		color = 0xffee93ff;
-	else if (orientation == 'E')
-		color = 0xa0ced9ff;
-	else if (orientation == 'W')
-		color = 0xadf7b6ff;
+	
 	float ca = vars->p.angle-angle_left;
 	if ( ca < 0){
 		ca += 2* M_PI;
@@ -203,19 +194,6 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	if(drawEnd >= HEIGHT)
 		drawEnd = HEIGHT - 1;
 
-
-
-	// Draw the line color by color
-//	int i = 0;
-//	while(i < half_wall)
-//	{
-//		for (int j = 0; j < 64; j++){
-//		mlx_put_pixel(vars->win, x, HEIGHT / 2 + i + j, color);
-//		mlx_put_pixel(vars->win, x, HEIGHT / 2 - i + j, color);
-//		}
-//		i++;
-//	}
-
 	//draw the line with texture
 	//get the x of the wall to get the beginning of the texture
 	int wall_x;
@@ -235,19 +213,6 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	texture_x = texture->width - texture_x;
 	float texture_y = 0;
 
-//	while (drawStart < drawEnd)
-//	{
-//		mlx_put_pixel(vars->win, x, drawStart, color);
-//		drawStart++;
-//	}
-
-	//get the with of the wall
-//	int wall_width;
-
-
-
-	(void)color;
-
 	while (drawStart < drawEnd)
 	{
 		mlx_put_pixel(vars->win, x, drawStart, get_pixel_color(texture, x, (int)texture_y));
@@ -258,26 +223,6 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	(void)(texture_x);
 	(void)(texture_y);
 	(void)(step_y);
-
-//	while (cpy_drawStart <= drawEnd)
-//	{
-//		//get the y of the texture
-////		texture_y += step_y;
-////
-////		//get the color of the pixel
-////		color = get_pixel_color(texture, texture_x, (int)texture_y);
-////
-////		//draw the pixel
-////		t_vectorD tmp;
-////		tmp.X = texture_x;
-////		tmp.Y = texture_y;
-////
-////
-////		draw_dot(1, color, vars->win, tmp);
-//		mlx_put_pixel(vars->win, x, cpy_drawStart, color);
-//		cpy_drawStart++;
-//	}
-//	fill_image(vars->win, get_pixel_color(texture, 17, 10));
 
 
 	// Draw ceiling and floor
@@ -297,7 +242,6 @@ void draw_walls(t_vars *vars)
 {
 	double dist_to_wall;
 	int i = 0;
-	int nb_of_rays = 1024;
 	double angle_left = vars->p.angle - FOV / 2;
 
 	char orientation;
@@ -306,13 +250,13 @@ void draw_walls(t_vars *vars)
 	tmp.X = vars->p.c.X / 4;
 	tmp.Y = vars->p.c.Y / 4;
 
-	while(i < nb_of_rays)
+	while(i < WIDTH)
 	{
 		dist_to_wall = length_of_ray_to_wall(vars, angle_left, &orientation);
 		 if ( i % 64 == 0)
 			draw_ray(vars->mm.win, tmp, angle_left, dist_to_wall / 4, REDH);
 		draw_line_vertical(vars, dist_to_wall, orientation, i, angle_left);
-		angle_left += FOV/nb_of_rays;
+		angle_left += FOV/WIDTH;
 		i++;
 	}
 //	exit(EXIT_SUCCESS);

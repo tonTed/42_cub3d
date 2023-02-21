@@ -40,11 +40,12 @@ bool	mock_init(t_vars *vars)
 {
 	WHOAMI
 
+	// to add in real init
+	vars->mm.ratio = PIXEL_SIZE / MM_PIXEL_SIZE;
+
 	// init player data
 	vars->p.c.X = 300.0;
 	vars->p.c.Y = 300.0;
-	vars->p.d.X = 0;
-	vars->p.d.Y = -1;
 	vars->p.angle = 0.0;
 
 	// init minimap data

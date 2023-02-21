@@ -20,9 +20,20 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+/* GENERAL CONFIGS */
 #define WIDTH 1024
-#define HEIGHT WIDTH / 3 * 2
+#define HEIGHT 688
 #define TITLE "cub3d"
+
+/* MAIN WINDOW CONFIGS */
+#define PIXEL_SIZE 64
+
+/* MINIMAP CONFIGS */
+#define MM_PIXEL_SIZE 16
+#define SHIFT 1
+
+/* PLAYER CONFIG */
+#define FOV M_PI / 3
 
 /* Colors */
 #define WHITEH 0xFFFFFFFF
@@ -37,7 +48,13 @@
 #define ARMYH 0x454B1BFF
 #define ORANGEH 0xFF0080FF
 
-#define FOV M_PI / 3
+typedef struct s_draw_wall
+{
+	double	dist_to_wall;
+	double	angle;
+	double 	step_angle;		// TODO: add to main structure same all the program
+	char 	orientation;
+} t_draw_wall;
 
 typedef struct s_assets {
     mlx_texture_t   *north_texture;
@@ -71,7 +88,7 @@ typedef struct s_size {
  */
 typedef struct s_player {
 	t_vectorD	c;
-	t_vectorI	d;
+	t_vectorD	mm_c;
 	double 		angle;
 }	t_player;
 
@@ -85,6 +102,7 @@ typedef struct s_mini_map {
 	mlx_image_t	*win;
 	t_vectorI	pos;
 	t_size		size;
+	int 		ratio;
 }	t_mini_map;
 
 /**
@@ -153,6 +171,7 @@ void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int col
 void	draw_main_window(t_vars *vars);
 void	draw_minimap(t_vars *vars);
 void	draw_bonus(t_vars *vars);
+void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i);
 
 
 /* development */

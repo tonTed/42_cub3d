@@ -50,20 +50,20 @@ int width_next_wall(t_vars *vars, double angle, int wall_x, int wall_y)
  * TODO: use dda algorithm to get length of ray to wall
  *
  */
-double length_of_ray_to_wall(t_vars *vars, double angle, char *orientation)
+double length_of_ray_to_wall(t_draw_wall *dw,t_vars *vars)
 {
 	int		hit_wall = 0;
 
 	double	side_dist_x;
 	double	side_dist_y;
 
-	double	delta_dist_x = fabs(1 / cos(angle));
-	double	delta_dist_y = fabs(1 / sin(angle));
-	double	delta_dist_x_2 = fabs(64 / cos(angle));
-	double	delta_dist_y_2 = fabs(64 / sin(angle));
+	double	delta_dist_x = fabs(1 / cos(dw->angle));
+	double	delta_dist_y = fabs(1 / sin(dw->angle));
+	double	delta_dist_x_2 = fabs(64 / cos(dw->angle));
+	double	delta_dist_y_2 = fabs(64 / sin(dw->angle));
 
-	double	ray_dir_x = cos(angle);
-	double	ray_dir_y = sin(angle);
+	double	ray_dir_x = cos(dw->angle);
+	double	ray_dir_y = sin(dw->angle);
 
 	int 	step_x;
 	int 	step_y;
@@ -116,20 +116,20 @@ double length_of_ray_to_wall(t_vars *vars, double angle, char *orientation)
 			hit_wall = 1;
 	}
 
-	//define orientation
+	//define dw->orientation
 	if (side == 0)
 	{
 		if (step_x == -1)
-			*orientation = 'W';
+			dw->orientation = 'W';
 		else
-			*orientation = 'E';
+			dw->orientation = 'E';
 	}
 	else
 	{
 		if (step_y == -1)
-			*orientation = 'N';
+			dw->orientation = 'N';
 		else
-			*orientation = 'S';
+			dw->orientation = 'S';
 	}
 
 	if (side == 0)
@@ -158,21 +158,22 @@ uint32_t get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y) {
  * TODO: Function to draw a line vertically on the screen
  *
  */
-void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, int x, double angle_left )
+void draw_line_vertical(t_draw_wall *dw, t_vars *vars, int x)
 {
-	
-	float ca = vars->p.angle-angle_left;
+	float ca = vars->p.angle - dw->angle;
+
 	if ( ca < 0){
 		ca += 2* M_PI;
 	}
 	if (ca > 2 * M_PI){
 		ca -= 2 * M_PI;
 	}
+
 	// Manage the fisheye effect
-	len_ray_to_wall = len_ray_to_wall * cos(ca);
+	dw->dist_to_wall = dw->dist_to_wall * cos(ca);
 
 	// Calculate height of line to draw on screen
-	float lineH = (64 * (float)HEIGHT)/len_ray_to_wall;
+	float lineH = (64 * (float)HEIGHT) / dw->dist_to_wall;
 
 	// Make sure line is not too big
 	if (lineH > (float)HEIGHT)
@@ -197,10 +198,10 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	//draw the line with texture
 	//get the x of the wall to get the beginning of the texture
 	int wall_x;
-	if (orientation == 'N' || orientation == 'S')
-		wall_x = (int)(vars->p.c.X + len_ray_to_wall * cos(angle_left)) % 64;
+	if (dw->orientation == 'N' || dw->orientation == 'S')
+		wall_x = (int)(vars->p.c.X + dw->dist_to_wall * cos(dw->angle)) % 64;
 	else
-		wall_x = (int)(vars->p.c.Y + len_ray_to_wall * sin(angle_left)) % 64;
+		wall_x = (int)(vars->p.c.Y + dw->dist_to_wall * sin(dw->angle)) % 64;
 
 //	get the x of the texture
 	mlx_texture_t *texture = vars->a.east_texture;
@@ -229,7 +230,6 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	draw_ceiling_floor_color(vars, cpy_drawStart, drawStart, x);
 }
 
-
 /**
  * @brief Draw walls using ray casting
  *
@@ -240,11 +240,11 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
  */
 void draw_walls(t_vars *vars)
 {
-	double dist_to_wall;
-	int i = 0;
-	double angle_left = vars->p.angle - FOV / 2;
+	t_draw_wall	dw;
 
-	char orientation;
+	int i = 0;
+	dw.angle = vars->p.angle - FOV / 2;
+	dw.step_angle = FOV / WIDTH;
 
 	t_vectorD tmp;
 	tmp.X = vars->p.c.X / 4;
@@ -252,12 +252,10 @@ void draw_walls(t_vars *vars)
 
 	while(i < WIDTH)
 	{
-		dist_to_wall = length_of_ray_to_wall(vars, angle_left, &orientation);
-		 if ( i % 64 == 0)
-			draw_ray(vars->mm.win, tmp, angle_left, dist_to_wall / 4, REDH);
-		draw_line_vertical(vars, dist_to_wall, orientation, i, angle_left);
-		angle_left += FOV/WIDTH;
+		dw.dist_to_wall = length_of_ray_to_wall(&dw ,vars);
+		mm_draw_rays(vars, &dw, i);
+		draw_line_vertical(&dw, vars, i);
+		dw.angle += dw.step_angle;
 		i++;
 	}
-//	exit(EXIT_SUCCESS);
 }

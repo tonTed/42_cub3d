@@ -1,8 +1,18 @@
 
 #include "../../include/cub3D.h"
 
-#define squareSize 16
-#define SHIFT 1
+void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i)
+{
+	if ( i % 64 != 0)
+		return ;
+	vars->p.mm_c.X = vars->p.c.X / vars->mm.ratio;
+	vars->p.mm_c.Y = vars->p.c.Y / vars->mm.ratio;
+	draw_ray(vars->mm.win, vars->p.mm_c, dw->angle,
+			 dw->dist_to_wall / vars->mm.ratio, REDH);
+}
+
+
+/* WORKING */
 
 int	mm_get_index(int width_img, t_vectorI pos, int row)
 {
@@ -10,8 +20,8 @@ int	mm_get_index(int width_img, t_vectorI pos, int row)
 	int	len_x;
 
 	int	len_line = width_img * 4;
-	int len_line_square = squareSize * 4;
-	int len_line_squares = len_line * squareSize;
+	int len_line_square = MM_PIXEL_SIZE * 4;
+	int len_line_squares = len_line * MM_PIXEL_SIZE;
 
 	len_y = len_line_squares * pos.Y;
 	len_x = (pos.X * len_line_square) + (len_line * row);
@@ -25,13 +35,13 @@ void	mm_draw_square(t_vars *vars, t_vectorI pos)
 	int index;
 
 	row = SHIFT;
-	while (row < squareSize - SHIFT)
+	while (row < MM_PIXEL_SIZE - SHIFT)
 	{
 		index = mm_get_index(vars->mm.win->width, pos, row);
 		if (vars->m.m[pos.Y][pos.X] == 1)
-			int_memset(&vars->mm.win->pixels[index + SHIFT * 4], 0xFF000000, squareSize - SHIFT * 2);
+			int_memset(&vars->mm.win->pixels[index + SHIFT * 4], 0xFF000000, MM_PIXEL_SIZE - SHIFT * 2);
 		else
-			int_memset(&vars->mm.win->pixels[index + SHIFT * 4], 0xFFFFFFFF, squareSize - SHIFT * 2);
+			int_memset(&vars->mm.win->pixels[index + SHIFT * 4], 0xFFFFFFFF, MM_PIXEL_SIZE - SHIFT * 2);
 		row++;
 	}
 }

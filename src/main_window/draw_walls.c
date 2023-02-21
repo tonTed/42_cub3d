@@ -57,13 +57,13 @@ double length_of_ray_to_wall(t_draw_wall *dw,t_vars *vars)
 	double	side_dist_x;
 	double	side_dist_y;
 
-	double	delta_dist_x = fabs(1 / cos(dw->angle));
-	double	delta_dist_y = fabs(1 / sin(dw->angle));
-	double	delta_dist_x_2 = fabs(64 / cos(dw->angle));
-	double	delta_dist_y_2 = fabs(64 / sin(dw->angle));
+	double	delta_dist_x = fabs(1 / cos(dw->ray_angle));
+	double	delta_dist_y = fabs(1 / sin(dw->ray_angle));
+	double	delta_dist_x_2 = fabs(64 / cos(dw->ray_angle));
+	double	delta_dist_y_2 = fabs(64 / sin(dw->ray_angle));
 
-	double	ray_dir_x = cos(dw->angle);
-	double	ray_dir_y = sin(dw->angle);
+	double	ray_dir_x = cos(dw->ray_angle);
+	double	ray_dir_y = sin(dw->ray_angle);
 
 	int 	step_x;
 	int 	step_y;
@@ -148,6 +148,18 @@ uint32_t get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y) {
 		   ((int)texture->pixels[index + 3] << 24);
 }
 
+void fish_eye(t_vars *vars, t_draw_wall *dw)
+{
+	double ret;
+
+	ret = vars->p.angle - dw->ray_angle;
+	if (ret < 0)
+		ret += 2 * M_PI;
+	else if (ret > 2 * M_PI)
+		ret -= 2 * M_PI;
+	dw->dist_to_wall = dw->dist_to_wall * cos(ret);
+}
+
 /**
  * @brief Draw a line vertically on the screen
  *
@@ -158,20 +170,9 @@ uint32_t get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y) {
  * TODO: Function to draw a line vertically on the screen
  *
  */
-void draw_line_vertical(t_draw_wall *dw, t_vars *vars, int x)
+void draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 {
-	float ca = vars->p.angle - dw->angle;
-
-	if ( ca < 0){
-		ca += 2* M_PI;
-	}
-	if (ca > 2 * M_PI){
-		ca -= 2 * M_PI;
-	}
-
-	// Manage the fisheye effect
-	dw->dist_to_wall = dw->dist_to_wall * cos(ca);
-
+	fish_eye(vars, dw);
 	// Calculate height of line to draw on screen
 	float lineH = (64 * (float)HEIGHT) / dw->dist_to_wall;
 
@@ -199,9 +200,9 @@ void draw_line_vertical(t_draw_wall *dw, t_vars *vars, int x)
 	//get the x of the wall to get the beginning of the texture
 	int wall_x;
 	if (dw->orientation == 'N' || dw->orientation == 'S')
-		wall_x = (int)(vars->p.c.X + dw->dist_to_wall * cos(dw->angle)) % 64;
+		wall_x = (int)(vars->p.c.X + dw->dist_to_wall * cos(dw->ray_angle)) % 64;
 	else
-		wall_x = (int)(vars->p.c.Y + dw->dist_to_wall * sin(dw->angle)) % 64;
+		wall_x = (int)(vars->p.c.Y + dw->dist_to_wall * sin(dw->ray_angle)) % 64;
 
 //	get the x of the texture
 	mlx_texture_t *texture = vars->a.east_texture;
@@ -235,27 +236,23 @@ void draw_line_vertical(t_draw_wall *dw, t_vars *vars, int x)
  *
  * @param vars
  *
- * TODO: while loop for a angle defined by the player FOV
+ * TODO: while loop for a ray_angle defined by the player FOV
  *
  */
 void draw_walls(t_vars *vars)
 {
 	t_draw_wall	dw;
+	int			i;
 
-	int i = 0;
-	dw.angle = vars->p.angle - FOV / 2;
-	dw.step_angle = FOV / WIDTH;
-
-	t_vectorD tmp;
-	tmp.X = vars->p.c.X / 4;
-	tmp.Y = vars->p.c.Y / 4;
-
+	dw.ray_angle = vars->p.angle - vars->p.fov_2;
+	dw.step_angle = vars->p.fov / WIDTH;
+	i = 0;
 	while(i < WIDTH)
 	{
 		dw.dist_to_wall = length_of_ray_to_wall(&dw ,vars);
 		mm_draw_rays(vars, &dw, i);
-		draw_line_vertical(&dw, vars, i);
-		dw.angle += dw.step_angle;
+		draw_vertical_line(&dw, vars, i);
+		dw.ray_angle += dw.step_angle;
 		i++;
 	}
 }

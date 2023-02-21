@@ -55,7 +55,7 @@
 typedef struct s_draw_wall
 {
 	double	dist_to_wall;
-	double	angle;
+	double	ray_angle;
 	double 	step_angle;		// TODO: add to main structure same all the program
 	char 	orientation;
 } t_draw_wall;
@@ -94,6 +94,8 @@ typedef struct s_player {
 	t_vectorD	c;
 	t_vectorD	mm_c;
 	double 		angle;
+	double 		fov;
+	double 		fov_2;
 }	t_player;
 
 /**

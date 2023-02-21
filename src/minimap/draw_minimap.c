@@ -14,7 +14,7 @@ void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i)
 {
 	if ( i % 64 != 0)
 		return ;
-	draw_ray(vars->mm.win, vars->p.mm_c, dw->angle,
+	draw_ray(vars->mm.win, vars->p.mm_c, dw->ray_angle,
 			 dw->dist_to_wall / vars->mm.ratio, REDH);
 }
 
@@ -72,7 +72,7 @@ void	mm_draw_squares(t_vars *vars)
 
 
 /**
- * @brief Draw a ray from a position with a given angle and length
+ * @brief Draw a ray from a position with a given ray_angle and length
  *
  * @param color		Color of the ray
  * @param win		Window to draw on

@@ -46,9 +46,9 @@ void	update_player_pos(t_vars *vars, int sign, double add_to_angle)
 	// TODO Function to check position and update if possible
 	if (sign == POSITIVE)
 	{
-		// vars->p.c.X = check_collision_x(vars, vars->p.c.X + cos(vars->p.angle + add_to_angle) * MOVE_SPEED);
+		// vars->p.c.X = check_collision_x(vars, vars->p.c.X + cos(vars->p.ray_angle + add_to_angle) * MOVE_SPEED);
 		vars->p.c.X += cos(vars->p.angle + add_to_angle) * MOVE_SPEED;
-		// vars->p.c.Y = check_collision_y(vars, vars->p.c.Y + cos(vars->p.angle + add_to_angle) * MOVE_SPEED);
+		// vars->p.c.Y = check_collision_y(vars, vars->p.c.Y + cos(vars->p.ray_angle + add_to_angle) * MOVE_SPEED);
 		vars->p.c.Y += sin(vars->p.angle + add_to_angle) * MOVE_SPEED;
 	}
 	else

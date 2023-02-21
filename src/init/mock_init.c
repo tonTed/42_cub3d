@@ -44,10 +44,13 @@ bool	mock_init(t_vars *vars)
 	vars->p.c.Y = 300.0;
 	vars->p.angle = 0.0;
 
+
 	// to add in real init
 	vars->mm.ratio = PIXEL_SIZE / MM_PIXEL_SIZE;
 	vars->p.mm_c.X = vars->p.c.X / vars->mm.ratio;
 	vars->p.mm_c.Y = vars->p.c.Y / vars->mm.ratio;
+	vars->p.fov = FOV;
+	vars->p.fov_2 = vars->p.fov / 2.0;
 
 
 	// init minimap data

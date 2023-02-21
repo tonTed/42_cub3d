@@ -177,6 +177,8 @@ void 	draw_walls(t_vars *vars);
 void	draw_dot(int size, int color, mlx_image_t *win, t_vectorD pos);
 void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int color);
 
+double	ray_length(t_draw_wall *dw, t_vars *vars);
+
 /* draw */
 void	draw_main_window(t_vars *vars);
 void	draw_minimap(t_vars *vars);

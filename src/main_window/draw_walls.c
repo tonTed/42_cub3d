@@ -157,7 +157,28 @@ void fish_eye(t_vars *vars, t_draw_wall *dw)
 		ret += 2 * M_PI;
 	else if (ret > 2 * M_PI)
 		ret -= 2 * M_PI;
-	dw->dist_to_wall = dw->dist_to_wall * cos(ret);
+	dw->ray_length = dw->ray_length * cos(ret);
+}
+
+void	set_wall_height_bottom_top(t_draw_wall *dw)
+{
+	dw->wall_height = (64 * (float) HEIGHT) / dw->ray_length;
+	if (dw->wall_height > (float) HEIGHT)
+		dw->wall_height = (float) HEIGHT;
+	dw->wall_bottom = -dw->wall_height / 2 + HEIGHT / 2;
+	if (dw->wall_bottom < 0)
+		dw->wall_bottom = 0;
+	dw->wall_top = dw->wall_height / 2 + HEIGHT / 2;
+	if (dw->wall_top >= HEIGHT)
+		dw->wall_top = HEIGHT - 1;
+}
+
+void	set_wall_x_begin(t_draw_wall *dw, t_vars *vars)
+{
+	if (dw->orientation == 'N' || dw->orientation == 'S')
+		dw->wall_x = (int)(vars->p.c.X + dw->ray_length * cos(dw->ray_angle)) % PIXEL_SIZE;
+	else
+		dw->wall_x = (int)(vars->p.c.Y + dw->ray_length * sin(dw->ray_angle)) % PIXEL_SIZE;
 }
 
 /**
@@ -173,53 +194,27 @@ void fish_eye(t_vars *vars, t_draw_wall *dw)
 void draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 {
 	fish_eye(vars, dw);
-	// Calculate height of line to draw on screen
-	float lineH = (64 * (float)HEIGHT) / dw->dist_to_wall;
+	set_wall_height_bottom_top(dw);
+	set_wall_x_begin(dw, vars);
 
-	// Make sure line is not too big
-	if (lineH > (float)HEIGHT)
-		lineH = (float)HEIGHT;
-
-	// TODO: fix for manage overflows (even numbers)
-
-	// Calculate the median of the line
-//	int half_wall = lineH / 2;
-
-	//calculate lowest and highest pixel to fill in current stripe
-	int drawStart = -lineH / 2 + HEIGHT / 2;
-	if(drawStart < 0)
-		drawStart = 0;
-
-	int cpy_drawStart = drawStart;
-
-	int drawEnd = lineH / 2 + HEIGHT / 2;
-	if(drawEnd >= HEIGHT)
-		drawEnd = HEIGHT - 1;
-
-	//draw the line with texture
-	//get the x of the wall to get the beginning of the texture
-	int wall_x;
-	if (dw->orientation == 'N' || dw->orientation == 'S')
-		wall_x = (int)(vars->p.c.X + dw->dist_to_wall * cos(dw->ray_angle)) % 64;
-	else
-		wall_x = (int)(vars->p.c.Y + dw->dist_to_wall * sin(dw->ray_angle)) % 64;
+	int cpy_drawStart = dw->wall_bottom;
 
 //	get the x of the texture
 	mlx_texture_t *texture = vars->a.east_texture;
-	int texture_x = wall_x * texture->width / 64;
+	int texture_x = dw->wall_x * texture->width / 64;
 
 	//get the step_y to increase the y of the texture
-	float step_y = texture->height / lineH;
+	float step_y = texture->height / dw->wall_height;
 
 	//draw the line
 	texture_x = texture->width - texture_x;
 	float texture_y = 0;
 
-	while (drawStart < drawEnd)
+	while (dw->wall_bottom < dw->wall_top)
 	{
-		mlx_put_pixel(vars->win, x, drawStart, get_pixel_color(texture, x, (int)texture_y));
+		mlx_put_pixel(vars->win, x, dw->wall_bottom, get_pixel_color(texture, x, (int)texture_y));
 		texture_y += step_y;
-		drawStart++;
+		dw->wall_bottom++;
 	}
 
 	(void)(texture_x);
@@ -228,7 +223,7 @@ void draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 
 
 	// Draw ceiling and floor
-	draw_ceiling_floor_color(vars, cpy_drawStart, drawStart, x);
+	draw_ceiling_floor_color(vars, cpy_drawStart, dw->wall_bottom, x);
 }
 
 /**
@@ -249,7 +244,7 @@ void draw_walls(t_vars *vars)
 	i = 0;
 	while(i < WIDTH)
 	{
-		dw.dist_to_wall = length_of_ray_to_wall(&dw ,vars);
+		dw.ray_length = length_of_ray_to_wall(&dw , vars);
 		mm_draw_rays(vars, &dw, i);
 		draw_vertical_line(&dw, vars, i);
 		dw.ray_angle += dw.step_angle;

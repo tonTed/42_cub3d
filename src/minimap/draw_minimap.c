@@ -15,7 +15,7 @@ void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i)
 	if ( i % 64 != 0)
 		return ;
 	draw_ray(vars->mm.win, vars->p.mm_c, dw->ray_angle,
-			 dw->dist_to_wall / vars->mm.ratio, REDH);
+			 dw->ray_length / vars->mm.ratio, REDH);
 }
 
 

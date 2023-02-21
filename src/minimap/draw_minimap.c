@@ -1,12 +1,19 @@
 
 #include "../../include/cub3D.h"
 
+/**
+ * @brief Draw raysd
+ *
+ * @param vars	pointer to main struct of the program
+ * @param dw	pointer to a struct to data needed to draw walls
+ * @param i		index of the ray
+ *
+ *
+ */
 void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i)
 {
 	if ( i % 64 != 0)
 		return ;
-	vars->p.mm_c.X = vars->p.c.X / vars->mm.ratio;
-	vars->p.mm_c.Y = vars->p.c.Y / vars->mm.ratio;
 	draw_ray(vars->mm.win, vars->p.mm_c, dw->angle,
 			 dw->dist_to_wall / vars->mm.ratio, REDH);
 }
@@ -97,13 +104,10 @@ void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int col
 
 void	mm_draw_player(t_vars *vars)
 {
-	t_vectorD sa_mere;
-
-	sa_mere.X = vars->p.c.X/4;
-	sa_mere.Y = vars->p.c.Y/4;
-	draw_dot(9, ORANGEH, vars->mm.win, sa_mere);
-	draw_ray(vars->mm.win, sa_mere, vars->p.angle, 16, 0xFF0000FF);
-
+	draw_dot(DOT_PLAYER_SIZE, DOT_PLAYER_COLOR,
+			 vars->mm.win, vars->p.mm_c);
+	draw_ray(vars->mm.win, vars->p.mm_c,
+			 vars->p.angle, RAY_LENGTH, RAY_COLOR);
 }
 
 void	draw_minimap(t_vars *vars)

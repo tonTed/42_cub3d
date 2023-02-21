@@ -25,16 +25,6 @@
 #define HEIGHT 688
 #define TITLE "cub3d"
 
-/* MAIN WINDOW CONFIGS */
-#define PIXEL_SIZE 64
-
-/* MINIMAP CONFIGS */
-#define MM_PIXEL_SIZE 16
-#define SHIFT 1
-
-/* PLAYER CONFIG */
-#define FOV M_PI / 3
-
 /* Colors */
 #define WHITEH 0xFFFFFFFF
 #define BLACKH 0x000000FF
@@ -47,6 +37,20 @@
 #define GREENH 0x00FF00FF
 #define ARMYH 0x454B1BFF
 #define ORANGEH 0xFF0080FF
+
+/* MAIN WINDOW CONFIGS */
+#define PIXEL_SIZE 64
+
+/* MINIMAP CONFIGS */
+#define MM_PIXEL_SIZE 16
+#define SHIFT 1
+#define DOT_PLAYER_SIZE 7
+#define DOT_PLAYER_COLOR ORANGEH
+#define RAY_COLOR REDH
+#define RAY_LENGTH 16
+
+/* PLAYER CONFIG */
+#define FOV M_PI / 3
 
 typedef struct s_draw_wall
 {

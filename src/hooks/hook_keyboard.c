@@ -56,6 +56,8 @@ void	update_player_pos(t_vars *vars, int sign, double add_to_angle)
 		vars->p.c.X -= cos(vars->p.angle + add_to_angle) * MOVE_SPEED;
 		vars->p.c.Y -= sin(vars->p.angle + add_to_angle) * MOVE_SPEED;
 	}
+	vars->p.mm_c.X = vars->p.c.X / vars->mm.ratio;
+	vars->p.mm_c.Y = vars->p.c.Y / vars->mm.ratio;
 }
 
 void	hook_moves(t_vars *vars)
@@ -82,6 +84,7 @@ void	hook_moves(t_vars *vars)
 		else
 			vars->p.angle += ROT_SPEED;
 	}
+
 }
 
 /**

@@ -39,14 +39,16 @@ void	mock_map(t_vars *vars)
 bool	mock_init(t_vars *vars)
 {
 	WHOAMI
-
-	// to add in real init
-	vars->mm.ratio = PIXEL_SIZE / MM_PIXEL_SIZE;
-
 	// init player data
 	vars->p.c.X = 300.0;
 	vars->p.c.Y = 300.0;
 	vars->p.angle = 0.0;
+
+	// to add in real init
+	vars->mm.ratio = PIXEL_SIZE / MM_PIXEL_SIZE;
+	vars->p.mm_c.X = vars->p.c.X / vars->mm.ratio;
+	vars->p.mm_c.Y = vars->p.c.Y / vars->mm.ratio;
+
 
 	// init minimap data
 	vars->mm.size.w = 8 * 16;

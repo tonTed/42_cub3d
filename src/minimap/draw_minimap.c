@@ -29,9 +29,9 @@ void	mm_draw_square(t_vars *vars, t_vectorI pos)
 	{
 		index = mm_get_index(vars->mm.win->width, pos, row);
 		if (vars->m.m[pos.Y][pos.X] == 1)
-			int_memset(&vars->mm.win->pixels[index + SHIFT * 4], BLACK, squareSize - SHIFT * 2);
+			int_memset(&vars->mm.win->pixels[index + SHIFT * 4], 0xFF000000, squareSize - SHIFT * 2);
 		else
-			int_memset(&vars->mm.win->pixels[index + SHIFT * 4], WHITE, squareSize - SHIFT * 2);
+			int_memset(&vars->mm.win->pixels[index + SHIFT * 4], 0xFFFFFFFF, squareSize - SHIFT * 2);
 		row++;
 	}
 }
@@ -91,14 +91,14 @@ void	mm_draw_player(t_vars *vars)
 
 	sa_mere.X = vars->p.c.X/4;
 	sa_mere.Y = vars->p.c.Y/4;
-	draw_dot(9, ORANGE, vars->mm.win, sa_mere);
+	draw_dot(9, ORANGEH, vars->mm.win, sa_mere);
 	draw_ray(vars->mm.win, sa_mere, vars->p.angle, 16, 0xFF0000FF);
 
 }
 
 void	draw_minimap(t_vars *vars)
 {
-	fill_image(vars->mm.win, GREY);
+	fill_image(vars->mm.win, 0xFF808080);
 	mm_draw_squares(vars);
 	mm_draw_player(vars);
 }

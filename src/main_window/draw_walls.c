@@ -4,6 +4,40 @@
 #include "../../include/cub3D.h"
 
 /**
+ * @brief Draw walls with color
+ *
+ * @param vars			main struct of the program
+ * @param start_ceiling	y start of the ceiling
+ * @param start_floor	y start of the floor
+ * @param x				x position of the wall
+ *
+ */
+void draw_ceiling_floor_color(t_vars *vars, int start_ceiling, int start_floor, int x)
+{
+	while (start_ceiling > 0)
+	{
+		mlx_put_pixel(vars->win, x, start_ceiling, vars->a.ceiling);
+		start_ceiling--;
+	}
+	while (start_floor < HEIGHT)
+	{
+		mlx_put_pixel(vars->win, x, start_floor, vars->a.floor);
+		start_floor++;
+	}
+}
+
+/* WORKING */
+
+int width_next_wall(t_vars *vars, double angle, int wall_x, int wall_y)
+{
+	(void)vars;
+	(void)angle;
+	(void)wall_x;
+	(void)wall_y;
+	return (0);
+}
+
+/**
  * @brief Get length of ray to wall
  *
  * @param player
@@ -194,8 +228,8 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	mlx_texture_t *texture = vars->a.east_texture;
 	int texture_x = wall_x * texture->width / 64;
 
-	//get the step to increase the y of the texture
-	float step = texture->height / lineH;
+	//get the step_y to increase the y of the texture
+	float step_y = texture->height / lineH;
 
 	//draw the line
 	texture_x = texture->width - texture_x;
@@ -217,18 +251,18 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 	while (drawStart < drawEnd)
 	{
 		mlx_put_pixel(vars->win, x, drawStart, get_pixel_color(texture, x, (int)texture_y));
-		texture_y += step;
+		texture_y += step_y;
 		drawStart++;
 	}
 
 	(void)(texture_x);
 	(void)(texture_y);
-	(void)(step);
+	(void)(step_y);
 
 //	while (cpy_drawStart <= drawEnd)
 //	{
 //		//get the y of the texture
-////		texture_y += step;
+////		texture_y += step_y;
 ////
 ////		//get the color of the pixel
 ////		color = get_pixel_color(texture, texture_x, (int)texture_y);
@@ -247,18 +281,8 @@ void draw_line_vertical(t_vars *vars, double len_ray_to_wall, char orientation, 
 
 
 	// Draw ceiling and floor
-	while (cpy_drawStart > 0)
-	{
-		mlx_put_pixel(vars->win, x, cpy_drawStart, WHITEH);
-		cpy_drawStart--;
-	}
-	while (drawEnd < HEIGHT)
-	{
-		mlx_put_pixel(vars->win, x, drawEnd, ARMYH);
-		drawEnd++;
-	}
+	draw_ceiling_floor_color(vars, cpy_drawStart, drawStart, x);
 }
-
 
 
 /**
@@ -285,7 +309,7 @@ void draw_walls(t_vars *vars)
 	while(i < nb_of_rays)
 	{
 		dist_to_wall = length_of_ray_to_wall(vars, angle_left, &orientation);
-		 if ( i % 32 == 0)
+		 if ( i % 64 == 0)
 			draw_ray(vars->mm.win, tmp, angle_left, dist_to_wall / 4, REDH);
 		draw_line_vertical(vars, dist_to_wall, orientation, i, angle_left);
 		angle_left += FOV/nb_of_rays;

@@ -74,7 +74,7 @@ void	set_wall_height_bottom_top(t_draw_wall *dw)
 
 void	set_wall_x_begin(t_draw_wall *dw, t_vars *vars)
 {
-	if (dw->orientation == 'N' || dw->orientation == 'S')
+	if (dw->orientation == NORTH || dw->orientation == SOUTH)
 		dw->wall_x = (int)(vars->p.c.X + dw->ray_length * cos(dw->ray_angle)) % PIXEL_SIZE;
 	else
 		dw->wall_x = (int)(vars->p.c.Y + dw->ray_length * sin(dw->ray_angle)) % PIXEL_SIZE;
@@ -99,20 +99,20 @@ void	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 	set_wall_x_begin(dw, vars);
 	tmp_wall_bottom = dw->wall_bottom;
 
-//	get the x of the texture
-	mlx_texture_t *texture = vars->a.textures[NORTH];
-	int texture_x = dw->wall_x * texture->width / 64;
+	//	get the x of the texture
+	int texture_x = dw->wall_x * vars->a.textures[dw->orientation]->width / PIXEL_SIZE;
 
 	//get the step_y to increase the y of the texture
-	float step_y = texture->height / dw->wall_height;
+	float step_y = vars->a.textures[dw->orientation]->height / dw->wall_height;
 
 	//draw the line
-	texture_x = texture->width - texture_x;
+	texture_x = vars->a.textures[dw->orientation]->width - texture_x;
 	float texture_y = 0;
 
 	while (dw->wall_bottom > dw->wall_top)
 	{
-		mlx_put_pixel(vars->win, x, dw->wall_bottom, get_pixel_color(texture, x, (int)texture_y));
+		mlx_put_pixel(vars->win, x, dw->wall_bottom,
+					  get_pixel_color(vars->a.textures[dw->orientation], texture_x, (int)texture_y));
 		texture_y += step_y;
 		dw->wall_bottom--;
 	}

@@ -39,13 +39,19 @@ void	mock_map(t_vars *vars)
 bool	mock_init(t_vars *vars)
 {
 	WHOAMI
-
 	// init player data
 	vars->p.c.X = 300.0;
 	vars->p.c.Y = 300.0;
-	vars->p.d.X = 0;
-	vars->p.d.Y = -1;
 	vars->p.angle = 0.0;
+
+
+	// to add in real init
+	vars->mm.ratio = PIXEL_SIZE / MM_PIXEL_SIZE;
+	vars->p.mm_c.X = vars->p.c.X / vars->mm.ratio;
+	vars->p.mm_c.Y = vars->p.c.Y / vars->mm.ratio;
+	vars->p.fov = FOV;
+	vars->p.fov_2 = vars->p.fov / 2.0;
+
 
 	// init minimap data
 	vars->mm.size.w = 8 * 16;
@@ -56,8 +62,18 @@ bool	mock_init(t_vars *vars)
 	// init map data
 	mock_map(vars);
 
-
+	// init textures data
+	vars->a.ceiling = WHITEH;
+	vars->a.floor = ARMYH;
+	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
+	vars->a.textures[NORTH] = mlx_load_png("./assets/north_32.png");
+	vars->a.textures[SOUTH] = mlx_load_png("./assets/south_32.png");
+	vars->a.textures[WEST] = mlx_load_png("./assets/west_32.png");
+	vars->a.textures[EAST] = mlx_load_png("./assets/east_32.png");
+	if (!vars->a.textures[NORTH] || !vars->a.textures[SOUTH] || !vars->a.textures[WEST] || !vars->a.textures[EAST])
+	{
+		printf("Error with texture: %s\n", "./assets/north.png");
+		return (EXIT_FAILURE);
+	}
 	return (EXIT_SUCCESS);
-
-
 }

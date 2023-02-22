@@ -432,7 +432,7 @@ double player_dir = M_PI / 4; // Player's initial direction is 45 degrees (in ra
 double fov = M_PI / 3; // Field of view is 60 degrees (in radians)
 
 void cast_ray(double ray_angle) {
-	double dist_to_wall = 0;
+	double ray_length = 0;
 	int hit_wall = 0;
 	int wall_x, wall_y;
 
@@ -462,11 +462,11 @@ void cast_ray(double ray_angle) {
 	if (hit_wall) {
 		double dist_x = ray_x - player_x;
 		double dist_y = ray_y - player_y;
-		dist_to_wall = sqrt(dist_x * dist_x + dist_y * dist_y);
+		ray_length = sqrt(dist_x * dist_x + dist_y * dist_y);
 	}
 
 	// Draw the wall slice on the screen
-	int wall_height = (int)(MAP_HEIGHT / dist_to_wall);
+	int wall_height = (int)(MAP_HEIGHT / ray_length);
 	int draw_start = (
 			int)((MAP_HEIGHT / 2) - (wall_height / 2));
 	int draw_end = (int)((MAP_HEIGHT / 2) + (wall_height / 2));

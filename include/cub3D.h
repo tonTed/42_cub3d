@@ -20,25 +20,63 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+/* GENERAL CONFIGS */
 #define WIDTH 1024
-#define HEIGHT WIDTH / 3 * 2
+#define HEIGHT 688
 #define TITLE "cub3d"
 
 /* Colors */
-#define REDD 0xFF0000FF
-#define GREY 0xFF969696
-#define YELLOW 0xFF00FFFF
-#define BLACK 0xFF000000
-#define WHITE 0xFFFFFFFF
-#define ORANGE 0xFF0080FF
+#define WHITEH 0xFFFFFFFF
+#define BLACKH 0x000000FF
+#define GREYH 0x808080FF
+#define REDH 0xFF0000FF
+#define YELLOWH 0xFFFF00FF
+#define MAGENTAH 0xFF00FFFF
+#define CYANH 0x00FFFFFF
+#define BLUEH 0x0000FFFF
+#define GREENH 0x00FF00FF
+#define ARMYH 0x454B1BFF
+#define ORANGEH 0xFF0080FF
 
+/* MAIN WINDOW CONFIGS */
+#define PIXEL_SIZE 64
+
+/* MINIMAP CONFIGS */
+#define MM_PIXEL_SIZE 16
+#define SHIFT 1
+#define DOT_PLAYER_SIZE 7
+#define DOT_PLAYER_COLOR ORANGEH
+#define RAY_COLOR REDH
+#define RAY_LENGTH 16
+
+/* PLAYER CONFIG */
 #define FOV M_PI / 3
 
+typedef struct s_draw_wall
+{
+	double 	wall_height;
+	double 	wall_top;
+	double 	wall_bottom;
+	int 	wall_x;
+	double	ray_length;
+	double	ray_angle;
+	double 	step_angle;		// TODO: add to main structure same all the program
+	char 	orientation;
+} t_draw_wall;
+
+enum e_orientation {
+	NORTH,
+	SOUTH,
+	WEST,
+	EAST
+};
+
 typedef struct s_assets {
-    mlx_texture_t   *north_texture;
-    mlx_texture_t   *south_texture;
-    mlx_texture_t	*west_texture;
-    mlx_texture_t	*east_texture;
+	mlx_texture_t  **textures;
+	mlx_texture_t  *north_texture;
+	mlx_texture_t  *south_texture;
+	mlx_texture_t  *west_texture;
+	mlx_texture_t  *east_texture;
 	int             floor;
 	int             ceiling;
 }	t_assets;
@@ -66,8 +104,10 @@ typedef struct s_size {
  */
 typedef struct s_player {
 	t_vectorD	c;
-	t_vectorI	d;
+	t_vectorD	mm_c;
 	double 		angle;
+	double 		fov;
+	double 		fov_2;
 }	t_player;
 
 /**
@@ -80,6 +120,7 @@ typedef struct s_mini_map {
 	mlx_image_t	*win;
 	t_vectorI	pos;
 	t_size		size;
+	int 		ratio;
 }	t_mini_map;
 
 /**
@@ -144,10 +185,13 @@ void 	draw_walls(t_vars *vars);
 void	draw_dot(int size, int color, mlx_image_t *win, t_vectorD pos);
 void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int color);
 
+double	ray_length(t_draw_wall *dw, t_vars *vars);
+
 /* draw */
 void	draw_main_window(t_vars *vars);
 void	draw_minimap(t_vars *vars);
 void	draw_bonus(t_vars *vars);
+void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i);
 
 
 /* development */

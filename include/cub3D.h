@@ -59,6 +59,7 @@ typedef struct s_draw_wall
 	double 	wall_bottom;
 	int 	wall_x;
 	double	ray_length;
+	double	ray_length_orig;
 	double	ray_angle;
 	double 	step_angle;		// TODO: add to main structure same all the program
 	uint8_t orientation;

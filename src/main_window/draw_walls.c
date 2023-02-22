@@ -14,7 +14,7 @@
  */
 void draw_ceiling_floor_color(t_vars *vars, int start_ceiling, int start_floor, int x)
 {
-	while (start_ceiling > 0)
+	while (start_ceiling >= 0)
 	{
 		mlx_put_pixel(vars->win, x, start_ceiling, vars->a.ceiling);
 		start_ceiling--;
@@ -41,10 +41,10 @@ uint32_t get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y) {
 
 	uint32_t index = (y * texture->width + x) * texture->bytes_per_pixel;
 
-	return ((int)texture->pixels[index + 0] << 0) |
-		   ((int)texture->pixels[index + 1] << 8) |
-		   ((int)texture->pixels[index + 2] << 16) |
-		   ((int)texture->pixels[index + 3] << 24);
+	return ((int)texture->pixels[index + 3] << 0) |
+		   ((int)texture->pixels[index + 2] << 8) |
+		   ((int)texture->pixels[index + 1] << 16) |
+		   ((int)texture->pixels[index + 0] << 24);
 }
 
 void	fish_eye(t_vars *vars, t_draw_wall *dw)
@@ -56,6 +56,7 @@ void	fish_eye(t_vars *vars, t_draw_wall *dw)
 		ret += 2 * M_PI;
 	else if (ret > 2 * M_PI)
 		ret -= 2 * M_PI;
+	dw->ray_length_orig = dw->ray_length;
 	dw->ray_length = dw->ray_length * cos(ret);
 }
 
@@ -75,9 +76,9 @@ void	set_wall_height_bottom_top(t_draw_wall *dw)
 void	set_wall_x_begin(t_draw_wall *dw, t_vars *vars)
 {
 	if (dw->orientation == NORTH || dw->orientation == SOUTH)
-		dw->wall_x = (int)(vars->p.c.X + dw->ray_length * cos(dw->ray_angle)) % PIXEL_SIZE;
+		dw->wall_x = (int)(vars->p.c.X + dw->ray_length_orig * cos(dw->ray_angle)) % PIXEL_SIZE;
 	else
-		dw->wall_x = (int)(vars->p.c.Y + dw->ray_length * sin(dw->ray_angle)) % PIXEL_SIZE;
+		dw->wall_x = (int)(vars->p.c.Y + dw->ray_length_orig * sin(dw->ray_angle)) % PIXEL_SIZE;
 }
 
 /**
@@ -101,23 +102,27 @@ void	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 
 	//	get the x of the texture
 	int texture_x = dw->wall_x * vars->a.textures[dw->orientation]->width / PIXEL_SIZE;
+	if (dw->orientation == SOUTH || dw->orientation == WEST)
+		texture_x = vars->a.textures[dw->orientation]->width - texture_x;
+	else
+		texture_x++;
 
 	//get the step_y to increase the y of the texture
-	float step_y = vars->a.textures[dw->orientation]->height / dw->wall_height;
+	double step_y = vars->a.textures[dw->orientation]->height / dw->wall_height;
 
 	//draw the line
-	texture_x = vars->a.textures[dw->orientation]->width - texture_x;
-	float texture_y = 0;
+	double texture_y = vars->a.textures[dw->orientation]->height;
 
-	while (dw->wall_bottom > dw->wall_top)
+	while (dw->wall_bottom >= dw->wall_top)
 	{
 		mlx_put_pixel(vars->win, x, dw->wall_bottom,
-					  get_pixel_color(vars->a.textures[dw->orientation], texture_x, (int)texture_y));
-		texture_y += step_y;
+					  get_pixel_color(vars->a.textures[dw->orientation], (int)texture_x - 1, (int)texture_y));
+		texture_y -= step_y; // TODO: check if texture_y is not negative
 		dw->wall_bottom--;
 	}
 
 	dw->wall_bottom = tmp_wall_bottom;
+//	dw->wall_top = dw->wall_bottom - 1;
 	draw_ceiling_floor_color(vars, dw->wall_top, dw->wall_bottom, x);
 }
 

@@ -107,13 +107,13 @@ void	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 
 	//draw the line
 	texture_x = vars->a.textures[dw->orientation]->width - texture_x;
-	float texture_y = 0;
+	float texture_y = vars->a.textures[dw->orientation]->height - 1;
 
 	while (dw->wall_bottom > dw->wall_top)
 	{
 		mlx_put_pixel(vars->win, x, dw->wall_bottom,
 					  get_pixel_color(vars->a.textures[dw->orientation], texture_x, (int)texture_y));
-		texture_y += step_y;
+		texture_y -= step_y; // TODO: check if texture_y is not negative
 		dw->wall_bottom--;
 	}
 

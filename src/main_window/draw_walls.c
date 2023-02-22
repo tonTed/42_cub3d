@@ -14,7 +14,7 @@
  */
 void draw_ceiling_floor_color(t_vars *vars, int start_ceiling, int start_floor, int x)
 {
-	while (start_ceiling > 0)
+	while (start_ceiling >= 0)
 	{
 		mlx_put_pixel(vars->win, x, start_ceiling, vars->a.ceiling);
 		start_ceiling--;
@@ -78,6 +78,7 @@ void	set_wall_x_begin(t_draw_wall *dw, t_vars *vars)
 		dw->wall_x = (int)(vars->p.c.X + dw->ray_length * cos(dw->ray_angle)) % PIXEL_SIZE;
 	else
 		dw->wall_x = (int)(vars->p.c.Y + dw->ray_length * sin(dw->ray_angle)) % PIXEL_SIZE;
+//	printf("wall_x = %d\n", dw->wall_x);
 }
 
 /**
@@ -101,15 +102,16 @@ void	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 
 	//	get the x of the texture
 	int texture_x = dw->wall_x * vars->a.textures[dw->orientation]->width / PIXEL_SIZE;
+	if (dw->orientation == SOUTH || dw->orientation == WEST)
+		texture_x = vars->a.textures[dw->orientation]->width - texture_x;
 
 	//get the step_y to increase the y of the texture
 	float step_y = vars->a.textures[dw->orientation]->height / dw->wall_height;
 
 	//draw the line
-	texture_x = vars->a.textures[dw->orientation]->width - texture_x;
 	float texture_y = vars->a.textures[dw->orientation]->height - 1;
 
-	while (dw->wall_bottom > dw->wall_top)
+	while (dw->wall_bottom >= dw->wall_top)
 	{
 		mlx_put_pixel(vars->win, x, dw->wall_bottom,
 					  get_pixel_color(vars->a.textures[dw->orientation], texture_x, (int)texture_y));
@@ -117,7 +119,8 @@ void	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 		dw->wall_bottom--;
 	}
 
-	dw->wall_bottom = tmp_wall_bottom;
+	dw->wall_bottom = tmp_wall_bottom + 1;
+//	dw->wall_top = dw->wall_bottom - 1;
 	draw_ceiling_floor_color(vars, dw->wall_top, dw->wall_bottom, x);
 }
 

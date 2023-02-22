@@ -50,16 +50,16 @@ static void	set_orientation(t_ray_length *rl, t_draw_wall *dw)
 	if (rl->side == 0)
 	{
 		if (rl->step_x == -1)
-			dw->orientation = 'W';
+			dw->orientation = WEST;
 		else
-			dw->orientation = 'E';
+			dw->orientation = EAST;
 	}
 	else
 	{
 		if (rl->step_y == -1)
-			dw->orientation = 'N';
+			dw->orientation = NORTH;
 		else
-			dw->orientation = 'S';
+			dw->orientation = SOUTH;
 	}
 }
 

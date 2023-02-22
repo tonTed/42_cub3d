@@ -56,6 +56,7 @@ void	fish_eye(t_vars *vars, t_draw_wall *dw)
 		ret += 2 * M_PI;
 	else if (ret > 2 * M_PI)
 		ret -= 2 * M_PI;
+	dw->ray_length_orig = dw->ray_length;
 	dw->ray_length = dw->ray_length * cos(ret);
 }
 
@@ -75,10 +76,9 @@ void	set_wall_height_bottom_top(t_draw_wall *dw)
 void	set_wall_x_begin(t_draw_wall *dw, t_vars *vars)
 {
 	if (dw->orientation == NORTH || dw->orientation == SOUTH)
-		dw->wall_x = (int)(vars->p.c.X + dw->ray_length * cos(dw->ray_angle)) % PIXEL_SIZE;
+		dw->wall_x = (int)(vars->p.c.X + dw->ray_length_orig * cos(dw->ray_angle)) % PIXEL_SIZE;
 	else
-		dw->wall_x = (int)(vars->p.c.Y + dw->ray_length * sin(dw->ray_angle)) % PIXEL_SIZE;
-//	printf("wall_x = %d\n", dw->wall_x);
+		dw->wall_x = (int)(vars->p.c.Y + dw->ray_length_orig * sin(dw->ray_angle)) % PIXEL_SIZE;
 }
 
 /**
@@ -108,10 +108,10 @@ void	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 		texture_x++;
 
 	//get the step_y to increase the y of the texture
-	float step_y = vars->a.textures[dw->orientation]->height / dw->wall_height;
+	double step_y = vars->a.textures[dw->orientation]->height / dw->wall_height;
 
 	//draw the line
-	float texture_y = vars->a.textures[dw->orientation]->height;
+	double texture_y = vars->a.textures[dw->orientation]->height;
 
 	while (dw->wall_bottom >= dw->wall_top)
 	{

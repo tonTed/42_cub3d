@@ -104,22 +104,24 @@ void	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 	int texture_x = dw->wall_x * vars->a.textures[dw->orientation]->width / PIXEL_SIZE;
 	if (dw->orientation == SOUTH || dw->orientation == WEST)
 		texture_x = vars->a.textures[dw->orientation]->width - texture_x;
+	else
+		texture_x++;
 
 	//get the step_y to increase the y of the texture
 	float step_y = vars->a.textures[dw->orientation]->height / dw->wall_height;
 
 	//draw the line
-	float texture_y = vars->a.textures[dw->orientation]->height - 1;
+	float texture_y = vars->a.textures[dw->orientation]->height;
 
 	while (dw->wall_bottom >= dw->wall_top)
 	{
 		mlx_put_pixel(vars->win, x, dw->wall_bottom,
-					  get_pixel_color(vars->a.textures[dw->orientation], texture_x, (int)texture_y));
+					  get_pixel_color(vars->a.textures[dw->orientation], (int)texture_x - 1, (int)texture_y));
 		texture_y -= step_y; // TODO: check if texture_y is not negative
 		dw->wall_bottom--;
 	}
 
-	dw->wall_bottom = tmp_wall_bottom + 1;
+	dw->wall_bottom = tmp_wall_bottom;
 //	dw->wall_top = dw->wall_bottom - 1;
 	draw_ceiling_floor_color(vars, dw->wall_top, dw->wall_bottom, x);
 }

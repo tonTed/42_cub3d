@@ -66,9 +66,9 @@ bool	mock_init(t_vars *vars)
 	vars->a.ceiling = WHITEH;
 	vars->a.floor = ARMYH;
 	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
-	vars->a.textures[NORTH] = mlx_load_png("./assets/east_32.png");
-	vars->a.textures[SOUTH] = mlx_load_png("./assets/east_32.png");
-	vars->a.textures[WEST] = mlx_load_png("./assets/east_32.png");
+	vars->a.textures[NORTH] = mlx_load_png("./assets/north_32.png");
+	vars->a.textures[SOUTH] = mlx_load_png("./assets/south_32.png");
+	vars->a.textures[WEST] = mlx_load_png("./assets/west_32.png");
 	vars->a.textures[EAST] = mlx_load_png("./assets/east_32.png");
 	if (!vars->a.textures[NORTH] || !vars->a.textures[SOUTH] || !vars->a.textures[WEST] || !vars->a.textures[EAST])
 	{

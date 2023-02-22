@@ -41,10 +41,10 @@ uint32_t get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y) {
 
 	uint32_t index = (y * texture->width + x) * texture->bytes_per_pixel;
 
-	return ((int)texture->pixels[index + 0] << 0) |
-		   ((int)texture->pixels[index + 1] << 8) |
-		   ((int)texture->pixels[index + 2] << 16) |
-		   ((int)texture->pixels[index + 3] << 24);
+	return ((int)texture->pixels[index + 3] << 0) |
+		   ((int)texture->pixels[index + 2] << 8) |
+		   ((int)texture->pixels[index + 1] << 16) |
+		   ((int)texture->pixels[index + 0] << 24);
 }
 
 void	fish_eye(t_vars *vars, t_draw_wall *dw)

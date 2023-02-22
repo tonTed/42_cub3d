@@ -267,6 +267,11 @@ bool	get_next_line(int fd, str *line)
 	return (true);
 }
 
+//0000 0000
+//0000 0001
+//0000 0010
+//0000 0100
+//0000 1000
 #define NORTH 0x1
 #define SOUTH 0x2
 #define WEST 0x4
@@ -274,6 +279,8 @@ bool	get_next_line(int fd, str *line)
 #define FLOOR 0x10
 #define CEILING 0x20
 #define TOTAL 0x3F
+
+
 bool	parsing_file_map2(char *file, t_vars *vars)
 {
 	// open file and check if it's valid
@@ -292,7 +299,7 @@ bool	parsing_file_map2(char *file, t_vars *vars)
 			if (flag & NORTH)
 				return (false);
 			flag |= NORTH;
-			vars->a.north_texture = mlx_load_png(line + 3);
+			vars->a.textures[NORTH] = mlx_load_png(line + 3);
 			if (vars->a.north_texture == NULL)
 				return (false);
 		}

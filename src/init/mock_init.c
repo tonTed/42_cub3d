@@ -65,13 +65,15 @@ bool	mock_init(t_vars *vars)
 	// init textures data
 	vars->a.ceiling = WHITEH;
 	vars->a.floor = ARMYH;
-	vars->a.east_texture = mlx_load_png("./assets/east_64_64.png");
-	if (!vars->a.east_texture)
+	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
+	vars->a.textures[NORTH] = mlx_load_png("./assets/north_32.png");
+	vars->a.textures[SOUTH] = mlx_load_png("./assets/south_32.png");
+	vars->a.textures[WEST] = mlx_load_png("./assets/west_32.png");
+	vars->a.textures[EAST] = mlx_load_png("./assets/east_32.png");
+	if (!vars->a.textures[NORTH] || !vars->a.textures[SOUTH] || !vars->a.textures[WEST] || !vars->a.textures[EAST])
 	{
-		printf("Error with texture: %s\n", "./assets/east_64_64.png");
+		printf("Error with texture: %s\n", "./assets/north.png");
 		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
-
-
 }

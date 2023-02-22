@@ -64,11 +64,19 @@ typedef struct s_draw_wall
 	char 	orientation;
 } t_draw_wall;
 
+enum e_orientation {
+	NORTH,
+	SOUTH,
+	WEST,
+	EAST
+};
+
 typedef struct s_assets {
-    mlx_texture_t   *north_texture;
-    mlx_texture_t   *south_texture;
-    mlx_texture_t	*west_texture;
-    mlx_texture_t	*east_texture;
+	mlx_texture_t  **textures;
+	mlx_texture_t  *north_texture;
+	mlx_texture_t  *south_texture;
+	mlx_texture_t  *west_texture;
+	mlx_texture_t  *east_texture;
 	int             floor;
 	int             ceiling;
 }	t_assets;

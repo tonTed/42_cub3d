@@ -100,7 +100,7 @@ void	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 	tmp_wall_bottom = dw->wall_bottom;
 
 //	get the x of the texture
-	mlx_texture_t *texture = vars->a.east_texture;
+	mlx_texture_t *texture = vars->a.textures[NORTH];
 	int texture_x = dw->wall_x * texture->width / 64;
 
 	//get the step_y to increase the y of the texture

@@ -6,7 +6,7 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/18 11:26:45 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/02/22 21:44:37 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,32 +48,32 @@
  * 	    - [[vars.p]]
  */
 
-char    *ft_strcpy(char *s1, char *s2)
+char	*ft_strcpy(char *dst, const char *src)
 {
-      int i;
- 
-      i = 0;
-      while (s2[i])
-      {
-          s1[i] = s2[i]; 
-          i++;
-      }
-      s1[i] = s2[i];
-      return (s1);
-}
-
-void	free_strrarr(char **to_free)
-{
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while (to_free[i])
+	while (src[i] != '\0')
 	{
-		free(to_free[i]);
+		dst[i] = src[i];
 		i++;
 	}
-	free(to_free);
+	dst[i] = '\0';
+	return (dst);
 }
+
+// void	free_strrarr(char **to_free)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (to_free[i])
+// 	{
+// 		free(to_free[i]);
+// 		i++;
+// 	}
+// 	free(to_free);
+// }
 
 bool all_texture_set(t_vars *vars)
 {
@@ -209,7 +209,7 @@ void init_map(t_vars *vars, char **raw_file)
 
 }
 
-bool	parsing_file_map(char *file, t_vars *vars)
+bool	parsing_file_map2(char *file, t_vars *vars)
 {
     WHOAMI
 	int ret;
@@ -252,7 +252,7 @@ bool	parsing_file_map(char *file, t_vars *vars)
 
 bool	open_file(char *file, int *fd)
 {
-	*fd = open(file, O_RDONLY) == -1;
+	*fd = open(file, O_RDONLY);
 	if (*fd == -1)
 		return (false);
 	return (true);
@@ -260,12 +260,34 @@ bool	open_file(char *file, int *fd)
 
 typedef char* str;
 
-bool	get_next_line(int fd, str *line)
+
+#define BUFFER_SIZE 32
+
+int get_next_line(int fd, char **line)
 {
-	(void)fd;
-	(void)line;
-	return (true);
+    int     i = 0;
+    int     rd = 0;
+    char    character;
+    char     *buffer = malloc(10000);
+    *line = malloc(10000);
+
+    while ((rd = read(fd, &character, BUFFER_SIZE - BUFFER_SIZE + 1)) > 0)
+    {
+        buffer[i++] = character;
+        if (character == '\n')
+            break;
+    }
+    if ((!buffer[i - 1] && !rd) || rd == -1)
+    {
+        free(buffer);
+        return (0);
+    }
+    buffer[i] =  '\0';
+	ft_strlcpy(*line,buffer,ft_strlen(buffer));
+	free(buffer);
+    return (i);
 }
+
 
 #define NORTH 0x1
 #define SOUTH 0x2
@@ -274,26 +296,28 @@ bool	get_next_line(int fd, str *line)
 #define FLOOR 0x10
 #define CEILING 0x20
 #define TOTAL 0x3F
-bool	parsing_file_map2(char *file, t_vars *vars)
+bool	parsing_file_map(char *file, t_vars *vars)
 {
-	// open file and check if it's valid
-	int		fd;
+	int fd;
 	if (!open_file(file, &fd))
 		return (false);
-
+	//init textures in order to put the path into it
+	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
 	// read file line by line
 	char	flag = 0x0;
 	str		line;
+	line = NULL;
 	// while as long as the line is not empty and we haven't found all the textures/floor/ceiling
 	while (get_next_line(fd, &line) > 0 && flag != TOTAL)
 	{
+		printf("This is line [%s]\n", line);
 		if (ft_strncmp(line, "NO ", 3) == 0)
 		{
 			if (flag & NORTH)
 				return (false);
 			flag |= NORTH;
-			vars->a.north_texture = mlx_load_png(line + 3);
-			if (vars->a.north_texture == NULL)
+			vars->a.textures[NORTH] = mlx_load_png(line + 3);
+			if (vars->a.textures[NORTH] == NULL)
 				return (false);
 		}
 		else if (ft_strncmp(line, "SO ", 3) == 0)
@@ -301,8 +325,8 @@ bool	parsing_file_map2(char *file, t_vars *vars)
 			if (flag & SOUTH)
 				return (false);
 			flag |= SOUTH;
-			vars->a.south_texture = mlx_load_png(line + 3);
-			if (vars->a.south_texture == NULL)
+			vars->a.textures[SOUTH] = mlx_load_png(line + 3);
+			if (vars->a.textures[SOUTH] == NULL)
 				return (false);
 		}
 		else if (ft_strncmp(line, "WE ", 3) == 0)
@@ -310,8 +334,8 @@ bool	parsing_file_map2(char *file, t_vars *vars)
 			if (flag & WEST)
 				return (false);
 			flag |= WEST;
-			vars->a.west_texture = mlx_load_png(line + 3);
-			if (vars->a.west_texture == NULL)
+			vars->a.textures[WEST] = mlx_load_png(line + 3);
+			if (vars->a.textures[WEST] == NULL)
 				return (false);
 		}
 		else if (ft_strncmp(line, "EA ", 3) == 0)
@@ -319,18 +343,19 @@ bool	parsing_file_map2(char *file, t_vars *vars)
 			if (flag & EAST)
 				return (false);
 			flag |= EAST;
-			vars->a.east_texture = mlx_load_png(line + 3);
-			//xpm_t *tmp = mlx_load_xpm42(line + 3)
-			if (vars->a.east_texture == NULL)
+			vars->a.textures[EAST] = mlx_load_png(line + 3);
+			if (vars->a.textures[EAST] == NULL)
 				return (false);
 		}
 		else if (ft_strncmp(line, "C ", 2) == 0)
 		{
 			//manage color
+			flag |= FLOOR;
 		}
 		else if (ft_strncmp(line, "F ", 2) == 0)
 		{
 			//manage color
+			flag |= CEILING;
 		}
 		free(line);
 	}
@@ -338,6 +363,7 @@ bool	parsing_file_map2(char *file, t_vars *vars)
 	while (get_next_line(fd, &line) > 0)
 	{
 		//manage map
+
 	}
 	return (true);
 }

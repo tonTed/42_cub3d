@@ -6,7 +6,7 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/22 23:54:57 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/02/28 16:39:11 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ void get_map_size(t_vars *vars, char **raw_file)
 	j = 0;
 	vars->m.s.h = 0;
 	vars->m.s.w = 0;
-
 	while(raw_file[i])
 	{
 		j = 0;
@@ -87,7 +86,7 @@ void get_map_size(t_vars *vars, char **raw_file)
 		i ++;
 	}
 	vars->m.s.h = i;
-	// printf("Map width [%d] map height[%d]\n",vars->m.s.w, vars->m.s.h);
+	printf("Map width [%d] map height[%d]\n",vars->m.s.w, vars->m.s.h);
 }
 
 void allocate_map_array(t_vars *vars, char **raw_file)
@@ -112,16 +111,15 @@ void allocate_map_array(t_vars *vars, char **raw_file)
 		}
 		y++;
 	}
-	
-	//print map in term
-	// for(int i = 0; i < (int)vars->m.s.h; i++)
-	// {
-	// 	for(int j = 0;  j< (int)vars->m.s.w;j++)
-	// 	{
-	// 		printf("[%c]",vars->m.m[i][j]);
-	// 	}
-	// 	printf("\n");
-	// }
+	// print map in term
+	for(int i = 0; i < (int)vars->m.s.h; i++)
+	{
+		for(int j = 0;  j< (int)vars->m.s.w;j++)
+		{
+			printf("[%c]",vars->m.m[i][j]);
+		}
+		printf("\n");
+	}
 	
 }
 void init_map(t_vars *vars, char **raw_file)
@@ -131,7 +129,7 @@ void init_map(t_vars *vars, char **raw_file)
 	// init minimap data
 	vars->mm.size.w = vars->m.s.w * 16;
 	vars->mm.size.h = vars->m.s.h * 16;
-	vars->mm.pos.X = 16; // c'est quoi ça donc ? ah la posiiton de la mini map je crois !!
+	vars->mm.pos.X = 16; 
 	vars->mm.pos.Y = 16;
 	
 	// from mock init
@@ -183,6 +181,7 @@ int get_next_line(int fd, char **line)
 	free(buffer);
     return (i);
 }
+
 /*
 	take a color string as input and return an int
 	//TODO correct the function so it returns the correct number
@@ -224,10 +223,10 @@ bool	parsing_file_map(char *file, t_vars *vars)
 		return (false);
 	//init textures in order to put the path into it
 	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
-
 	char	flag = 0x0;
 	str		line;
 	line = NULL;
+
 	// get the textures
 	// when every tecture is found, flag will be equal to 0x3F 
 	while (get_next_line(fd, &line) > 0 && flag != TOTAL)
@@ -296,57 +295,69 @@ bool	parsing_file_map(char *file, t_vars *vars)
 	buffer = ft_calloc(200, sizeof(char *));
 	while (get_next_line(fd, &line) > 0)
 	{
-		int i;
-
-		i = 0;
+		int i = 0;
 		//check for empty line
-		if (!ft_strchr(line, 'N') || !ft_strchr(line, 'S') || !ft_strchr(line, 'E') || !ft_strchr(line, '0'|| !ft_strchr(line, '1')))
+		if (!ft_strchr(line, 'N') && !ft_strchr(line, 'S') && !ft_strchr(line, 'E') && !ft_strchr(line, '0'&& !ft_strchr(line, '1')))
 		{
-			printf("Empty line found\n");
+			printf("Empty line found [%s]\n",line);
 			return (EXIT_FAILURE);
 		}
 		//check if the player is in the map
-		if (ft_strchr(line, 'N') || ft_strchr(line, 'S') || ft_strchr(line, 'E') || ft_strchr(line, 'W'))
+		while(line[i] && player_found == false)
 		{
-			if (player_found)
-				return (false);
-			player_found = true;
-			//Set player position
-			if (ft_strchr(line, 'N'))
+			if (line[i] == 'S' || line[i] == 'N' || line[i] == 'E' || line[i] == 'W')
 			{
-				vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-				vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-				vars->p.angle = 0.0;
+				player_found = true;
+				//Set player position
+				if (line[i] == 'N')
+				{
+					printf("Found a player facing north\n");
+					vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.angle = 0.0;
+				}
+				else if (line[i] == 'S')
+				{
+					printf("Found a player facing south\n");
+					vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.angle = 180.0;
+				}
+				else if (line[i] == 'E')
+				{
+					printf("Found a player facing east\n");
+					vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.angle = 90.0;
+				}
+				else if (line[i] == 'W')
+				{
+					printf("Found a player facing west\n");
+					vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.angle = 270.0;
+				}
 			}
-			else if (ft_strchr(line, 'S'))
-			{
-				vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-				vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-				vars->p.angle = 180.0;
-			}
-			else if (ft_strchr(line, 'E'))
-			{
-				vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-				vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-				vars->p.angle = 90.0;
-			}
-			else if (ft_strchr(line, 'W'))
-			{
-				vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-				vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-				vars->p.angle = 270.0;
-			}
+			i++;
 		}
-		
 		//import line into temp 2d array
 		buffer[j] = ft_strdup(line);
 		j++;
 		free(line);
 	}
 	//init map with the map data
-	init_map(vars, buffer);
-	free_strrarr(buffer);
-	return (true);
-	// return (EXIT_SUCCESS);
+	if (player_found)
+	{
+		printf("This is player position [%f][%f]\n", vars->p.c.X, vars->p.c.Y);
+		init_map(vars, buffer);
+		free_strrarr(buffer);
+		return (EXIT_SUCCESS);	
+	}
+	else 
+	{
+		printf("no player found\n");
+		return(EXIT_FAILURE);
+	}
+	// return (true);
 	
 }

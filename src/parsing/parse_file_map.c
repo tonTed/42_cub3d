@@ -106,7 +106,7 @@ void allocate_map_array(t_vars *vars, char **raw_file)
 		x = 0;
 		while (raw_file[y][x])	
 		{
-				vars->m.m[y][x] = raw_file[y][x];
+				vars->m.m[y][x] = raw_file[y][x] - '0';
 			x++;
 		}
 		y++;
@@ -116,7 +116,7 @@ void allocate_map_array(t_vars *vars, char **raw_file)
 	{
 		for(int j = 0;  j< (int)vars->m.s.w;j++)
 		{
-			printf("[%c]",vars->m.m[i][j]);
+			printf("[%d]",vars->m.m[i][j]);
 		}
 		printf("\n");
 	}
@@ -156,6 +156,39 @@ typedef char* str;
 
 
 #define BUFFER_SIZE 32
+
+int	gnl(int fd, char **line)
+{
+	int br;
+	char buffer[2];
+	char *tmp = NULL;
+
+	buffer[1] = '\0';
+	*line = NULL;
+	while (42)
+	{
+		br = read(fd, &buffer, 1);
+		if (br == -1)
+			return (-1);
+		if (br == 0)
+		{
+			if (*line == NULL)
+				return (0);
+			else
+				return (1);
+		}
+		if (buffer[0] == '\n')
+			return (1);
+		if (*line == NULL)
+			*line = ft_strdup(buffer);
+		else
+		{
+			tmp = *line;
+			*line = ft_strjoin(*line, buffer);
+			free_null(tmp);
+		}
+	}
+}
 
 int get_next_line(int fd, char **line)
 {
@@ -209,13 +242,14 @@ int	get_color(char *color)
 	return ((int)(r << 24) | (int)(g << 16) | (int)(b << 8) | (int)(0xFF << 0));
 }
 
-#define NORTH 0x1
-#define SOUTH 0x2
-#define WEST 0x4
-#define EAST 0x8
+#define F_NORTH 0x1
+#define F_SOUTH 0x2
+#define F_WEST 0x4
+#define F_EAST 0x8
 #define FLOOR 0x10
 #define CEILING 0x20
 #define TOTAL 0x3F
+
 bool	parsing_file_map(char *file, t_vars *vars)
 {
 	int fd;
@@ -228,42 +262,43 @@ bool	parsing_file_map(char *file, t_vars *vars)
 	line = NULL;
 
 	// get the textures
-	// when every tecture is found, flag will be equal to 0x3F 
-	while (get_next_line(fd, &line) > 0 && flag != TOTAL)
+	// when every tecture is found, flag will be equal to 0x3F
+	while (gnl(fd, &line) > 0 && flag != TOTAL)
 	{
-		// printf("This is line [%s]\n", line);
-		if (ft_strncmp(line, "NO ", 3) == 0)
+		if (!line)
+			continue ;
+		if (!ft_strncmp(line, "NO ", 3))
 		{
-			if (flag & NORTH)
+			if (flag & F_NORTH)
 				return (false);
-			flag |= NORTH;
+			flag |= F_NORTH;
 			vars->a.textures[NORTH] = mlx_load_png(line + 3);
 			if (vars->a.textures[NORTH] == NULL)
 				return (false);
 		}
 		else if (ft_strncmp(line, "SO ", 3) == 0)
 		{
-			if (flag & SOUTH)
+			if (flag & F_SOUTH)
 				return (false);
-			flag |= SOUTH;
+			flag |= F_SOUTH;
 			vars->a.textures[SOUTH] = mlx_load_png(line + 3);
 			if (vars->a.textures[SOUTH] == NULL)
 				return (false);
 		}
 		else if (ft_strncmp(line, "WE ", 3) == 0)
 		{
-			if (flag & WEST)
+			if (flag & F_WEST)
 				return (false);
-			flag |= WEST;
+			flag |= F_WEST;
 			vars->a.textures[WEST] = mlx_load_png(line + 3);
 			if (vars->a.textures[WEST] == NULL)
 				return (false);
 		}
 		else if (ft_strncmp(line, "EA ", 3) == 0)
 		{
-			if (flag & EAST)
+			if (flag & F_EAST)
 				return (false); //TODO free line and textures
-			flag |= EAST;
+			flag |= F_EAST;
 			vars->a.textures[EAST] = mlx_load_png(line + 3);
 			if (vars->a.textures[EAST] == NULL)
 				return (false);
@@ -284,7 +319,7 @@ bool	parsing_file_map(char *file, t_vars *vars)
 			vars->a.floor = ARMYH;
 			flag |= FLOOR;
 		}
-		free(line);
+//		free_null(line);
 	}
 	printf("All textures acquired\n");
 
@@ -293,7 +328,7 @@ bool	parsing_file_map(char *file, t_vars *vars)
 	int j = 0;
 	char **buffer;
 	buffer = ft_calloc(200, sizeof(char *));
-	while (get_next_line(fd, &line) > 0)
+	while (gnl(fd, &line) > 0)
 	{
 		int i = 0;
 		//check for empty line
@@ -312,38 +347,39 @@ bool	parsing_file_map(char *file, t_vars *vars)
 				if (line[i] == 'N')
 				{
 					printf("Found a player facing north\n");
-					vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.angle = 0.0;
+					vars->p.c.X = i * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.c.Y = j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.angle = M_PI / 2;
 				}
 				else if (line[i] == 'S')
 				{
 					printf("Found a player facing south\n");
 					vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
 					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.angle = 180.0;
+					vars->p.angle = M_PI * 3 / 2;
 				}
 				else if (line[i] == 'E')
 				{
 					printf("Found a player facing east\n");
 					vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
 					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.angle = 90.0;
+					vars->p.angle = 0.0;
 				}
 				else if (line[i] == 'W')
 				{
 					printf("Found a player facing west\n");
 					vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
 					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.angle = 270.0;
+					vars->p.angle = M_PI;
 				}
+				line[i] = '0';
 			}
 			i++;
 		}
 		//import line into temp 2d array
 		buffer[j] = ft_strdup(line);
 		j++;
-		free(line);
+		free_null(line);
 	}
 	//init map with the map data
 	if (player_found)

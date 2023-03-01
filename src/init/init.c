@@ -25,23 +25,23 @@ bool	check_args(int ac, char *av[], t_vars *vars)
 		return (mock_init(vars));
 	else
 	{
-		{// Block to test mlx_load_png
+		// {// Block to test mlx_load_png
 
-			printf("Parsing file: %s\n", av[1]);
-			mlx_texture_t *texture = mlx_load_png("./assets/north_texture.png");
-			if (!texture)
-			{
-				printf("Error: texture not found.\n");
-				exit(EXIT_FAILURE);
-			}
-			else
-			{
-				printf("Texture found.\n");
-				printf("Texture size: %d x %d\n", texture->width, texture->height);
-				printf("Texture path: %s\n", texture->path);
-				exit(EXIT_SUCCESS);
-			}
-		}
+		// 	printf("Parsing file: %s\n", av[1]);
+		// 	mlx_texture_t *texture = mlx_load_png("./assets/north_texture.png");
+		// 	if (!texture)
+		// 	{
+		// 		printf("Error: texture not found.\n");
+		// 		exit(EXIT_FAILURE);
+		// 	}
+		// 	else
+		// 	{
+		// 		printf("Texture found.\n");
+		// 		printf("Texture size: %d x %d\n", texture->width, texture->height);
+		// 		printf("Texture path: %s\n", texture->path);
+		// 		exit(EXIT_SUCCESS);
+		// 	}
+		// }
 		return (parsing_file_map(av[1], vars));
 	}
 }

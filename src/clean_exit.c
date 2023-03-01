@@ -15,7 +15,7 @@ void	clean_exit(t_vars *vars)
 {
 	int	i;
 
-	//free map tab
+//	free map tab
 	free_tab_int_2d(vars->m.m, vars->m.s.h);
 
 	i = 0;
@@ -23,8 +23,10 @@ void	clean_exit(t_vars *vars)
 	{
 		mlx_delete_texture(vars->a.textures[i]);
 		vars->a.textures[i] = NULL;
+		i++;
 	}
 	free_null(vars->a.textures);
 
+	(void)vars;
 	WHOAMI
 }

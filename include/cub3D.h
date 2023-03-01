@@ -62,6 +62,8 @@ typedef struct s_draw_wall
 	double	ray_length_orig;
 	double	ray_angle;
 	double 	step_angle;		// TODO: add to main structure same all the program
+	double	step_y;
+	double	off_y;
 	uint8_t orientation;
 } t_draw_wall;
 

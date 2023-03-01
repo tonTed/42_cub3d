@@ -6,13 +6,11 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/03/01 17:36:36 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/03/01 17:50:05 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/cub3D.h"
-#include <stdbool.h>
-#include <stdlib.h>
 
 /**
  * @brief Parse the file map and fill the vars struct
@@ -50,6 +48,19 @@
  * 	    - [[vars.p]]
  */
 
+char    *ft_strcpy(char *s1, char *s2)
+{
+      int i;
+ 
+      i = 0;
+      while (s2[i])
+      {
+          s1[i] = s2[i]; 
+          i++;
+      }
+      s1[i] = s2[i];
+      return (s1);
+}
 
 void	free_strrarr(char **to_free)
 {
@@ -64,6 +75,78 @@ void	free_strrarr(char **to_free)
 	free(to_free);
 }
 
+bool all_texture_set(t_vars *vars)
+{
+	return (vars->m.north == true && vars->m.south == true && vars->m.east == true
+		 && vars->m.west == true && vars->m.ceiling == true && vars->m.floor == true);
+}
+
+void	init_map_assets(t_vars *vars)
+{
+	vars->m.east = false;
+	vars->m.west = false;
+	vars->m.north = false;
+	vars->m.south = false;
+	vars->m.floor = false;
+	vars->m.ceiling = false;
+}
+
+bool	set_texture(t_vars *vars, char ***raw_file)
+{
+	char *north,*south,*east,*west;
+	init_map_assets(vars);
+	while(*(*raw_file))
+	{
+		if (all_texture_set(vars))
+		{
+			printf("NO [%s]\nSO [%s]\nWE [%s]\nEA [%s]\nF [%D]\nC [%D]\n", north,south,west,east,vars->a.floor,vars->a.ceiling);
+			return(true);
+		}
+		if (ft_strncmp(*(*raw_file), "NO ./", 4) == 0)
+		{
+			// vars->a.north_texture->path = ft_calloc(1, ft_strlen(*(*raw_file)) + 1);
+			// ft_strcpy(vars->a.north_texture->path, *(*raw_file));
+			// vars->a.north_texture->path = *(*raw_file);
+			north = *(*raw_file);
+			vars->m.north = true;
+		}
+		if (ft_strncmp(*(*raw_file), "SO ./", 5) == 0)
+		{
+			// vars->a.south_texture->path = *(*raw_file);
+			south = *(*raw_file);
+			vars->m.south = true;
+		}
+		if (ft_strncmp(*(*raw_file), "WE ./", 5) == 0)
+		{
+			// vars->a.west_texture->path = *(*raw_file);
+			west = *(*raw_file);
+			vars->m.west = true;
+		}
+		if (ft_strncmp(*(*raw_file), "EA ./", 5) == 0)
+		{
+			// vars->a.east_texture->path = *(*raw_file);
+			east = *(*raw_file);
+			vars->m.east = true;
+		}
+		if (ft_strncmp(*(*raw_file), "F ", 2) == 0)
+		{
+			// vars->a.floor = ft_atoi(*(*raw_file));
+			// TODO find a way of getting the numbers in a logical way
+			vars->a.floor = 100;
+			vars->m.floor = true;
+		}
+		if (ft_strncmp(*(*raw_file), "C ", 2) == 0)
+		{
+			// vars->a.ceiling = ft_atoi(*(*raw_file));
+			// TODO find a way of getting the numbers in a logical way
+			vars->a.ceiling = 1000;
+			vars->m.ceiling = true;
+		}
+		(*raw_file)++;
+	}
+	// printf("NO [%s]\nSO [%s]\nWE [%s]\nEA [%s]\nF [%D]\nC [%D]\n", vars->a.north_texture->path,vars->a.south_texture->path,vars->a.west_texture->path,vars->a.east_texture->path,vars->a.floor,vars->a.ceiling);
+	return (false);
+}
 
 void get_map_size(t_vars *vars, char **raw_file)
 {
@@ -74,6 +157,7 @@ void get_map_size(t_vars *vars, char **raw_file)
 	j = 0;
 	vars->m.s.h = 0;
 	vars->m.s.w = 0;
+
 	while(raw_file[i])
 	{
 		j = 0;
@@ -104,7 +188,7 @@ void allocate_map_array(t_vars *vars, char **raw_file)
 	while (y < (int)vars->m.s.h)
 	{
 		x = 0;
-		while (raw_file[y][x])	
+		while (raw_file[y][x])
 		{
 				vars->m.m[y][x] = raw_file[y][x] - '0';
 			x++;
@@ -114,7 +198,7 @@ void allocate_map_array(t_vars *vars, char **raw_file)
 	// print map in term
 	for(int i = 0; i < (int)vars->m.s.h; i++)
 	{
-		for(int j = 0;  j< (int)vars->m.s.w;j++)
+		for(int j = 0; j < (int)vars->m.s.w;j++)
 		{
 			printf("[%d]",vars->m.m[i][j]);
 		}
@@ -127,11 +211,11 @@ void init_map(t_vars *vars, char **raw_file)
 	get_map_size(vars, raw_file);
 	allocate_map_array(vars, raw_file);
 	// init minimap data
-	vars->mm.size.w = vars->m.s.w * 16;
-	vars->mm.size.h = vars->m.s.h * 16;
-	vars->mm.pos.X = 16; 
+	vars->mm.size.w = vars->m.s.w * MM_PIXEL_SIZE;
+	vars->mm.size.h = vars->m.s.h * MM_PIXEL_SIZE;
+	vars->mm.pos.X = 16;
 	vars->mm.pos.Y = 16;
-	
+
 	// from mock init
 	vars->mm.ratio = PIXEL_SIZE / MM_PIXEL_SIZE;
 	vars->p.mm_c.X = vars->p.c.X / vars->mm.ratio;
@@ -382,13 +466,13 @@ bool	parsing_file_map(char *file, t_vars *vars)
 		printf("This is player position [%f][%f]\n", vars->p.c.X, vars->p.c.Y);
 		init_map(vars, buffer);
 		free_strrarr(buffer);
-		return (EXIT_SUCCESS);	
+		return (EXIT_SUCCESS);
 	}
-	else 
+	else
 	{
 		printf("no player found\n");
 		return(EXIT_FAILURE);
 	}
 	// return (true);
-	
+
 }

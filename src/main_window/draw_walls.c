@@ -29,15 +29,6 @@ void draw_ceiling_floor_color(t_vars *vars, int start_ceiling, int start_floor, 
 
 /* WORKING */
 
-int width_next_wall(t_vars *vars, double angle, int wall_x, int wall_y)
-{
-	(void)vars;
-	(void)angle;
-	(void)wall_x;
-	(void)wall_y;
-	return (0);
-}
-
 uint32_t get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y) {
 
 	uint32_t index = (y * texture->width + x) * texture->bytes_per_pixel;

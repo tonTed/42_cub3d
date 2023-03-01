@@ -14,6 +14,7 @@
  */
 void draw_ceiling_floor_color(t_vars *vars, int start_ceiling, int start_floor, int x)
 {
+	start_ceiling++;
 	while (start_ceiling >= 0)
 	{
 		mlx_put_pixel(vars->win, x, start_ceiling, vars->a.ceiling);
@@ -45,6 +46,7 @@ uint32_t get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y) {
 		   ((int)texture->pixels[index + 2] << 8) |
 		   ((int)texture->pixels[index + 1] << 16) |
 		   ((int)texture->pixels[index + 0] << 24);
+
 }
 
 void	fish_eye(t_vars *vars, t_draw_wall *dw)

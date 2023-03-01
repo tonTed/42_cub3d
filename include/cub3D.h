@@ -42,7 +42,7 @@
 #define PIXEL_SIZE 64
 
 /* MINIMAP CONFIGS */
-#define MM_PIXEL_SIZE 16
+#define MM_PIXEL_SIZE 32
 #define SHIFT 1
 #define DOT_PLAYER_SIZE 7
 #define DOT_PLAYER_COLOR ORANGEH

@@ -211,8 +211,8 @@ void init_map(t_vars *vars, char **raw_file)
 	get_map_size(vars, raw_file);
 	allocate_map_array(vars, raw_file);
 	// init minimap data
-	vars->mm.size.w = vars->m.s.w * 16;
-	vars->mm.size.h = vars->m.s.h * 16;
+	vars->mm.size.w = vars->m.s.w * MM_PIXEL_SIZE;
+	vars->mm.size.h = vars->m.s.h * MM_PIXEL_SIZE;
 	vars->mm.pos.X = 16;
 	vars->mm.pos.Y = 16;
 

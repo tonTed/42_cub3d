@@ -6,7 +6,7 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/18 11:26:45 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/03/01 17:50:05 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,31 +274,6 @@ int	gnl(int fd, char **line)
 	}
 }
 
-int get_next_line(int fd, char **line)
-{
-    int     i = 0;
-    int     rd = 0;
-    char    character;
-    char     *buffer = malloc(10000);
-    *line = malloc(10000);
-
-    while ((rd = read(fd, &character, BUFFER_SIZE - BUFFER_SIZE + 1)) > 0)
-    {
-        buffer[i++] = character;
-        if (character == '\n')
-            break;
-    }
-    if ((!buffer[i - 1] && !rd) || rd == -1)
-    {
-        free(buffer);
-        return (0);
-    }
-    buffer[i] =  '\0';
-	ft_strlcpy(*line,buffer,ft_strlen(buffer));
-	free(buffer);
-    return (i);
-}
-
 /*
 	take a color string as input and return an int
 	//TODO correct the function so it returns the correct number
@@ -333,6 +308,26 @@ int	get_color(char *color)
 #define FLOOR 0x10
 #define CEILING 0x20
 #define TOTAL 0x3F
+
+unsigned int rgb_to_int(char* color_str) {
+    char **tok;
+    unsigned int color_int = 0;
+    int i = 0;
+
+    tok = ft_split(color_str, ',');
+    while (tok[i]) {
+        int color_val = ft_atoi(*tok);
+        if (color_val > 255 || color_val < 0) {
+            printf("Error: color value out of range (0-255)\n");
+            return 0;
+        }
+        color_int |= (color_val << (8 * i));
+        i++;
+    }
+
+    return color_int;
+}
+
 
 bool	parsing_file_map(char *file, t_vars *vars)
 {
@@ -390,17 +385,17 @@ bool	parsing_file_map(char *file, t_vars *vars)
 		else if (ft_strncmp(line, "C ", 2) == 0)
 		{
 			//TODO manage color
-			// vars->a.ceiling = get_color(line);
-			// printf("This is the ceiling color [%d]\n", vars->a.ceiling);
-			vars->a.ceiling = WHITEH;
+			vars->a.ceiling = get_color(line);
+			printf("This is the ceiling color [%d]\n", vars->a.ceiling);
+			// vars->a.ceiling = WHITEH;
 			flag |= CEILING;
 		}
 		else if (ft_strncmp(line, "F ", 2) == 0)
 		{
 			//manage color
-			// vars->a.floor = get_color(line);
-			// printf("This is the ceiling color [%d]\n", vars->a.ceiling);
-			vars->a.floor = ARMYH;
+			vars->a.floor = get_color(line);
+			printf("This is the ceiling color [%d]\n", vars->a.ceiling);
+			// vars->a.floor = ARMYH;
 			flag |= FLOOR;
 		}
 //		free_null(line);
@@ -438,21 +433,21 @@ bool	parsing_file_map(char *file, t_vars *vars)
 				else if (line[i] == 'S')
 				{
 					printf("Found a player facing south\n");
-					vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.c.X = (double)i * PIXEL_SIZE + PIXEL_SIZE / 2.0;
 					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
 					vars->p.angle = M_PI * 3 / 2;
 				}
 				else if (line[i] == 'E')
 				{
 					printf("Found a player facing east\n");
-					vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.c.X = (double)i* PIXEL_SIZE + PIXEL_SIZE / 2.0;
 					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
 					vars->p.angle = 0.0;
 				}
 				else if (line[i] == 'W')
 				{
 					printf("Found a player facing west\n");
-					vars->p.c.X = (double)(i - 1) * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+					vars->p.c.X = (double)i* PIXEL_SIZE + PIXEL_SIZE / 2.0;
 					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
 					vars->p.angle = M_PI;
 				}

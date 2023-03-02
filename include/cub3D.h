@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3D.h                                            :+:      :+:    :+:   */
+/*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
+/*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 13:09:41 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/18 11:08:17 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/03/02 11:17:39 by tonted           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ typedef struct s_draw_wall
 	double 	step_angle;		// TODO: add to main structure same all the program
 	double	step_y;
 	double	off_y;
+	int 	tex_x;
+	double	tex_y;
 	uint8_t orientation;
 } t_draw_wall;
 
@@ -165,7 +167,7 @@ typedef struct s_vars {
 }	t_vars;
 
 /* hooks */
-void    hook_keyboard(t_vars *vars);
+void    hooks(t_vars *vars);
 
 /* parsing_file_map */
 bool	parsing_file_map(char *file, t_vars *vars);
@@ -175,10 +177,10 @@ bool	init(int ac, char *av[], t_vars *vars);
 bool	init_assets(t_vars *vars);
 
 /* utils */
-void	*int_memset(void *ptr, int value, size_t num);
-int		rgba_to_int(int r, int g, int b, int a);
-void	free_null(void *ptr);
-void	clean_exit(t_vars *vars);
+void		*int_memset(void *ptr, int value, size_t num);
+void		free_null(void *ptr);
+void		clean_exit(t_vars *vars);
+uint32_t	get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y);
 
 /* utils image */
 void	fill_image(mlx_image_t *img, int color);
@@ -195,6 +197,14 @@ void	draw_main_window(t_vars *vars);
 void	draw_minimap(t_vars *vars);
 void	draw_bonus(t_vars *vars);
 void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i);
+
+/* utils main windows */
+void	set_begin_vector_texture(t_vars *vars, t_draw_wall *dw);
+void	set_wall_x_begin(t_draw_wall *dw, t_vars *vars);
+void	set_wall_height_bottom_top(t_draw_wall *dw, u_int32_t height);
+
+/* utils minimap */
+void mm_draw_squares(t_vars *vars);
 
 
 /* development */

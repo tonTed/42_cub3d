@@ -1,8 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   clean_exit.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/02 11:30:03 by tonted            #+#    #+#             */
+/*   Updated: 2023/03/02 11:30:41 by tonted           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/cub3D.h"
 
 void	free_tab_int_2d(int **tab, int size)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (i < size)
 	{
 		free_null(tab[i]);
@@ -15,9 +29,7 @@ void	clean_exit(t_vars *vars)
 {
 	int	i;
 
-//	free map tab
 	free_tab_int_2d(vars->m.m, vars->m.s.h);
-
 	i = 0;
 	while (i < 4)
 	{
@@ -26,7 +38,4 @@ void	clean_exit(t_vars *vars)
 		i++;
 	}
 	free_null(vars->a.textures);
-
-	(void)vars;
-	WHOAMI
 }

@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   draw_minimap.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/02 11:04:03 by tonted            #+#    #+#             */
+/*   Updated: 2023/03/02 11:17:58 by tonted           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/cub3D.h"
 
 /**
- * @brief Draw raysd
+ * @brief Draw rays on the minimap.
  *
  * @param vars	pointer to main struct of the program
  * @param dw	pointer to a struct to data needed to draw walls
@@ -12,64 +23,11 @@
  */
 void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i)
 {
-	if ( i % 64 != 0)
+	if (i % 64 != 0)
 		return ;
 	draw_ray(vars->mm.win, vars->p.mm_c, dw->ray_angle,
-			 dw->ray_length / vars->mm.ratio, REDH);
+		dw->ray_length / vars->mm.ratio, REDH);
 }
-
-
-/* WORKING */
-
-int	mm_get_index(int width_img, t_vectorI pos, int row)
-{
-	int	len_y;
-	int	len_x;
-
-	int	len_line = width_img * 4;
-	int len_line_square = MM_PIXEL_SIZE * 4;
-	int len_line_squares = len_line * MM_PIXEL_SIZE;
-
-	len_y = len_line_squares * pos.Y;
-	len_x = (pos.X * len_line_square) + (len_line * row);
-
-	return (len_y + len_x);
-}
-
-void	mm_draw_square(t_vars *vars, t_vectorI pos)
-{
-	int row;
-	int index;
-
-	row = SHIFT;
-	while (row < MM_PIXEL_SIZE - SHIFT)
-	{
-		index = mm_get_index(vars->mm.win->width, pos, row);
-		if (vars->m.m[pos.Y][pos.X] == 1)
-			int_memset(&vars->mm.win->pixels[index + SHIFT * 4], 0xFF000000, MM_PIXEL_SIZE - SHIFT * 2);
-		else
-			int_memset(&vars->mm.win->pixels[index + SHIFT * 4], 0xFFFFFFFF, MM_PIXEL_SIZE - SHIFT * 2);
-		row++;
-	}
-}
-
-void	mm_draw_squares(t_vars *vars)
-{
-	t_vectorI	coord;
-
-	coord.Y = 0;
-	while (coord.Y < (int)vars->m.s.h)
-	{
-		coord.X = 0;
-		while (coord.X < (int)vars->m.s.w)
-		{
-			mm_draw_square(vars, coord);
-			coord.X++;
-		}
-		coord.Y++;
-	}
-}
-
 
 /**
  * @brief Draw a ray from a position with a given ray_angle and length
@@ -102,14 +60,26 @@ void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int col
 	}
 }
 
+/**
+ * @brief Draw the player on the minimap.
+ *
+ * @param vars	pointer to main struct of the program
+ *
+ */
 void	mm_draw_player(t_vars *vars)
 {
 	draw_dot(DOT_PLAYER_SIZE, DOT_PLAYER_COLOR,
-			 vars->mm.win, vars->p.mm_c);
+		vars->mm.win, vars->p.mm_c);
 	draw_ray(vars->mm.win, vars->p.mm_c,
-			 vars->p.angle, RAY_LENGTH, RAY_COLOR);
+		vars->p.angle, RAY_LENGTH, RAY_COLOR);
 }
 
+/**
+ * @brief Draw the minimap.
+ *
+ * @param vars	pointer to main struct of the program
+ *
+ */
 void	draw_minimap(t_vars *vars)
 {
 	fill_image(vars->mm.win, 0xFF808080);

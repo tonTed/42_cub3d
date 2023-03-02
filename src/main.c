@@ -16,29 +16,24 @@
 
 void	hook(void *param)
 {
-	t_vars 	*vars;
+	t_vars	*vars;
 
-    vars = param;
-    hook_keyboard(vars);
+	vars = param;
+	hooks(vars);
 	draw_minimap(vars);
 	draw_main_window(vars);
 	draw_bonus(vars);
 }
 
-int32_t	main(int ac, char* av[])
+int32_t	main(int ac, char *av[])
 {
-	WHOAMI
-
 	t_vars	vars;
 
-    if (init(ac, av, &vars))
-        exit(EXIT_FAILURE);
-
-    mlx_loop_hook(vars.mlx, &hook, &vars);
-
-    mlx_loop(vars.mlx);
-
-    mlx_terminate(vars.mlx);
+	if (init(ac, av, &vars))
+		exit (EXIT_FAILURE);
+	mlx_loop_hook(vars.mlx, &hook, &vars);
+	mlx_loop(vars.mlx);
+	mlx_terminate(vars.mlx);
 	clean_exit(&vars);
-    return (EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
 }

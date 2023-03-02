@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hook_keyboard.c                                    :+:      :+:    :+:   */
+/*   hooks.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
+/*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:15 by tonted            #+#    #+#             */
-/*   Updated: 2023/02/17 20:57:10 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/03/02 11:01:59 by tonted           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,8 @@
 #define POSITIVE 1
 #define NEGATIVE 0
 
-
 // double check_collision_y(t_vars *vars, double new_pos){
 // 	int temp;
-	
 // 	temp = (int)new_pos/64;
 // 	if (vars->m.m[temp][(int)vars->p.c.X/64] == 1)
 // 	{
@@ -28,10 +26,8 @@
 // 	else
 // 		return (new_pos);
 // }
-
 // double check_collision_x(t_vars *vars, double new_pos){
 // 	int temp;
-	
 // 	temp = (int)new_pos/64;
 // 	if (vars->m.m[(int)vars->p.c.Y/64][temp] == 1)
 // 	{
@@ -41,14 +37,20 @@
 // 		return (new_pos);
 // }
 
+/**
+ * @brief Function to update the player position
+ * 
+ * @param vars			Pointer to the struct containing all the variables.
+ * @param sign			
+ * @param add_to_angle
+ *
+ * TODO: Function to check position and update if possible
+ */
 void	update_player_pos(t_vars *vars, int sign, double add_to_angle)
 {
-	// TODO Function to check position and update if possible
 	if (sign == POSITIVE)
 	{
-		// vars->p.c.X = check_collision_x(vars, vars->p.c.X + cos(vars->p.ray_angle + add_to_angle) * MOVE_SPEED);
 		vars->p.c.X += cos(vars->p.angle + add_to_angle) * MOVE_SPEED;
-		// vars->p.c.Y = check_collision_y(vars, vars->p.c.Y + cos(vars->p.ray_angle + add_to_angle) * MOVE_SPEED);
 		vars->p.c.Y += sin(vars->p.angle + add_to_angle) * MOVE_SPEED;
 	}
 	else
@@ -60,6 +62,12 @@ void	update_player_pos(t_vars *vars, int sign, double add_to_angle)
 	vars->p.mm_c.Y = vars->p.c.Y / vars->mm.ratio;
 }
 
+/**
+ * @brief Hook moves
+ *
+ * @param vars	Pointer to the struct containing all the variables.
+ *
+ */
 void	hook_moves(t_vars *vars)
 {
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_W))
@@ -84,7 +92,6 @@ void	hook_moves(t_vars *vars)
 		else
 			vars->p.angle += ROT_SPEED;
 	}
-
 }
 
 /**
@@ -94,7 +101,8 @@ void	hook_moves(t_vars *vars)
  *
  * TODO BONUS: Add config hook
  * 	- Toggle minimap/map
- * 	- Toggle position minimap (top left, top right, bottom left, bottom right, remove)
+ * 	- Toggle position minimap (top left, top right, bottom left,
+ *		bottom right, remove)
  */
 void	hook_configs(t_vars *vars)
 {
@@ -122,10 +130,10 @@ void	hook_mouse(t_vars *vars)
 	(void)vars;
 }
 
-void    hook_keyboard(t_vars *vars)
+void	hooks(t_vars *vars)
 {
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
-        mlx_close_window(vars->mlx);
+		mlx_close_window(vars->mlx);
 	hook_moves(vars);
 	hook_configs(vars);
 	hook_mouse(vars);

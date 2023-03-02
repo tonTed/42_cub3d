@@ -6,7 +6,7 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/03/01 17:50:05 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/03/02 15:13:55 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,6 @@ void	free_strrarr(char **to_free)
 	free(to_free);
 }
 
-bool all_texture_set(t_vars *vars)
-{
-	return (vars->m.north == true && vars->m.south == true && vars->m.east == true
-		 && vars->m.west == true && vars->m.ceiling == true && vars->m.floor == true);
-}
 
 void	init_map_assets(t_vars *vars)
 {
@@ -91,62 +86,6 @@ void	init_map_assets(t_vars *vars)
 	vars->m.ceiling = false;
 }
 
-bool	set_texture(t_vars *vars, char ***raw_file)
-{
-	char *north,*south,*east,*west;
-	init_map_assets(vars);
-	while(*(*raw_file))
-	{
-		if (all_texture_set(vars))
-		{
-			printf("NO [%s]\nSO [%s]\nWE [%s]\nEA [%s]\nF [%D]\nC [%D]\n", north,south,west,east,vars->a.floor,vars->a.ceiling);
-			return(true);
-		}
-		if (ft_strncmp(*(*raw_file), "NO ./", 4) == 0)
-		{
-			// vars->a.north_texture->path = ft_calloc(1, ft_strlen(*(*raw_file)) + 1);
-			// ft_strcpy(vars->a.north_texture->path, *(*raw_file));
-			// vars->a.north_texture->path = *(*raw_file);
-			north = *(*raw_file);
-			vars->m.north = true;
-		}
-		if (ft_strncmp(*(*raw_file), "SO ./", 5) == 0)
-		{
-			// vars->a.south_texture->path = *(*raw_file);
-			south = *(*raw_file);
-			vars->m.south = true;
-		}
-		if (ft_strncmp(*(*raw_file), "WE ./", 5) == 0)
-		{
-			// vars->a.west_texture->path = *(*raw_file);
-			west = *(*raw_file);
-			vars->m.west = true;
-		}
-		if (ft_strncmp(*(*raw_file), "EA ./", 5) == 0)
-		{
-			// vars->a.east_texture->path = *(*raw_file);
-			east = *(*raw_file);
-			vars->m.east = true;
-		}
-		if (ft_strncmp(*(*raw_file), "F ", 2) == 0)
-		{
-			// vars->a.floor = ft_atoi(*(*raw_file));
-			// TODO find a way of getting the numbers in a logical way
-			vars->a.floor = 100;
-			vars->m.floor = true;
-		}
-		if (ft_strncmp(*(*raw_file), "C ", 2) == 0)
-		{
-			// vars->a.ceiling = ft_atoi(*(*raw_file));
-			// TODO find a way of getting the numbers in a logical way
-			vars->a.ceiling = 1000;
-			vars->m.ceiling = true;
-		}
-		(*raw_file)++;
-	}
-	// printf("NO [%s]\nSO [%s]\nWE [%s]\nEA [%s]\nF [%D]\nC [%D]\n", vars->a.north_texture->path,vars->a.south_texture->path,vars->a.west_texture->path,vars->a.east_texture->path,vars->a.floor,vars->a.ceiling);
-	return (false);
-}
 
 void get_map_size(t_vars *vars, char **raw_file)
 {
@@ -157,14 +96,9 @@ void get_map_size(t_vars *vars, char **raw_file)
 	j = 0;
 	vars->m.s.h = 0;
 	vars->m.s.w = 0;
-
 	while(raw_file[i])
 	{
-		j = 0;
-		while(raw_file[i][j])
-		{
-			j++;
-		}
+		j = ft_strlen(raw_file[i]);
 		if ((int)vars->m.s.w < j)
 			vars->m.s.w = j;
 		i ++;
@@ -206,6 +140,7 @@ void allocate_map_array(t_vars *vars, char **raw_file)
 	}
 	
 }
+
 void init_map(t_vars *vars, char **raw_file)
 {
 	get_map_size(vars, raw_file);
@@ -227,19 +162,46 @@ void init_map(t_vars *vars, char **raw_file)
 
 /***************TED*****************/
 
+/*
+	Check if the file has a valid map extension
+
+*/
+int		ft_strarrlen(char **str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
 
 bool	open_file(char *file, int *fd)
 {
+	char **tmp;
+	int i;
+
+	tmp = ft_split(file, '.');
+	i = ft_strarrlen(tmp);
 	*fd = open(file, O_RDONLY);
 	if (*fd == -1)
+	{
+		printf("Error\nCould not open file\n");
+		free_strrarr(tmp);
 		return (false);
+	}
+	if (ft_strncmp(tmp[i-1], "cub", 3) != 0  || ft_strlen(tmp[i-1]) > 3)
+	{
+		printf("Error\nInvalid file extension\n");
+		free_strrarr(tmp);
+		return (false);
+	}
+	free_strrarr(tmp);
 	return (true);
 }
 
 typedef char* str;
 
-
-#define BUFFER_SIZE 32
 
 int	gnl(int fd, char **line)
 {
@@ -276,7 +238,6 @@ int	gnl(int fd, char **line)
 
 /*
 	take a color string as input and return an int
-	//TODO correct the function so it returns the correct number
 */
 int	get_color(char *color)
 {
@@ -309,39 +270,20 @@ int	get_color(char *color)
 #define CEILING 0x20
 #define TOTAL 0x3F
 
-unsigned int rgb_to_int(char* color_str) {
-    char **tok;
-    unsigned int color_int = 0;
-    int i = 0;
-
-    tok = ft_split(color_str, ',');
-    while (tok[i]) {
-        int color_val = ft_atoi(*tok);
-        if (color_val > 255 || color_val < 0) {
-            printf("Error: color value out of range (0-255)\n");
-            return 0;
-        }
-        color_int |= (color_val << (8 * i));
-        i++;
-    }
-
-    return color_int;
-}
-
-
+/*
+	This function first call open file which will check if the file has a valid extension and if it can be opened
+*/
 bool	parsing_file_map(char *file, t_vars *vars)
 {
 	int fd;
+	str		line;
+	//init textures in order to put the path into it
+	char	flag = 0x0;
+	line = NULL;
 	if (!open_file(file, &fd))
 		return (false);
-	//init textures in order to put the path into it
-	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
-	char	flag = 0x0;
-	str		line;
-	line = NULL;
-
 	// get the textures
-	// when every tecture is found, flag will be equal to 0x3F
+	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
 	while (gnl(fd, &line) > 0 && flag != TOTAL)
 	{
 		if (!line)
@@ -384,21 +326,17 @@ bool	parsing_file_map(char *file, t_vars *vars)
 		}
 		else if (ft_strncmp(line, "C ", 2) == 0)
 		{
-			//TODO manage color
 			vars->a.ceiling = get_color(line);
 			printf("This is the ceiling color [%d]\n", vars->a.ceiling);
-			// vars->a.ceiling = WHITEH;
 			flag |= CEILING;
 		}
 		else if (ft_strncmp(line, "F ", 2) == 0)
 		{
-			//manage color
 			vars->a.floor = get_color(line);
 			printf("This is the ceiling color [%d]\n", vars->a.ceiling);
-			// vars->a.floor = ARMYH;
 			flag |= FLOOR;
 		}
-//		free_null(line);
+		free_null(line);
 	}
 	printf("All textures acquired\n");
 
@@ -473,6 +411,4 @@ bool	parsing_file_map(char *file, t_vars *vars)
 		printf("no player found\n");
 		return(EXIT_FAILURE);
 	}
-	// return (true);
-
 }

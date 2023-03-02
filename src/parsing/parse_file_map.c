@@ -6,11 +6,12 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/03/02 15:13:55 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/03/02 17:40:04 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/cub3D.h"
+#include <stdbool.h>
 
 /**
  * @brief Parse the file map and fill the vars struct
@@ -104,7 +105,26 @@ void get_map_size(t_vars *vars, char **raw_file)
 		i ++;
 	}
 	vars->m.s.h = i;
-	printf("Map width [%d] map height[%d]\n",vars->m.s.w, vars->m.s.h);
+}
+
+void	print_map(t_vars *vars)
+{
+	int i;
+	int j;
+
+	i = 0;
+	j = 0;
+	while (i < (int)vars->m.s.h)
+	{
+		j = 0;
+		while (j < (int)vars->m.s.w)
+		{
+			printf("[%d]", vars->m.m[i][j]);
+			j++;
+		}
+		printf("\n");
+		i++;
+	}
 }
 
 void allocate_map_array(t_vars *vars, char **raw_file)
@@ -129,29 +149,17 @@ void allocate_map_array(t_vars *vars, char **raw_file)
 		}
 		y++;
 	}
-	// print map in term
-	for(int i = 0; i < (int)vars->m.s.h; i++)
-	{
-		for(int j = 0; j < (int)vars->m.s.w;j++)
-		{
-			printf("[%d]",vars->m.m[i][j]);
-		}
-		printf("\n");
-	}
-	
+	print_map(vars);
 }
 
 void init_map(t_vars *vars, char **raw_file)
 {
 	get_map_size(vars, raw_file);
 	allocate_map_array(vars, raw_file);
-	// init minimap data
 	vars->mm.size.w = vars->m.s.w * MM_PIXEL_SIZE;
 	vars->mm.size.h = vars->m.s.h * MM_PIXEL_SIZE;
 	vars->mm.pos.X = 16;
 	vars->mm.pos.Y = 16;
-
-	// from mock init
 	vars->mm.ratio = PIXEL_SIZE / MM_PIXEL_SIZE;
 	vars->p.mm_c.X = vars->p.c.X / vars->mm.ratio;
 	vars->p.mm_c.Y = vars->p.c.Y / vars->mm.ratio;
@@ -273,16 +281,10 @@ int	get_color(char *color)
 /*
 	This function first call open file which will check if the file has a valid extension and if it can be opened
 */
-bool	parsing_file_map(char *file, t_vars *vars)
+
+bool	get_texture(t_vars *vars, str line, int fd)
 {
-	int fd;
-	str		line;
-	//init textures in order to put the path into it
 	char	flag = 0x0;
-	line = NULL;
-	if (!open_file(file, &fd))
-		return (false);
-	// get the textures
 	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
 	while (gnl(fd, &line) > 0 && flag != TOTAL)
 	{
@@ -338,8 +340,26 @@ bool	parsing_file_map(char *file, t_vars *vars)
 		}
 		free_null(line);
 	}
+	return (true);
 	printf("All textures acquired\n");
+}
 
+bool	parsing_file_map(char *file, t_vars *vars)
+{
+	int fd;
+	str		line;
+	//init textures in order to put the path into it
+	// char	flag = 0x0;
+	line = NULL;
+	if (!open_file(file, &fd))
+		return (false);
+
+	// get the textures
+	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
+	if (vars->a.textures == NULL)
+		return (false);
+	if (get_texture(vars, line,  fd) == false)
+		return false;
 	//map parsing into a temp buffer (Cuz I don't know the size of the map)
 	bool player_found = false;
 	int j = 0;

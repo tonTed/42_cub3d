@@ -6,7 +6,7 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/03/02 17:40:04 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/03/02 18:01:27 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -344,42 +344,29 @@ bool	get_texture(t_vars *vars, str line, int fd)
 	printf("All textures acquired\n");
 }
 
-bool	parsing_file_map(char *file, t_vars *vars)
-{
-	int fd;
-	str		line;
-	//init textures in order to put the path into it
-	// char	flag = 0x0;
-	line = NULL;
-	if (!open_file(file, &fd))
-		return (false);
 
-	// get the textures
-	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
-	if (vars->a.textures == NULL)
-		return (false);
-	if (get_texture(vars, line,  fd) == false)
-		return false;
-	//map parsing into a temp buffer (Cuz I don't know the size of the map)
-	bool player_found = false;
-	int j = 0;
-	char **buffer;
-	buffer = ft_calloc(200, sizeof(char *));
+bool	get_map(t_vars *vars, int fd, str line, char ***buffer, bool *player_found)
+{
+	// bool player_found = false;
+	int j;
+	int i;
+
+	j = 0;
 	while (gnl(fd, &line) > 0)
 	{
-		int i = 0;
+		i = 0;
 		//check for empty line
 		if (!ft_strchr(line, 'N') && !ft_strchr(line, 'S') && !ft_strchr(line, 'E') && !ft_strchr(line, '0'&& !ft_strchr(line, '1')))
 		{
 			printf("Empty line found [%s]\n",line);
-			return (EXIT_FAILURE);
+			return (false);
 		}
 		//check if the player is in the map
-		while(line[i] && player_found == false)
+		while(line[i] && *player_found == false)
 		{
 			if (line[i] == 'S' || line[i] == 'N' || line[i] == 'E' || line[i] == 'W')
 			{
-				player_found = true;
+				*player_found = true;
 				//Set player position
 				if (line[i] == 'N')
 				{
@@ -414,11 +401,29 @@ bool	parsing_file_map(char *file, t_vars *vars)
 			i++;
 		}
 		//import line into temp 2d array
-		buffer[j] = ft_strdup(line);
+		(*buffer)[j] = ft_strdup(line);
 		j++;
 		free_null(line);
 	}
-	//init map with the map data
+	return (true);
+}
+
+bool	parsing_file_map(char *file, t_vars *vars)
+{
+	int fd;
+	str		line;
+	line = NULL;
+	if (!open_file(file, &fd))
+		return (false);
+	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
+	if (get_texture(vars, line,  fd) == false)
+		return false;
+	bool player_found = false;
+	char **buffer;
+	buffer = ft_calloc(200, sizeof(char *));
+	if (get_map(vars, fd, line, &buffer, &player_found) == false)
+		return (EXIT_FAILURE);
+
 	if (player_found)
 	{
 		printf("This is player position [%f][%f]\n", vars->p.c.X, vars->p.c.Y);

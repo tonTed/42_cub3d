@@ -6,7 +6,7 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/03/02 18:01:27 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/03/02 23:11:16 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,6 +282,17 @@ int	get_color(char *color)
 	This function first call open file which will check if the file has a valid extension and if it can be opened
 */
 
+bool	evaluate_texture(char *flag, t_vars *vars, char *line, int f_value, int value)
+{
+	if (*flag & f_value)
+		return (false);
+	*flag |= f_value;
+	vars->a.textures[value] = mlx_load_png(line + 3);
+	if (vars->a.textures[value] == NULL)
+		return (false);
+	return (true);
+}
+
 bool	get_texture(t_vars *vars, str line, int fd)
 {
 	char	flag = 0x0;
@@ -291,41 +302,13 @@ bool	get_texture(t_vars *vars, str line, int fd)
 		if (!line)
 			continue ;
 		if (!ft_strncmp(line, "NO ", 3))
-		{
-			if (flag & F_NORTH)
-				return (false);
-			flag |= F_NORTH;
-			vars->a.textures[NORTH] = mlx_load_png(line + 3);
-			if (vars->a.textures[NORTH] == NULL)
-				return (false);
-		}
+			evaluate_texture(&flag, vars, line, F_NORTH, NORTH);
 		else if (ft_strncmp(line, "SO ", 3) == 0)
-		{
-			if (flag & F_SOUTH)
-				return (false);
-			flag |= F_SOUTH;
-			vars->a.textures[SOUTH] = mlx_load_png(line + 3);
-			if (vars->a.textures[SOUTH] == NULL)
-				return (false);
-		}
+			evaluate_texture(&flag, vars, line, F_SOUTH, SOUTH);
 		else if (ft_strncmp(line, "WE ", 3) == 0)
-		{
-			if (flag & F_WEST)
-				return (false);
-			flag |= F_WEST;
-			vars->a.textures[WEST] = mlx_load_png(line + 3);
-			if (vars->a.textures[WEST] == NULL)
-				return (false);
-		}
+			evaluate_texture(&flag, vars, line, F_WEST, WEST);
 		else if (ft_strncmp(line, "EA ", 3) == 0)
-		{
-			if (flag & F_EAST)
-				return (false); //TODO free line and textures
-			flag |= F_EAST;
-			vars->a.textures[EAST] = mlx_load_png(line + 3);
-			if (vars->a.textures[EAST] == NULL)
-				return (false);
-		}
+			evaluate_texture(&flag, vars, line, F_EAST, EAST);
 		else if (ft_strncmp(line, "C ", 2) == 0)
 		{
 			vars->a.ceiling = get_color(line);
@@ -347,7 +330,6 @@ bool	get_texture(t_vars *vars, str line, int fd)
 
 bool	get_map(t_vars *vars, int fd, str line, char ***buffer, bool *player_found)
 {
-	// bool player_found = false;
 	int j;
 	int i;
 
@@ -361,13 +343,11 @@ bool	get_map(t_vars *vars, int fd, str line, char ***buffer, bool *player_found)
 			printf("Empty line found [%s]\n",line);
 			return (false);
 		}
-		//check if the player is in the map
 		while(line[i] && *player_found == false)
 		{
 			if (line[i] == 'S' || line[i] == 'N' || line[i] == 'E' || line[i] == 'W')
 			{
 				*player_found = true;
-				//Set player position
 				if (line[i] == 'N')
 				{
 					printf("Found a player facing north\n");

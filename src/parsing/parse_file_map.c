@@ -6,7 +6,7 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/03/02 23:11:16 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/03/06 14:52:15 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,13 +312,11 @@ bool	get_texture(t_vars *vars, str line, int fd)
 		else if (ft_strncmp(line, "C ", 2) == 0)
 		{
 			vars->a.ceiling = get_color(line);
-			printf("This is the ceiling color [%d]\n", vars->a.ceiling);
 			flag |= CEILING;
 		}
 		else if (ft_strncmp(line, "F ", 2) == 0)
 		{
 			vars->a.floor = get_color(line);
-			printf("This is the ceiling color [%d]\n", vars->a.ceiling);
 			flag |= FLOOR;
 		}
 		free_null(line);
@@ -337,7 +335,6 @@ bool	get_map(t_vars *vars, int fd, str line, char ***buffer, bool *player_found)
 	while (gnl(fd, &line) > 0)
 	{
 		i = 0;
-		//check for empty line
 		if (!ft_strchr(line, 'N') && !ft_strchr(line, 'S') && !ft_strchr(line, 'E') && !ft_strchr(line, '0'&& !ft_strchr(line, '1')))
 		{
 			printf("Empty line found [%s]\n",line);
@@ -392,18 +389,19 @@ bool	parsing_file_map(char *file, t_vars *vars)
 {
 	int fd;
 	str		line;
+	char **buffer;
+	bool player_found = false;
+
 	line = NULL;
+	player_found = false;
 	if (!open_file(file, &fd))
 		return (false);
 	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
 	if (get_texture(vars, line,  fd) == false)
 		return false;
-	bool player_found = false;
-	char **buffer;
 	buffer = ft_calloc(200, sizeof(char *));
 	if (get_map(vars, fd, line, &buffer, &player_found) == false)
 		return (EXIT_FAILURE);
-
 	if (player_found)
 	{
 		printf("This is player position [%f][%f]\n", vars->p.c.X, vars->p.c.Y);

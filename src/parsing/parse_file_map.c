@@ -159,91 +159,6 @@ bool	open_file(char *file, int *fd)
 	return (true);
 }
 
-#define F_NORTH 0x1 // 0000 0001
-#define F_SOUTH 0x2 // 0000 0010
-#define F_WEST 0x4 // 0000 0100
-#define F_EAST 0x8 // 0000 1000
-#define F_FLOOR 0x10 // 0001 0000
-#define F_CEILING 0x20 // 0010 0000
-#define F_ERROR 0x40 // 0100 0000
-#define TOTAL 0x3F // 0011 1111
-/*
-	take a color string as input and return an int
-*/
-void	get_color(char *color, t_vars *vars, int f_value, int value)
-{
-	int 	rgb[3];
-	char	**parts;
-	int 	i;
-
-	parts = ft_split(color + 2, ',');
-	if (vars->flag & f_value || parts == NULL || ft_strarrlen(parts) != 3)
-	{
-		vars->flag |= F_ERROR;
-		return ;
-	}
-	rgb[0] = ft_atoi(parts[0]);
-	rgb[1] = ft_atoi(parts[1]);
-	rgb[2] = ft_atoi(parts[2]);
-	ft_freetabstr(&parts);
-	i = 0;
-	while (i < 3)
-	{
-		if ((rgb[i] < 0 || rgb[i] > 255))
-			vars->flag |= F_ERROR;
-		i++;
-	}
-	vars->flag |= f_value;
-	vars->a.colors[value] = ((int)(rgb[0] << 24) | (int)(rgb[1] << 16)
-			| (int)(rgb[2] << 8) | (int)(0xFF << 0));
-}
-
-
-
-/**
- * @brief This function will check if the file has a valid extension and if it can be opened
- *
- * @param file
- * @param fd	pointer to the file descriptor
- * @return true
- */
-void	evaluate_texture(t_vars *vars, char *line, int f_value, int value)
-{
-	if (vars->flag & f_value)
-		vars->flag |= F_ERROR;
-	vars->flag |= f_value;
-	vars->a.textures[value] = mlx_load_png(line + 3);
-	if (vars->a.textures[value] == NULL)
-		vars->flag |= F_ERROR;
-}
-
-bool	get_texture(t_vars *vars, char *line, int fd)
-{
-	vars->flag = 0x0;
-	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
-	while (gnl(fd, &line) > 0 && vars->flag != TOTAL)
-	{
-		if (!line)
-			continue ;
-		if (!ft_strncmp(line, "NO ", 3))
-			evaluate_texture(vars, line, F_NORTH, NORTH);
-		else if (ft_strncmp(line, "SO ", 3) == 0)
-			evaluate_texture(vars, line, F_SOUTH, SOUTH);
-		else if (ft_strncmp(line, "WE ", 3) == 0)
-			evaluate_texture(vars, line, F_WEST, WEST);
-		else if (ft_strncmp(line, "EA ", 3) == 0)
-			evaluate_texture(vars, line, F_EAST, EAST);
-		else if (ft_strncmp(line, "C ", 2) == 0)
-			get_color(line, vars, F_CEILING, CEILING);
-		else if (ft_strncmp(line, "F ", 2) == 0)
-			get_color(line, vars, F_FLOOR, FLOOR);
-		free_null(line);
-	}
-	if (vars->flag != TOTAL)
-		return (false);
-	return (true);
-}
-
 void	set_player(t_vars *vars, int i, int j, double angle)
 {
 	vars->p.c.X = (double)i * PIXEL_SIZE + PIXEL_SIZE / 2.0;
@@ -304,12 +219,10 @@ bool	parsing_file_map(char *file, t_vars *vars)
 	player_found = false;
 	if (!open_file(file, &fd))
 		return (false);
-	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
-	if (get_texture(vars, line,  fd) == false)
+	if (!parse_textures(vars, fd))
 	{
 		printf("Error while parsing texture\n");
-		exit(EXIT_FAILURE);
-		return false;
+		return (false);
 	}
 	buffer = ft_calloc(200, sizeof(char *));
 	if (get_map(vars, fd, line, &buffer, &player_found) == false)

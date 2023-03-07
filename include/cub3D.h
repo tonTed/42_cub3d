@@ -73,17 +73,17 @@ enum e_orientation {
 	NORTH,
 	SOUTH,
 	WEST,
-	EAST
+	EAST,
+};
+
+enum e_color {
+	CEILING,
+	FLOOR
 };
 
 typedef struct s_assets {
-	mlx_texture_t  **textures;
-	mlx_texture_t  *north_texture;
-	mlx_texture_t  *south_texture;
-	mlx_texture_t  *west_texture;
-	mlx_texture_t  *east_texture;
-	int             floor;
-	int             ceiling;
+	mlx_texture_t	**textures;
+	int 			colors[2];
 }	t_assets;
 
 typedef struct s_vectorD {
@@ -164,6 +164,7 @@ typedef struct s_vars {
 	t_map_config	m;
 	t_mini_map		mm;
     t_assets        a;
+	char 			flag;
 }	t_vars;
 
 /* hooks */

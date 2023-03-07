@@ -65,8 +65,8 @@ bool	mock_init(t_vars *vars)
 	mock_map(vars);
 
 	// init textures data
-	vars->a.ceiling = WHITEH;
-	vars->a.floor = ARMYH;
+	vars->a.colors[CEILING] = WHITEH;
+	vars->a.colors[FLOOR] = ARMYH;
 	vars->a.textures[NORTH] = mlx_load_png("./assets/north_32.png");
 	vars->a.textures[SOUTH] = mlx_load_png("./assets/south_32.png");
 	vars->a.textures[WEST] = mlx_load_png("./assets/west_32.png");

@@ -49,55 +49,15 @@
  * 	    - [[vars.p]]
  */
 
-char    *ft_strcpy(char *s1, char *s2)
-{
-      int i;
- 
-      i = 0;
-      while (s2[i])
-      {
-          s1[i] = s2[i]; 
-          i++;
-      }
-      s1[i] = s2[i];
-      return (s1);
-}
-
-void	free_strrarr(char **to_free)
+void	get_map_size(t_vars *vars, char **raw_file)
 {
 	int	i;
+	int	j;
 
 	i = 0;
-	while (to_free[i])
-	{
-		free(to_free[i]);
-		i++;
-	}
-	free(to_free);
-}
-
-
-void	init_map_assets(t_vars *vars)
-{
-	vars->m.east = false;
-	vars->m.west = false;
-	vars->m.north = false;
-	vars->m.south = false;
-	vars->m.floor = false;
-	vars->m.ceiling = false;
-}
-
-
-void get_map_size(t_vars *vars, char **raw_file)
-{
-	int i;
-	int j;
-
-	i = 0;
-	j = 0;
 	vars->m.s.h = 0;
 	vars->m.s.w = 0;
-	while(raw_file[i])
+	while (raw_file[i])
 	{
 		j = ft_strlen(raw_file[i]);
 		if ((int)vars->m.s.w < j)
@@ -109,11 +69,10 @@ void get_map_size(t_vars *vars, char **raw_file)
 
 void	print_map(t_vars *vars)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
-	j = 0;
 	while (i < (int)vars->m.s.h)
 	{
 		j = 0;
@@ -127,14 +86,13 @@ void	print_map(t_vars *vars)
 	}
 }
 
-void allocate_map_array(t_vars *vars, char **raw_file)
+void	allocate_map_array(t_vars *vars, char **raw_file)
 {	
-	int i;
-	int x;
-	int y;
+	int	i;
+	int	x;
+	int	y;
 
 	i = 0;
-	x = 0;
 	y = 0;
 	vars->m.m = (int **)ft_calloc(1, sizeof(int *) * vars->m.s.h);
 	while (i < (int)vars->m.s.h)
@@ -152,7 +110,7 @@ void allocate_map_array(t_vars *vars, char **raw_file)
 	print_map(vars);
 }
 
-void init_map(t_vars *vars, char **raw_file)
+void	init_map(t_vars *vars, char **raw_file)
 {
 	get_map_size(vars, raw_file);
 	allocate_map_array(vars, raw_file);
@@ -167,16 +125,9 @@ void init_map(t_vars *vars, char **raw_file)
 	vars->p.fov_2 = vars->p.fov / 2.0;
 }
 
-
-/***************TED*****************/
-
-/*
-	Check if the file has a valid map extension
-
-*/
-int		ft_strarrlen(char **str)
+int	ft_strarrlen(char **str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -186,8 +137,8 @@ int		ft_strarrlen(char **str)
 
 bool	open_file(char *file, int *fd)
 {
-	char **tmp;
-	int i;
+	char	**tmp;
+	int		i;
 
 	tmp = ft_split(file, '.');
 	i = ft_strarrlen(tmp);
@@ -195,27 +146,24 @@ bool	open_file(char *file, int *fd)
 	if (*fd == -1)
 	{
 		printf("Error\nCould not open file\n");
-		free_strrarr(tmp);
+		ft_freetabstr(&tmp);
 		return (false);
 	}
-	if (ft_strncmp(tmp[i-1], "cub", 3) != 0  || ft_strlen(tmp[i-1]) > 3)
+	if (ft_strncmp(tmp[i - 1], "cub", 3) != 0 || ft_strlen(tmp[i - 1]) > 3)
 	{
 		printf("Error\nInvalid file extension\n");
-		free_strrarr(tmp);
+		ft_freetabstr(&tmp);
 		return (false);
 	}
-	free_strrarr(tmp);
+	ft_freetabstr(&tmp);
 	return (true);
 }
 
-typedef char* str;
-
-
 int	gnl(int fd, char **line)
 {
-	int br;
-	char buffer[2];
-	char *tmp = NULL;
+	int		br;
+	char	buffer[2];
+	char	*tmp;
 
 	buffer[1] = '\0';
 	*line = NULL;
@@ -244,94 +192,107 @@ int	gnl(int fd, char **line)
 	}
 }
 
+#define F_NORTH 0x1 // 0000 0001
+#define F_SOUTH 0x2 // 0000 0010
+#define F_WEST 0x4 // 0000 0100
+#define F_EAST 0x8 // 0000 1000
+#define F_FLOOR 0x10 // 0001 0000
+#define F_CEILING 0x20 // 0010 0000
+#define F_ERROR 0x40 // 0100 0000
+#define TOTAL 0x3F // 0011 1111
 /*
 	take a color string as input and return an int
 */
-int	get_color(char *color)
+void	get_color(char *color, t_vars *vars, int f_value, int value)
 {
-	int r, g, b;
-	char **parts;
-	printf("color [%s]\n", color);
+	int 	rgb[3];
+	char	**parts;
+	int 	i;
+
 	parts = ft_split(color + 2, ',');
-	if (parts == NULL)
-		return (-1);
-	int i = 0;
-	while(parts[i])
+	if (vars->flag & f_value || parts == NULL || ft_strarrlen(parts) != 3)
 	{
-		printf("parts[%d] = [%s]\n",i,parts[i]);
+		vars->flag |= F_ERROR;
+		return ;
+	}
+	rgb[0] = ft_atoi(parts[0]);
+	rgb[1] = ft_atoi(parts[1]);
+	rgb[2] = ft_atoi(parts[2]);
+	ft_freetabstr(&parts);
+	i = 0;
+	while (i < 3)
+	{
+		if ((rgb[i] < 0 || rgb[i] > 255))
+			vars->flag |= F_ERROR;
 		i++;
 	}
-	r = ft_atoi(parts[0]);
-	g = ft_atoi(parts[1]);
-	b = ft_atoi(parts[2]);
-	free_strrarr(parts);
-	printf("r [%d] g [%d] b [%d]\n", r, g, b);
-	return ((int)(r << 24) | (int)(g << 16) | (int)(b << 8) | (int)(0xFF << 0));
-	return ((int)(r << 24) | (int)(g << 16) | (int)(b << 8) | (int)(0xFF << 0));
+	vars->flag |= f_value;
+	vars->a.colors[value] = ((int)(rgb[0] << 24) | (int)(rgb[1] << 16)
+			| (int)(rgb[2] << 8) | (int)(0xFF << 0));
 }
 
-#define F_NORTH 0x1
-#define F_SOUTH 0x2
-#define F_WEST 0x4
-#define F_EAST 0x8
-#define FLOOR 0x10
-#define CEILING 0x20
-#define TOTAL 0x3F
 
-/*
-	This function first call open file which will check if the file has a valid extension and if it can be opened
-*/
 
-bool	evaluate_texture(char *flag, t_vars *vars, char *line, int f_value, int value)
+/**
+ * @brief This function will check if the file has a valid extension and if it can be opened
+ *
+ * @param file
+ * @param fd	pointer to the file descriptor
+ * @return true
+ */
+void	evaluate_texture(t_vars *vars, char *line, int f_value, int value)
 {
-	if (*flag & f_value)
-		return (false);
-	*flag |= f_value;
+	if (vars->flag & f_value)
+		vars->flag |= F_ERROR;
+	vars->flag |= f_value;
 	vars->a.textures[value] = mlx_load_png(line + 3);
 	if (vars->a.textures[value] == NULL)
-		return (false);
-	return (true);
+		vars->flag |= F_ERROR;
 }
 
-bool	get_texture(t_vars *vars, str line, int fd)
+bool	get_texture(t_vars *vars, char *line, int fd)
 {
-	char	flag = 0x0;
+	vars->flag = 0x0;
 	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
-	while (gnl(fd, &line) > 0 && flag != TOTAL)
+	while (gnl(fd, &line) > 0 && vars->flag != TOTAL)
 	{
 		if (!line)
 			continue ;
 		if (!ft_strncmp(line, "NO ", 3))
-			evaluate_texture(&flag, vars, line, F_NORTH, NORTH);
+			evaluate_texture(vars, line, F_NORTH, NORTH);
 		else if (ft_strncmp(line, "SO ", 3) == 0)
-			evaluate_texture(&flag, vars, line, F_SOUTH, SOUTH);
+			evaluate_texture(vars, line, F_SOUTH, SOUTH);
 		else if (ft_strncmp(line, "WE ", 3) == 0)
-			evaluate_texture(&flag, vars, line, F_WEST, WEST);
+			evaluate_texture(vars, line, F_WEST, WEST);
 		else if (ft_strncmp(line, "EA ", 3) == 0)
-			evaluate_texture(&flag, vars, line, F_EAST, EAST);
+			evaluate_texture(vars, line, F_EAST, EAST);
 		else if (ft_strncmp(line, "C ", 2) == 0)
-		{
-			vars->a.ceiling = get_color(line);
-			flag |= CEILING;
-		}
+			get_color(line, vars, F_CEILING, CEILING);
 		else if (ft_strncmp(line, "F ", 2) == 0)
-		{
-			vars->a.floor = get_color(line);
-			flag |= FLOOR;
-		}
+			get_color(line, vars, F_FLOOR, FLOOR);
 		free_null(line);
 	}
+	if (vars->flag != TOTAL)
+		return (false);
 	return (true);
-	printf("All textures acquired\n");
+}
+
+void	set_player(t_vars *vars, int i, int j, double angle)
+{
+	vars->p.c.X = (double)i * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+	vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+	vars->p.angle = angle;
+	vars->flag = 0x0;
 }
 
 
-bool	get_map(t_vars *vars, int fd, str line, char ***buffer, bool *player_found)
+bool	get_map(t_vars *vars, int fd, char *line, char ***buffer, bool *player_found)
 {
 	int j;
 	int i;
 
 	j = 0;
+	vars->flag = F_ERROR;
 	while (gnl(fd, &line) > 0)
 	{
 		i = 0;
@@ -346,33 +307,13 @@ bool	get_map(t_vars *vars, int fd, str line, char ***buffer, bool *player_found)
 			{
 				*player_found = true;
 				if (line[i] == 'N')
-				{
-					printf("Found a player facing north\n");
-					vars->p.c.X = i * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.c.Y = j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.angle = M_PI / 2;
-				}
+					set_player(vars, i, j, M_PI / 2);
 				else if (line[i] == 'S')
-				{
-					printf("Found a player facing south\n");
-					vars->p.c.X = (double)i * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.angle = M_PI * 3 / 2;
-				}
+					set_player(vars, i, j, M_PI * 3 / 2);
 				else if (line[i] == 'E')
-				{
-					printf("Found a player facing east\n");
-					vars->p.c.X = (double)i* PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.angle = 0.0;
-				}
+					set_player(vars, i, j, 0);
 				else if (line[i] == 'W')
-				{
-					printf("Found a player facing west\n");
-					vars->p.c.X = (double)i* PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-					vars->p.angle = M_PI;
-				}
+					set_player(vars, i, j, M_PI);
 				line[i] = '0';
 			}
 			i++;
@@ -387,10 +328,10 @@ bool	get_map(t_vars *vars, int fd, str line, char ***buffer, bool *player_found)
 
 bool	parsing_file_map(char *file, t_vars *vars)
 {
-	int fd;
-	str		line;
-	char **buffer;
-	bool player_found = false;
+	int 	fd;
+	char	*line;
+	char 	**buffer;
+	bool 	player_found;
 
 	line = NULL;
 	player_found = false;
@@ -398,7 +339,11 @@ bool	parsing_file_map(char *file, t_vars *vars)
 		return (false);
 	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
 	if (get_texture(vars, line,  fd) == false)
+	{
+		printf("Error while parsing texture\n");
+		exit(EXIT_FAILURE);
 		return false;
+	}
 	buffer = ft_calloc(200, sizeof(char *));
 	if (get_map(vars, fd, line, &buffer, &player_found) == false)
 		return (EXIT_FAILURE);
@@ -406,7 +351,7 @@ bool	parsing_file_map(char *file, t_vars *vars)
 	{
 		printf("This is player position [%f][%f]\n", vars->p.c.X, vars->p.c.Y);
 		init_map(vars, buffer);
-		free_strrarr(buffer);
+		ft_freetabstr(&buffer);
 		return (EXIT_SUCCESS);
 	}
 	else

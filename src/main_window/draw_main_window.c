@@ -27,9 +27,9 @@ void static	draw_ceiling_floor_color(t_vars *vars, int start_ceiling,
 	start_ceiling++;
 	start_floor--;
 	while (start_ceiling >= 0)
-		mlx_put_pixel(vars->win, x, start_ceiling--, vars->a.ceiling);
+		mlx_put_pixel(vars->win, x, start_ceiling--, vars->a.colors[CEILING]);
 	while (start_floor < HEIGHT)
-		mlx_put_pixel(vars->win, x, start_floor++, vars->a.floor);
+		mlx_put_pixel(vars->win, x, start_floor++, vars->a.colors[FLOOR]);
 }
 
 /**

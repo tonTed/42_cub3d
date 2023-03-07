@@ -26,7 +26,7 @@ static void	set_texture(t_vars *vars, char *line, int f_value, int value)
  * @param vars	pointer to the main structure
  * @param line	line to parse
  */
-static void	get_color(char *color, t_vars *vars, int f_value, int value)
+static void	set_color(char *color, t_vars *vars, int f_value, int value)
 {
 	int		rgb[3];
 	int		i;
@@ -54,6 +54,18 @@ static void	get_color(char *color, t_vars *vars, int f_value, int value)
 			| (int)(rgb[2] << 8) | (int)(0xFF << 0));
 }
 
+/**
+ * @brief Parse the textures and colors.
+ *
+ * @param vars	pointer to the main structure
+ * @param fd	file descriptor
+ *
+ * @return true if the parsing is successful
+ * @return false if the parsing failed
+ *
+ * @todo check if line is not empty and not valid
+ *
+ */
 bool	parse_textures(t_vars *vars, int fd)
 {
 	char	*line;
@@ -73,9 +85,9 @@ bool	parse_textures(t_vars *vars, int fd)
 		else if (ft_strncmp(line, "EA ", 3) == 0)
 			set_texture(vars, line, F_EAST, EAST);
 		else if (ft_strncmp(line, "C ", 2) == 0)
-			get_color(line, vars, F_CEILING, CEILING);
+			set_color(line, vars, F_CEILING, CEILING);
 		else if (ft_strncmp(line, "F ", 2) == 0)
-			get_color(line, vars, F_FLOOR, FLOOR);
+			set_color(line, vars, F_FLOOR, FLOOR);
 		free_null(line);
 	}
 	if (vars->flag != TOTAL)

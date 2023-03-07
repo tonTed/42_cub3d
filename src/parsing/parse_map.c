@@ -25,6 +25,7 @@ static bool	skip_empty_line(char **line, int fd)
 		if (*line && ft_issetinstr(*line, CHAR_VALID))
 			return (true);
 	}
+	printf("Line not valid found [%s]\n", *line);
 	return (false);
 }
 
@@ -71,8 +72,13 @@ bool	parse_map(t_vars *vars, int fd, char ***buffer)
 	while (gnl(fd, &line) > 0)
 	{
 		vars->m.s.h++;
-		if (!parse_map_line(vars, line) || vars->flag & F_ERROR)
+		if (!parse_map_line(vars, line))
 			return (false);
+		if (vars->flag & F_ERROR)
+		{
+			printf("Error while parsing map\n");
+			return (false);
+		}
 		(*buffer)[vars->m.s.h] = ft_strdup(line);
 		free_null(line);
 	}

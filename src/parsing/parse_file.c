@@ -21,32 +21,6 @@
  *
  * @return EXIT_SUCCESS if success, EXIT_FAILURE if error.
  *
- * TODO: check if the file is valid.
- * 	ERRORS to manage:
- * 		- [] extension is not .cub
- * 		- [] file can't be open (do function reusable for other files).
- *
- * TODO: parsing assets description and set [[vars->a]]
- * 	ERRORS to manage:
- * 		- [] missing data (use flag) [NO, SO, WE, EA, F, C]
- * 			- FORMAT TEXTURE: [ID] [relative path to file] (sample: SO ./path_to_the_south_texture)
- * 			- FORMAT COLOR: [ID] [R,G,B] (sample: F 220,100,0)
- * 		- [] too many data (use flag)
- * 		- [] NO (north), SO (south), WE (west), EA (east) with path to texture file valid.
- * 				- files can be PNG or XPM convert to mlx_texture
- * 		- [] F (floor), C (ceiling) with color valid.
- * 				- convert to int.
- *
- * 	TODO: parsing map and set [[vars->m]] and [[vars.p]] (2D array, player position, player direction)
- * 		ERRORS to manage:
- * 			- [] map is not closed
- * 			- [] amount player different to 1
- * 			- [] player position is valid (N, S, E, W)
- *
- * 	DATA TO SET:
- * 	    - [[vars->a]]
- * 	    - [[vars->m]]
- * 	    - [[vars.p]]
  */
 
 static bool	open_file(char *file, int *fd)
@@ -75,27 +49,22 @@ static bool	open_file(char *file, int *fd)
 
 bool	parse_file(char *file, t_vars *vars)
 {
-	int 	fd;
-	char 	**buffer;
+	int		fd;
+	char	**buffer;
 
 	if (!open_file(file, &fd))
 		return (false);
 	if (!parse_textures(vars, fd))
-	{
-		printf("Error while parsing texture\n");
 		return (false);
-	}
 	buffer = ft_calloc(200, sizeof(char *));
 	if (!parse_map(vars, fd, &buffer))
-	{
-		printf("Error while parsing map\n");
 		return (false);
-	}
 	if (!(vars->flag & F_ERROR))
 	{
 		init_map(vars, buffer);
 		ft_freetabstr(&buffer);
-		if (is_map_closed(vars) == false) {
+		if (is_map_closed(vars) == false)
+		{
 			printf("Map is not closed\n");
 			return (EXIT_FAILURE);
 		}
@@ -104,6 +73,6 @@ bool	parse_file(char *file, t_vars *vars)
 	else
 	{
 		printf("no player found\n");
-		return(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	}
 }

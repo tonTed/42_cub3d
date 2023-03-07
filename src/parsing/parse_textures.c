@@ -91,6 +91,9 @@ bool	parse_textures(t_vars *vars, int fd)
 		free_null(line);
 	}
 	if (vars->flag != TOTAL)
+	{
+		printf("Error while parsing texture\n");
 		return (false);
+	}
 	return (true);
 }

@@ -3,6 +3,7 @@
 //
 
 #include "../../include/cub3D.h"
+#include <stdio.h>
 
 /**
  * @brief Parse the textures, set the flag and load the textures.
@@ -15,7 +16,7 @@ static void	set_texture(t_vars *vars, char *line, int f_value, int value)
 	if (vars->flag & f_value)
 		vars->flag |= F_ERROR;
 	vars->flag |= f_value;
-	vars->a.textures[value] = mlx_load_png(line + 3);
+	vars->a.textures[value] = mlx_load_png(line + 2);
 	if (vars->a.textures[value] == NULL)
 		vars->flag |= F_ERROR;
 }
@@ -54,6 +55,28 @@ static void	set_color(char *color, t_vars *vars, int f_value, int value)
 			| (int)(rgb[2] << 8) | (int)(0xFF << 0));
 }
 
+/*
+	Probably have to free the line first or something
+*/
+void	remove_spaces(char **line)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	if (*line)
+	{
+		while ((*line)[i])
+		{
+			if ((*line)[i] != ' ')
+				(*line)[j++] = (*line)[i];
+			i++;
+		}
+		(*line)[j] = '\0';
+	}
+}
+
 /**
  * @brief Parse the textures and colors.
  *
@@ -66,6 +89,8 @@ static void	set_color(char *color, t_vars *vars, int f_value, int value)
  * @todo check if line is not empty and not valid
  *
  */
+
+//TODO trop de lignes ici mais dans le sujet on doit seulement retourner error et non pas le type d'erreur donc au final on peut enlever le print et être oK
 bool	parse_textures(t_vars *vars, int fd)
 {
 	char	*line;
@@ -76,17 +101,18 @@ bool	parse_textures(t_vars *vars, int fd)
 	{
 		if (!line)
 			continue ;
-		if (!ft_strncmp(line, "NO ", 3))
+		remove_spaces(&line);
+		if (!ft_strncmp(line, "NO", 2))
 			set_texture(vars, line, F_NORTH, NORTH);
-		else if (ft_strncmp(line, "SO ", 3) == 0)
+		else if (ft_strncmp(line, "SO", 2) == 0)
 			set_texture(vars, line, F_SOUTH, SOUTH);
-		else if (ft_strncmp(line, "WE ", 3) == 0)
+		else if (ft_strncmp(line, "WE", 2) == 0)
 			set_texture(vars, line, F_WEST, WEST);
-		else if (ft_strncmp(line, "EA ", 3) == 0)
+		else if (ft_strncmp(line, "EA", 2) == 0)
 			set_texture(vars, line, F_EAST, EAST);
-		else if (ft_strncmp(line, "C ", 2) == 0)
+		else if (ft_strncmp(line, "C", 1) == 0 && ft_isdigit(line[1]))
 			set_color(line, vars, F_CEILING, CEILING);
-		else if (ft_strncmp(line, "F ", 2) == 0)
+		else if (ft_strncmp(line, "F", 1) == 0 && ft_isdigit(line[1]))
 			set_color(line, vars, F_FLOOR, FLOOR);
 		free_null(line);
 	}

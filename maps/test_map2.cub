@@ -2,24 +2,24 @@
 
 
 
-NO ./assets/north_32.png
+NO         ./assets/north_32.png
 
-SO ./assets/south_32.png
-
-
-WE ./assets/west_32.png
-
-EA ./assets/east_32.png
+SO ./as   sets/   south_32.png
 
 
+WE   ./assets/west_  32.pn  g
 
-F 220,100,0
+EA ./a  ssets/ea  st_32.png
 
 
 
+F 22 0,1 00 ,0
 
 
-C 225,30,0
+
+
+
+C 2 25  , 30  ,0
 
         1111111111111111111111111
         1000000000110000000000001

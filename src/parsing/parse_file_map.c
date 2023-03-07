@@ -6,7 +6,7 @@
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 11:03:33 by tonted            #+#    #+#             */
-/*   Updated: 2023/03/06 14:52:15 by pirichar         ###   ########.fr       */
+/*   Updated: 2023/03/06 23:28:59 by pirichar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	print_map(t_vars *vars)
 }
 
 void	allocate_map_array(t_vars *vars, char **raw_file)
-{	
+{
 	int	i;
 	int	x;
 	int	y;
@@ -100,11 +100,13 @@ void	allocate_map_array(t_vars *vars, char **raw_file)
 	while (y < (int)vars->m.s.h)
 	{
 		x = 0;
-		while (raw_file[y][x])
+		while (x < (int)vars->m.s.w && raw_file[y][x])
 		{
-				vars->m.m[y][x] = raw_file[y][x] - '0';
+			vars->m.m[y][x] = raw_file[y][x] - '0';
 			x++;
 		}
+		while (x < (int)vars->m.s.w)
+			vars->m.m[y][x++] = -16;
 		y++;
 	}
 	print_map(vars);
@@ -159,45 +161,36 @@ bool	open_file(char *file, int *fd)
 	return (true);
 }
 
-//bool	get_map(t_vars *vars, int fd, char *line, char ***buffer, bool *player_found)
-//{
-//	int j;
-//	int i;
-//
-//	j = 0;
-//	vars->flag = F_ERROR;
-//	while (gnl(fd, &line) > 0)
-//	{
-//		i = 0;
-//		if (!ft_strchr(line, 'N') && !ft_strchr(line, 'S') && !ft_strchr(line, 'E') && !ft_strchr(line, '0'&& !ft_strchr(line, '1')))
-//		{
-//			printf("Empty line found [%s]\n",line);
-//			return (false);
-//		}
-//		while(line[i] && *player_found == false)
-//		{
-//			if (line[i] == 'S' || line[i] == 'N' || line[i] == 'E' || line[i] == 'W')
-//			{
-//				*player_found = true;
-//				if (line[i] == 'N')
-//					set_player(vars, i, j, M_PI / 2);
-//				else if (line[i] == 'S')
-//					set_player(vars, i, j, M_PI * 3 / 2);
-//				else if (line[i] == 'E')
-//					set_player(vars, i, j, 0);
-//				else if (line[i] == 'W')
-//					set_player(vars, i, j, M_PI);
-//				line[i] = '0';
-//			}
-//			i++;
-//		}
-//		//import line into temp 2d array
-//		(*buffer)[j] = ft_strdup(line);
-//		j++;
-//		free_null(line);
-//	}
-//	return (true);
-//}
+bool is_map_closed(t_vars *vars) {
+
+    // Check if the first and last rows are closed by 1's or spaces
+    for (unsigned int i = 0; i < vars->m.s.w; i++) {
+        if ((vars->m.m[0][i] != 1 && vars->m.m[0][i] != -16 )|| (vars->m.m[vars->m.s.h-1][i] != 1 && vars->m.m[vars->m.s.h-1][i] != -16)) {
+            return false;
+        }
+    }
+
+    // Check if the first and last columns (excluding corners) are closed by 1's or spaces
+    for (unsigned int i = 1; i < vars->m.s.h-1; i++) {
+        if ((vars->m.m[i][0] != 1 && vars->m.m[i][0] != -16 )||( vars->m.m[i][vars->m.s.w-1] != 1 && vars->m.m[i][vars->m.s.w-1] != -16)) {
+            return false;
+        }
+    }
+
+    // Check if there are any spaces adjacent to a 0
+    for (unsigned int i = 1; i < vars->m.s.h-1; i++) {
+        for (unsigned int j = 1; j < vars->m.s.w-1; j++) {
+            if (vars->m.m[i][j] == 0) {
+                if ((vars->m.m[i-1][j] == -16 || vars->m.m[i+1][j] == -16) || (vars->m.m[i][j-1] == -16 || vars->m.m[i][j+1] == -16)) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    // If all checks pass, then the map is closed
+    return true;
+}
 
 bool	parsing_file_map(char *file, t_vars *vars)
 {
@@ -222,6 +215,10 @@ bool	parsing_file_map(char *file, t_vars *vars)
 		printf("This is player position [%f][%f]\n", vars->p.c.X, vars->p.c.Y);
 		init_map(vars, buffer);
 		ft_freetabstr(&buffer);
+		if (is_map_closed(vars) == false) {
+			printf("Map is not closed\n");
+			return (EXIT_FAILURE);
+		}
 		return (EXIT_SUCCESS);
 	}
 	else

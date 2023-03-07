@@ -12,6 +12,20 @@ void	set_player(t_vars *vars, int i, int j, double angle)
 	vars->flag = 0x0;
 }
 
+char	*ft_strchr2(const char *s, int c)
+{
+	int	i;
+
+	if (s)
+	{
+		i = ft_strlen(s) + 1;
+		while (--i >= 0)
+			if (s[i] == (char) c)
+				return ((char *) &s[i]);
+	}
+	return (NULL);
+}
+
 bool	parse_map(t_vars *vars, int fd, char ***buffer)
 {
 	int j;
@@ -23,7 +37,7 @@ bool	parse_map(t_vars *vars, int fd, char ***buffer)
 	while (gnl(fd, &line) > 0)
 	{
 		i = 0;
-		if (!ft_strchr(line, 'N') && !ft_strchr(line, 'S') && !ft_strchr(line, 'E') && !ft_strchr(line, '0'&& !ft_strchr(line, '1')))
+		if (!ft_strchr2(line, 'N') && !ft_strchr2(line, 'S') && !ft_strchr2(line, 'E') && !ft_strchr2(line, '0'&& !ft_strchr2(line, '1')))
 		{
 			printf("Empty line found [%s]\n",line);
 			return (false);

@@ -16,7 +16,6 @@ static void	set_player(t_vars *vars, double angle, t_vectorI p, char **line)
 	(*line)[p.X] = '0';
 }
 
-#define WHITE_SPACE "\t\v\f\r\n "
 #define CHAR_VALID "01NSEW "
 
 static bool	skip_empty_line(char **line, int fd)
@@ -78,11 +77,5 @@ bool	parse_map(t_vars *vars, int fd, char ***buffer)
 		free_null(line);
 	}
 	vars->m.s.h++;
-	int i = 0;
-	while (i < (int)vars->m.s.h)
-	{
-		printf("%s\n", (*buffer)[i]);
-		i++;
-	}
 	return (true);
 }

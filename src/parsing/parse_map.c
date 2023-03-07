@@ -17,15 +17,13 @@ static void	set_player(t_vars *vars, double angle, t_vectorI p, char **line)
 }
 
 #define WHITE_SPACE "\t\v\f\r\n "
-#define CHAR_VALID "01NSEW"
+#define CHAR_VALID "01NSEW "
 
 static bool	skip_empty_line(char **line, int fd)
 {
 	while (gnl(fd, line) > 0)
 	{
-		if (*line && ft_issetinstr(*line, WHITE_SPACE))
-			continue ;
-		else if (*line && ft_issetinstr(*line, CHAR_VALID))
+		if (*line && ft_issetinstr(*line, CHAR_VALID))
 			return (true);
 	}
 	return (false);
@@ -80,5 +78,11 @@ bool	parse_map(t_vars *vars, int fd, char ***buffer)
 		free_null(line);
 	}
 	vars->m.s.h++;
+	int i = 0;
+	while (i < (int)vars->m.s.h)
+	{
+		printf("%s\n", (*buffer)[i]);
+		i++;
+	}
 	return (true);
 }

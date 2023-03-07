@@ -49,7 +49,7 @@
  * 	    - [[vars.p]]
  */
 
-bool	open_file(char *file, int *fd)
+static bool	open_file(char *file, int *fd)
 {
 	char	**tmp;
 	int		i;
@@ -71,37 +71,6 @@ bool	open_file(char *file, int *fd)
 	}
 	ft_freetabstr(&tmp);
 	return (true);
-}
-
-bool is_map_closed(t_vars *vars) {
-
-    // Check if the first and last rows are closed by 1's or spaces
-    for (unsigned int i = 0; i < vars->m.s.w; i++) {
-        if ((vars->m.m[0][i] != 1 && vars->m.m[0][i] != -16 )|| (vars->m.m[vars->m.s.h-1][i] != 1 && vars->m.m[vars->m.s.h-1][i] != -16)) {
-            return false;
-        }
-    }
-
-    // Check if the first and last columns (excluding corners) are closed by 1's or spaces
-    for (unsigned int i = 1; i < vars->m.s.h-1; i++) {
-        if ((vars->m.m[i][0] != 1 && vars->m.m[i][0] != -16 )||( vars->m.m[i][vars->m.s.w-1] != 1 && vars->m.m[i][vars->m.s.w-1] != -16)) {
-            return false;
-        }
-    }
-
-    // Check if there are any spaces adjacent to a 0
-    for (unsigned int i = 1; i < vars->m.s.h-1; i++) {
-        for (unsigned int j = 1; j < vars->m.s.w-1; j++) {
-            if (vars->m.m[i][j] == 0) {
-                if ((vars->m.m[i-1][j] == -16 || vars->m.m[i+1][j] == -16) || (vars->m.m[i][j-1] == -16 || vars->m.m[i][j+1] == -16)) {
-                    return false;
-                }
-            }
-        }
-    }
-
-    // If all checks pass, then the map is closed
-    return true;
 }
 
 bool	parse_file(char *file, t_vars *vars)

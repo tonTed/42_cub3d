@@ -183,6 +183,7 @@ void    hooks(t_vars *vars);
 /* parsing_file_map */
 bool	parsing_file_map(char *file, t_vars *vars);
 bool	parse_textures(t_vars *vars, int fd);
+bool	parse_map(t_vars *vars, int fd, char ***buffer);
 
 /* initialization */
 bool	init(int ac, char *av[], t_vars *vars);

@@ -159,64 +159,51 @@ bool	open_file(char *file, int *fd)
 	return (true);
 }
 
-void	set_player(t_vars *vars, int i, int j, double angle)
-{
-	vars->p.c.X = (double)i * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-	vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-	vars->p.angle = angle;
-	vars->flag = 0x0;
-}
-
-
-bool	get_map(t_vars *vars, int fd, char *line, char ***buffer, bool *player_found)
-{
-	int j;
-	int i;
-
-	j = 0;
-	vars->flag = F_ERROR;
-	while (gnl(fd, &line) > 0)
-	{
-		i = 0;
-		if (!ft_strchr(line, 'N') && !ft_strchr(line, 'S') && !ft_strchr(line, 'E') && !ft_strchr(line, '0'&& !ft_strchr(line, '1')))
-		{
-			printf("Empty line found [%s]\n",line);
-			return (false);
-		}
-		while(line[i] && *player_found == false)
-		{
-			if (line[i] == 'S' || line[i] == 'N' || line[i] == 'E' || line[i] == 'W')
-			{
-				*player_found = true;
-				if (line[i] == 'N')
-					set_player(vars, i, j, M_PI / 2);
-				else if (line[i] == 'S')
-					set_player(vars, i, j, M_PI * 3 / 2);
-				else if (line[i] == 'E')
-					set_player(vars, i, j, 0);
-				else if (line[i] == 'W')
-					set_player(vars, i, j, M_PI);
-				line[i] = '0';
-			}
-			i++;
-		}
-		//import line into temp 2d array
-		(*buffer)[j] = ft_strdup(line);
-		j++;
-		free_null(line);
-	}
-	return (true);
-}
+//bool	get_map(t_vars *vars, int fd, char *line, char ***buffer, bool *player_found)
+//{
+//	int j;
+//	int i;
+//
+//	j = 0;
+//	vars->flag = F_ERROR;
+//	while (gnl(fd, &line) > 0)
+//	{
+//		i = 0;
+//		if (!ft_strchr(line, 'N') && !ft_strchr(line, 'S') && !ft_strchr(line, 'E') && !ft_strchr(line, '0'&& !ft_strchr(line, '1')))
+//		{
+//			printf("Empty line found [%s]\n",line);
+//			return (false);
+//		}
+//		while(line[i] && *player_found == false)
+//		{
+//			if (line[i] == 'S' || line[i] == 'N' || line[i] == 'E' || line[i] == 'W')
+//			{
+//				*player_found = true;
+//				if (line[i] == 'N')
+//					set_player(vars, i, j, M_PI / 2);
+//				else if (line[i] == 'S')
+//					set_player(vars, i, j, M_PI * 3 / 2);
+//				else if (line[i] == 'E')
+//					set_player(vars, i, j, 0);
+//				else if (line[i] == 'W')
+//					set_player(vars, i, j, M_PI);
+//				line[i] = '0';
+//			}
+//			i++;
+//		}
+//		//import line into temp 2d array
+//		(*buffer)[j] = ft_strdup(line);
+//		j++;
+//		free_null(line);
+//	}
+//	return (true);
+//}
 
 bool	parsing_file_map(char *file, t_vars *vars)
 {
 	int 	fd;
-	char	*line;
 	char 	**buffer;
-	bool 	player_found;
 
-	line = NULL;
-	player_found = false;
 	if (!open_file(file, &fd))
 		return (false);
 	if (!parse_textures(vars, fd))
@@ -225,9 +212,12 @@ bool	parsing_file_map(char *file, t_vars *vars)
 		return (false);
 	}
 	buffer = ft_calloc(200, sizeof(char *));
-	if (get_map(vars, fd, line, &buffer, &player_found) == false)
-		return (EXIT_FAILURE);
-	if (player_found)
+	if (!parse_map(vars, fd, &buffer))
+	{
+		printf("Error while parsing map\n");
+		return (false);
+	}
+	if (vars->flag == 0x0)
 	{
 		printf("This is player position [%f][%f]\n", vars->p.c.X, vars->p.c.Y);
 		init_map(vars, buffer);

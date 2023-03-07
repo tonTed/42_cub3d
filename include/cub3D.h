@@ -188,7 +188,7 @@ bool	parse_map(t_vars *vars, int fd, char ***buffer);
 
 /* initialization */
 bool	init(int ac, char *av[], t_vars *vars);
-bool	init_assets(t_vars *vars);
+void	init_map(t_vars *vars, char **raw_file);
 
 /* utils */
 void		*int_memset(void *ptr, int value, size_t num);

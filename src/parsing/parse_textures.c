@@ -72,7 +72,7 @@ bool	parse_textures(t_vars *vars, int fd)
 
 	vars->flag = 0x0;
 	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
-	while (gnl(fd, &line) > 0 && vars->flag != TOTAL)
+	while (vars->flag != TOTAL && gnl(fd, &line) > 0)
 	{
 		if (!line)
 			continue ;

@@ -210,9 +210,8 @@ bool	parsing_file_map(char *file, t_vars *vars)
 		printf("Error while parsing map\n");
 		return (false);
 	}
-	if (vars->flag == 0x0)
+	if (!(vars->flag & F_ERROR))
 	{
-		printf("This is player position [%f][%f]\n", vars->p.c.X, vars->p.c.Y);
 		init_map(vars, buffer);
 		ft_freetabstr(&buffer);
 		if (is_map_closed(vars) == false) {

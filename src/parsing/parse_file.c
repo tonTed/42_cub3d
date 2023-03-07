@@ -104,7 +104,7 @@ bool is_map_closed(t_vars *vars) {
     return true;
 }
 
-bool	parsing_file_map(char *file, t_vars *vars)
+bool	parse_file(char *file, t_vars *vars)
 {
 	int 	fd;
 	char 	**buffer;

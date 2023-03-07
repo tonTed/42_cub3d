@@ -52,6 +52,16 @@
 /* PLAYER CONFIG */
 #define FOV M_PI / 3
 
+/* FLAGS */
+#define F_NORTH 0x1 // 0000 0001
+#define F_SOUTH 0x2 // 0000 0010
+#define F_WEST 0x4 // 0000 0100
+#define F_EAST 0x8 // 0000 1000
+#define F_FLOOR 0x10 // 0001 0000
+#define F_CEILING 0x20 // 0010 0000
+#define F_ERROR 0x40 // 0100 0000
+#define TOTAL 0x3F // 0011 1111
+
 typedef struct s_draw_wall
 {
 	double 	wall_height;
@@ -182,6 +192,7 @@ void		*int_memset(void *ptr, int value, size_t num);
 void		free_null(void *ptr);
 void		clean_exit(t_vars *vars);
 uint32_t	get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y);
+int			gnl(int fd, char **line);
 
 /* utils image */
 void	fill_image(mlx_image_t *img, int color);

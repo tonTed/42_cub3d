@@ -33,7 +33,7 @@ static void	set_color(char *color, t_vars *vars, int f_value, int value)
 	int		i;
 	char	**parts;
 
-	parts = ft_split(color + 2, ',');
+	parts = ft_split(color + 1, ',');
 	if (vars->flag & f_value || parts == NULL || ft_strtablen(parts) != 3)
 	{
 		vars->flag |= F_ERROR;

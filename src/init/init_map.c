@@ -72,11 +72,11 @@ void	allocate_map_array(t_vars *vars, char **raw_file)
 			vars->m.m[y][x++] = -16;
 		y++;
 	}
-	print_map(vars);
 }
 
 void	init_map(t_vars *vars, char **raw_file)
 {
+	vars->m.s.h++;
 	get_map_size(vars, raw_file);
 	allocate_map_array(vars, raw_file);
 	vars->mm.size.w = vars->m.s.w * MM_PIXEL_SIZE;

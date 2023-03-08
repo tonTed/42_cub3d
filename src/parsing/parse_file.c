@@ -56,9 +56,12 @@ bool	parse_file(char *file, t_vars *vars)
 		return (false);
 	if (!parse_textures(vars, fd))
 		return (false);
-	buffer = ft_calloc(200, sizeof(char *));
+	buffer = malloc(sizeof(char *));
 	if (!parse_map(vars, fd, &buffer))
-		return (false);
+	{
+		ft_freetabstr(&buffer);
+		return (EXIT_FAILURE);
+	}
 	if (!(vars->flag & F_ERROR))
 	{
 		init_map(vars, buffer);
@@ -70,9 +73,5 @@ bool	parse_file(char *file, t_vars *vars)
 		}
 		return (EXIT_SUCCESS);
 	}
-	else
-	{
-		printf("no player found\n");
-		return (EXIT_FAILURE);
-	}
+	return (EXIT_FAILURE);
 }

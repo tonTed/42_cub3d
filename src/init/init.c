@@ -12,6 +12,21 @@
 
 #include "../../include/cub3D.h"
 
+static bool	init_textures(t_vars *vars)
+{
+	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
+	if (vars->a.textures == NULL)
+	{
+		printf("Error: Malloc failed [%s].\n", __func__);
+		return (false);
+	}
+	vars->a.textures[NORTH] = NULL;
+	vars->a.textures[SOUTH] = NULL;
+	vars->a.textures[WEST] = NULL;
+	vars->a.textures[EAST] = NULL;
+	return (true);
+}
+
 /**
  * @brief check if the arguments are valid and call the right function for
  * initialize the project.
@@ -33,8 +48,9 @@ bool	check_args(int ac, char *av[], t_vars *vars)
 		printf("Error: Wrong number of arguments.\n");
 		return (EXIT_FAILURE);
 	}
-	else
-		return (parse_file(av[1], vars));
+	if (!init_textures(vars))
+		return (false);
+	return (parse_file(av[1], vars));
 }
 
 /**
@@ -89,6 +105,8 @@ bool	init_mlx(t_vars *vars)
 bool	init(int ac, char *av[], t_vars *vars)
 {
 	vars->flag = 0x0;
+	vars->m.s.h = 0;
+	vars->m.s.w = 0;
 	if (check_args(ac, av, vars))
 		return (EXIT_FAILURE);
 	if (init_mlx(vars))

@@ -34,6 +34,20 @@ static void	set_texture(t_vars *vars, char *line, int f_value, int value)
 	}
 }
 
+static bool	is_parts_valid(char **parts, t_vars *vars, int f_value)
+{
+	if (vars->flag & f_value)
+		printf("Error: Duplicate color\n");
+	else if (parts == NULL)
+		printf("Error: Invalid color\n");
+	else if (ft_strtablen(parts) != 3)
+		printf("Error: Invalid color\n");
+	else
+		return (true);
+	vars->flag |= F_ERROR;
+	return (false);
+}
+
 /**
  * @brief Parse the colors, set the flag and set the colors.
  *
@@ -47,12 +61,8 @@ static void	set_color(char *color, t_vars *vars, int f_value, int value)
 	char	**parts;
 
 	parts = ft_split(color + 1, ',');
-	if (vars->flag & f_value || parts == NULL || ft_strtablen(parts) != 3)
-	{
-		printf("Error.\nDuplicate color or invalid color. (%s)\n", color);
-		vars->flag |= F_ERROR;
+	if (!is_parts_valid(parts, vars, f_value))
 		return ;
-	}
 	rgb[0] = ft_atoi(parts[0]);
 	rgb[1] = ft_atoi(parts[1]);
 	rgb[2] = ft_atoi(parts[2]);
@@ -62,29 +72,15 @@ static void	set_color(char *color, t_vars *vars, int f_value, int value)
 	{
 		if ((rgb[i] < 0 || rgb[i] > 255))
 		{
-			printf("Error.\nInvalid color. (%s)\n", color);
+			printf("Error: Invalid color. [%s]\n", color);
 			vars->flag |= F_ERROR;
+			return ;
 		}
 		i++;
 	}
 	vars->flag |= f_value;
 	vars->a.colors[value] = ((int)(rgb[0] << 24) | (int)(rgb[1] << 16)
 			| (int)(rgb[2] << 8) | (int)(0xFF << 0));
-}
-
-static bool	init_textures(t_vars *vars)
-{
-	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
-	if (vars->a.textures == NULL)
-	{
-		printf("Error\nMalloc failed (%s).\n", __func__);
-		return (false);
-	}
-	vars->a.textures[NORTH] = NULL;
-	vars->a.textures[SOUTH] = NULL;
-	vars->a.textures[WEST] = NULL;
-	vars->a.textures[EAST] = NULL;
-	return (true);
 }
 
 /**
@@ -101,8 +97,6 @@ bool	parse_textures(t_vars *vars, int fd)
 {
 	char	*line;
 
-	if (!init_textures(vars))
-		return (false);
 	while (vars->flag != TOTAL && gnl(fd, &line) > 0)
 	{
 		if (!line)

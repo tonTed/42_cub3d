@@ -16,7 +16,7 @@ static void	set_player(t_vars *vars, double angle, t_vectorI p, char **line)
 {
 	if (vars->flag & F_PLAYER)
 	{
-		printf("Player already set\n");
+		printf("Error: Player already set\n");
 		vars->flag |= F_ERROR;
 		return ;
 	}
@@ -29,14 +29,14 @@ static void	set_player(t_vars *vars, double angle, t_vectorI p, char **line)
 
 #define CHAR_VALID "01NSEW "
 
-static bool	skip_empty_line(char **line, int fd)
+static bool	skip_empty_line(char **line, int fd, char *set)
 {
 	while (gnl(fd, line) > 0)
 	{
-		if (*line && ft_issetinstr(*line, CHAR_VALID))
+		if (*line && ft_issetinstr(*line, set))
 			return (true);
 	}
-	printf("Line not valid found [%s]\n", *line);
+	printf("Error: Line not valid found [%s]\n", *line);
 	return (false);
 }
 
@@ -69,28 +69,55 @@ static bool	parse_map_line(t_vars *vars, char *line)
 	return (true);
 }
 
+bool	manage_lines_after_map(char **line, int fd, char *set)
+{
+	int	br;
+
+	while (42)
+	{
+		br = gnl(fd, line);
+		if (br == 0)
+			return (true);
+		if (br > 0)
+		{
+			if (!(*line))
+				continue ;
+			if (ft_issetinstr(*line, set))
+				continue ;
+			else
+			{
+				printf("Error: Line not valid after map [%s]\n", *line);
+				return (false);
+			}
+		}
+	}
+}
+
 bool	parse_map(t_vars *vars, int fd, char ***buffer)
 {
 	char	*line;
 
-	vars->m.s.h = 0;
-	vars->m.s.w = 0;
-	vars->flag = 0x0;
-	if (!skip_empty_line(&line, fd))
+	if (!skip_empty_line(&line, fd, CHAR_VALID))
 		return (false);
 	add_line_tabstr(buffer, line);
 	while (gnl(fd, &line) > 0)
 	{
-		vars->m.s.h++;
-		if (line == NULL || !parse_map_line(vars, line))
-			return (false);
-		if (vars->flag & F_ERROR)
+		if (!line)
 		{
-			printf("Error while parsing map\n");
-			return (false);
+			if (manage_lines_after_map(&line, fd, " "))
+				break ;
+			else
+				return (clean_textures(vars, false, NULL));
 		}
+		if (!parse_map_line(vars, line) || vars->flag & F_ERROR)
+			return (clean_textures(vars, false, NULL));
 		add_line_tabstr(buffer, line);
+		vars->m.s.h++;
 	}
-	vars->m.s.h++;
+	if (!(vars->flag & F_PLAYER))
+	{
+		printf("Error: Player not set\n");
+		return (clean_textures(vars, false, NULL));
+	}
 	return (true);
 }

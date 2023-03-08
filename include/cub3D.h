@@ -198,7 +198,7 @@ void		clean_exit(t_vars *vars);
 uint32_t	get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y);
 int			gnl(int fd, char **line);
 void		remove_spaces(char **line);
-//void		add_line_tabstr(char ***tabstr, char *line);
+void		add_line_tabstr(char ***tabstr, char *line);
 
 /* utils image */
 void	fill_image(mlx_image_t *img, int color);

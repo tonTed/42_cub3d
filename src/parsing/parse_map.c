@@ -78,8 +78,7 @@ bool	parse_map(t_vars *vars, int fd, char ***buffer)
 	vars->flag = 0x0;
 	if (!skip_empty_line(&line, fd))
 		return (false);
-	(*buffer)[vars->m.s.h] = ft_strdup(line);
-	free_null(line);
+	add_line_tabstr(buffer, line);
 	while (gnl(fd, &line) > 0)
 	{
 		vars->m.s.h++;
@@ -90,8 +89,7 @@ bool	parse_map(t_vars *vars, int fd, char ***buffer)
 			printf("Error while parsing map\n");
 			return (false);
 		}
-		(*buffer)[vars->m.s.h] = ft_strdup(line);
-		free_null(line);
+		add_line_tabstr(buffer, line);
 	}
 	vars->m.s.h++;
 	return (true);

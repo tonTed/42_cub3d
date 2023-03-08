@@ -13,6 +13,14 @@
 #include "../../include/cub3D.h"
 #include <stdbool.h>
 
+
+int freetab_ret(char ***tab, int ret, char *msg)
+{
+	ft_freetabstr(tab);
+	if (msg)
+		printf("%s", msg);
+	return (ret);
+}
 /**
  * @brief Parse the file map and fill the vars struct
  *
@@ -32,17 +40,9 @@ static bool	open_file(char *file, int *fd)
 	i = ft_strtablen(tmp);
 	*fd = open(file, O_RDONLY);
 	if (*fd == -1)
-	{
-		printf("Error: Could not open file\n");
-		ft_freetabstr(&tmp);
-		return (false);
-	}
+		return (freetab_ret(&tmp, false, "Error: Could not open file\n"));
 	if (ft_strncmp(tmp[i - 1], "cub", 3) != 0 || ft_strlen(tmp[i - 1]) > 3)
-	{
-		printf("Error: Invalid file extension\n");
-		ft_freetabstr(&tmp);
-		return (false);
-	}
+		return (freetab_ret(&tmp, false, "Error: Invalid file extension\n"));
 	ft_freetabstr(&tmp);
 	return (true);
 }
@@ -58,20 +58,14 @@ bool	parse_file(char *file, t_vars *vars)
 		return (false);
 	buffer = malloc(sizeof(char *));
 	if (!parse_map(vars, fd, &buffer))
+		return (freetab_ret(&buffer, EXIT_FAILURE, NULL));
+	if (vars->flag & F_ERROR)
+		return (freetab_ret(&buffer, EXIT_FAILURE, NULL));
+	init_map(vars, buffer);
+	ft_freetabstr(&buffer);
+	if (is_map_closed(vars) == false)
 	{
-		ft_freetabstr(&buffer);
-		return (EXIT_FAILURE);
+		return (clean_textures(vars, EXIT_FAILURE, "Map is not closed\n"));
 	}
-	if (!(vars->flag & F_ERROR))
-	{
-		init_map(vars, buffer);
-		ft_freetabstr(&buffer);
-		if (is_map_closed(vars) == false)
-		{
-			printf("Map is not closed\n");
-			return (EXIT_FAILURE);
-		}
-		return (EXIT_SUCCESS);
-	}
-	return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }

@@ -53,9 +53,9 @@ bool	parse_file(char *file, t_vars *vars)
 	char	**buffer;
 
 	if (!open_file(file, &fd))
-		return (false);
+		return (EXIT_FAILURE);
 	if (!parse_textures(vars, fd))
-		return (false);
+		return (EXIT_FAILURE);
 	buffer = malloc(sizeof(char *));
 	if (!parse_map(vars, fd, &buffer))
 		return (freetab_ret(&buffer, EXIT_FAILURE, NULL));

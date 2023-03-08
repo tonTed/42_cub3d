@@ -29,7 +29,10 @@
 bool	check_args(int ac, char *av[], t_vars *vars)
 {
 	if (ac != 2)
+	{
+		printf("Error: Wrong number of arguments.\n");
 		return (EXIT_FAILURE);
+	}
 	else
 		return (parse_file(av[1], vars));
 }
@@ -85,6 +88,7 @@ bool	init_mlx(t_vars *vars)
  */
 bool	init(int ac, char *av[], t_vars *vars)
 {
+	vars->flag = 0x0;
 	if (check_args(ac, av, vars))
 		return (EXIT_FAILURE);
 	if (init_mlx(vars))

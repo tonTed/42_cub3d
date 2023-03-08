@@ -226,6 +226,7 @@ void mm_draw_squares(t_vars *vars);
 
 /* clean exit */
 int	clean_textures(t_vars *vars, int ret, char *msg);
+int	clean_map(t_vars *vars, int ret, char *msg);
 
 
 /* development */

@@ -13,14 +13,14 @@
 #include "../../include/cub3D.h"
 #include <stdbool.h>
 
-
-int freetab_ret(char ***tab, int ret, char *msg)
+int	freetab_ret(char ***tab, int ret, char *msg)
 {
 	ft_freetabstr(tab);
 	if (msg)
 		printf("%s", msg);
 	return (ret);
 }
+
 /**
  * @brief Parse the file map and fill the vars struct
  *
@@ -64,8 +64,6 @@ bool	parse_file(char *file, t_vars *vars)
 	init_map(vars, buffer);
 	ft_freetabstr(&buffer);
 	if (is_map_closed(vars) == false)
-	{
-		return (clean_textures(vars, EXIT_FAILURE, "Map is not closed\n"));
-	}
+		return (clean_map(vars, EXIT_FAILURE, "Error: Map is not closed\n"));
 	return (EXIT_SUCCESS);
 }

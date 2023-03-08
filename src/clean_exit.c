@@ -59,3 +59,12 @@ int	clean_textures(t_vars *vars, int ret, char *msg)
 		printf("%s\n", msg);
 	return (ret);
 }
+
+int	clean_map(t_vars *vars, int ret, char *msg)
+{
+	clean_textures(vars, 0, NULL);
+	free_tab_int_2d(vars->m.m, vars->m.s.h);
+	if (msg)
+		printf("%s\n", msg);
+	return (ret);
+}

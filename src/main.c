@@ -14,6 +14,14 @@
 
 #include <memory.h>
 
+
+/**
+ * @brief Hook function for the main loop.
+ *
+ * @param param	pointer to the vars struct
+ *
+ * @todo Check if the player out of the map. and if he is, don't draw the map.
+ */
 void	hook(void *param)
 {
 	t_vars	*vars;

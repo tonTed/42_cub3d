@@ -38,8 +38,6 @@ static bool	init_textures(t_vars *vars)
  * @return EXIT_SUCCESS if all is ok
  * @return EXIT_FAILURE if an error occurred
  *
- * TODO: manage errors messages: replace all EXIT_FAILURE by function that
- * 	print error message and return EXIT_FAILURE.
  */
 bool	check_args(int ac, char *av[], t_vars *vars)
 {
@@ -102,8 +100,6 @@ bool	init_mlx(t_vars *vars)
  * @return EXIT_SUCCESS if all is ok
  * @return EXIT_FAILURE if an error occurred
  *
- * TODO: manage errors messages: replace all EXIT_FAILURE by function that print
- * 	error message and return EXIT_FAILURE.
  */
 bool	init(int ac, char *av[], t_vars *vars)
 {

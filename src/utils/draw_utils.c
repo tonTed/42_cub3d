@@ -12,7 +12,6 @@
 
 #include "../../include/cub3D.h"
 
-// TODO REFACTOR: return in one line
 int	get_index_raw(int width_img, t_vectorI pos)
 {
 	int	len_y;

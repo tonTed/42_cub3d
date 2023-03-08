@@ -29,7 +29,6 @@ int	freetab_ret(char ***tab, int ret, char *msg)
  *
  * @return EXIT_SUCCESS if success, EXIT_FAILURE if error.
  *
- * @todo refactor false return and free buffer
  */
 static bool	open_file(char *file, int *fd)
 {

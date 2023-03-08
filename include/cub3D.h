@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+// TODO: Norminette
+
 #include "../libraries/libft/include/libft.h"
 #include "../libraries/MLX42/include/MLX42/MLX42.h"
 
@@ -72,7 +74,7 @@ typedef struct s_draw_wall
 	double	ray_length;
 	double	ray_length_orig;
 	double	ray_angle;
-	double 	step_angle;		// TODO: add to main structure same all the program
+	double 	step_angle;
 	double	step_y;
 	double	off_y;
 	int 	tex_x;

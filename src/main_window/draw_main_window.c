@@ -66,6 +66,8 @@ void static	fish_eye(t_vars *vars, t_draw_wall *dw)
  * @param x			x position of the pixel.
  *
  * TODO: check if dw->tex_y is not negative
+ * TODO: if the wall is = to the height of the texture,
+ * 	a pixel is drawn on ceiling and floor.
  */
 void static	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 {

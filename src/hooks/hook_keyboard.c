@@ -44,7 +44,6 @@
  * @param sign			
  * @param add_to_angle
  *
- * TODO: Function to check position and update if possible
  */
 void	update_player_pos(t_vars *vars, int sign, double add_to_angle)
 {

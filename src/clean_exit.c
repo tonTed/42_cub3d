@@ -39,3 +39,23 @@ void	clean_exit(t_vars *vars)
 	}
 	free_null(vars->a.textures);
 }
+
+int	clean_textures(t_vars *vars, int ret, char *msg)
+{
+	int	i;
+
+	i = 0;
+	while (i < 4)
+	{
+		if (vars->a.textures[i])
+		{
+			mlx_delete_texture(vars->a.textures[i]);
+			vars->a.textures[i] = NULL;
+		}
+		i++;
+	}
+	free_null(vars->a.textures);
+	if (msg)
+		printf("%s\n", msg);
+	return (ret);
+}

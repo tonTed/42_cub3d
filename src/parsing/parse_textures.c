@@ -1,9 +1,16 @@
-//
-// Created by Teddy BLANCO on 2023-03-06.
-//
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_textures.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/08 10:06:54 by tonted            #+#    #+#             */
+/*   Updated: 2023/03/08 10:08:22 by tonted           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/cub3D.h"
-#include <stdio.h>
 
 /**
  * @brief Parse the textures, set the flag and load the textures.
@@ -90,7 +97,8 @@ void	remove_spaces(char **line)
  *
  */
 
-//TODO trop de lignes ici mais dans le sujet on doit seulement retourner error et non pas le type d'erreur donc au final on peut enlever le print et être oK
+//TODO trop de lignes ici mais dans le sujet on doit seulement retourner error
+// et non pas le type d'erreur donc au final on peut enlever le prin et être oK
 bool	parse_textures(t_vars *vars, int fd)
 {
 	char	*line;

@@ -59,8 +59,9 @@
 #define F_EAST 0x8 // 0000 1000
 #define F_FLOOR 0x10 // 0001 0000
 #define F_CEILING 0x20 // 0010 0000
-#define F_ERROR 0x40 // 0100 0000
 #define TOTAL 0x3F // 0011 1111
+#define F_PLAYER 0x40 // 0100 0000
+#define F_ERROR 0x80 // 1000 0000
 
 typedef struct s_draw_wall
 {
@@ -107,7 +108,7 @@ typedef struct s_vectorI {
 }	t_vectorI;
 
 typedef struct s_size {
-	uint16_t	w;
+	uint32_t	w;
 	uint32_t 	h;
 }	t_size;
 
@@ -180,14 +181,15 @@ typedef struct s_vars {
 /* hooks */
 void    hooks(t_vars *vars);
 
-/* parsing_file_map */
-bool	parsing_file_map(char *file, t_vars *vars);
+/* parse_file */
+bool	parse_file(char *file, t_vars *vars);
 bool	parse_textures(t_vars *vars, int fd);
 bool	parse_map(t_vars *vars, int fd, char ***buffer);
 
 /* initialization */
 bool	init(int ac, char *av[], t_vars *vars);
-bool	init_assets(t_vars *vars);
+void	init_map(t_vars *vars, char **raw_file);
+bool	is_map_closed(t_vars *vars);
 
 /* utils */
 void		*int_memset(void *ptr, int value, size_t num);

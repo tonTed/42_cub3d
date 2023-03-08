@@ -36,7 +36,7 @@ bool	check_args(int ac, char *av[], t_vars *vars)
 	if (!ft_strncmp(av[1], "-d", ft_strlen(av[1])))
 		return (mock_init(vars));
 	else
-		return (parsing_file_map(av[1], vars));
+		return (parse_file(av[1], vars));
 }
 
 /**

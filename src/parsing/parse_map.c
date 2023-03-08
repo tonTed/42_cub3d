@@ -1,68 +1,87 @@
-//
-// Created by Teddy BLANCO on 2023-03-06.
-//
 
 #include "../../include/cub3D.h"
 
-void	set_player(t_vars *vars, int i, int j, double angle)
+static void	set_player(t_vars *vars, double angle, t_vectorI p, char **line)
 {
-	vars->p.c.X = (double)i * PIXEL_SIZE + PIXEL_SIZE / 2.0;
-	vars->p.c.Y = (double)j * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+	if (vars->flag & F_PLAYER)
+	{
+		printf("Player already set\n");
+		vars->flag |= F_ERROR;
+		return ;
+	}
+	vars->flag |= F_PLAYER;
+	vars->p.c.X = (double)p.X * PIXEL_SIZE + PIXEL_SIZE / 2.0;
+	vars->p.c.Y = (double)p.Y * PIXEL_SIZE + PIXEL_SIZE / 2.0;
 	vars->p.angle = angle;
-	vars->flag = 0x0;
+	(*line)[p.X] = '0';
 }
 
-char	*ft_strchr2(const char *s, int c)
+#define CHAR_VALID "01NSEW "
+
+static bool	skip_empty_line(char **line, int fd)
+{
+	while (gnl(fd, line) > 0)
+	{
+		if (*line && ft_issetinstr(*line, CHAR_VALID))
+			return (true);
+	}
+	printf("Line not valid found [%s]\n", *line);
+	return (false);
+}
+
+static bool	parse_map_line(t_vars *vars, char *line)
 {
 	int	i;
 
-	if (s)
+	i = 0;
+	while (line[i] && !(vars->flag & F_ERROR))
 	{
-		i = ft_strlen(s) + 1;
-		while (--i >= 0)
-			if (s[i] == (char) c)
-				return ((char *) &s[i]);
+		if (line[i] == 'N')
+			set_player(vars, M_PI / 2, (t_vectorI){i, vars->m.s.h}, &line);
+		else if (line[i] == 'S')
+			set_player(vars, M_PI * 3 / 2, (t_vectorI){i, vars->m.s.h}, &line);
+		else if (line[i] == 'E')
+			set_player(vars, 0, (t_vectorI){i, vars->m.s.h}, &line);
+		else if (line[i] == 'W')
+			set_player(vars, M_PI, (t_vectorI){i, vars->m.s.h}, &line);
+		else if (line[i] == ' ' || ft_ischarinstr(line[i], "01"))
+			;
+		else
+		{
+			printf("Line not valid found [%s]\n", line);
+			return (false);
+		}
+		i++;
 	}
-	return (NULL);
+	if ((int)vars->m.s.w < i)
+		vars->m.s.w = (u_int32_t)i;
+	return (true);
 }
 
 bool	parse_map(t_vars *vars, int fd, char ***buffer)
 {
-	int j;
-	int i;
-	char *line;
+	char	*line;
 
-	j = 0;
-	vars->flag = F_ERROR;
+	vars->m.s.h = 0;
+	vars->m.s.w = 0;
+	vars->flag = 0x0;
+	if (!skip_empty_line(&line, fd))
+		return (false);
+	(*buffer)[vars->m.s.h] = ft_strdup(line);
+	free_null(line);
 	while (gnl(fd, &line) > 0)
 	{
-		i = 0;
-		if (!ft_strchr2(line, 'N') && !ft_strchr2(line, 'S') && !ft_strchr2(line, 'E') && !ft_strchr2(line, '0'&& !ft_strchr2(line, '1')))
+		vars->m.s.h++;
+		if (!parse_map_line(vars, line))
+			return (false);
+		if (vars->flag & F_ERROR)
 		{
-			printf("Empty line found [%s]\n",line);
+			printf("Error while parsing map\n");
 			return (false);
 		}
-		while(line[i] && vars->flag)
-		{
-			if (line[i] == 'S' || line[i] == 'N' || line[i] == 'E' || line[i] == 'W')
-			{
-				vars->flag = 0x0;
-				if (line[i] == 'N')
-					set_player(vars, i, j, M_PI / 2);
-				else if (line[i] == 'S')
-					set_player(vars, i, j, M_PI * 3 / 2);
-				else if (line[i] == 'E')
-					set_player(vars, i, j, 0);
-				else if (line[i] == 'W')
-					set_player(vars, i, j, M_PI);
-				line[i] = '0';
-			}
-			i++;
-		}
-		//import line into temp 2d array
-		(*buffer)[j] = ft_strdup(line);
-		j++;
+		(*buffer)[vars->m.s.h] = ft_strdup(line);
 		free_null(line);
 	}
+	vars->m.s.h++;
 	return (true);
 }

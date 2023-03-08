@@ -33,7 +33,6 @@ int32_t	main(int ac, char *av[])
 		exit (EXIT_FAILURE);
 	mlx_loop_hook(vars.mlx, &hook, &vars);
 	mlx_loop(vars.mlx);
-	mlx_terminate(vars.mlx);
 	clean_exit(&vars);
 	return (EXIT_SUCCESS);
 }

@@ -25,21 +25,6 @@ void	free_tab_int_2d(int **tab, int size)
 	free_null(tab);
 }
 
-void	clean_exit(t_vars *vars)
-{
-	int	i;
-
-	free_tab_int_2d(vars->m.m, vars->m.s.h);
-	i = 0;
-	while (i < 4)
-	{
-		mlx_delete_texture(vars->a.textures[i]);
-		vars->a.textures[i] = NULL;
-		i++;
-	}
-	free_null(vars->a.textures);
-}
-
 int	clean_textures(t_vars *vars, int ret, char *msg)
 {
 	int	i;
@@ -67,4 +52,12 @@ int	clean_map(t_vars *vars, int ret, char *msg)
 	if (msg)
 		printf("%s\n", msg);
 	return (ret);
+}
+
+void	clean_exit(t_vars *vars)
+{
+	clean_map(vars, 0, NULL);
+	mlx_delete_image(vars->mlx, vars->win);
+	mlx_delete_image(vars->mlx, vars->mm.win);
+	mlx_terminate(vars->mlx);
 }

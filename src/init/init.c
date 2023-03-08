@@ -65,10 +65,13 @@ bool	init_win_images(t_vars *vars)
 {
 	vars->win = mlx_new_image(vars->mlx, WIDTH, HEIGHT);
 	if (!vars->win)
-		return (EXIT_FAILURE);
+		return (clean_map(vars, EXIT_FAILURE, "Error: mlx_new_image failed.\n"));
 	vars->mm.win = mlx_new_image(vars->mlx, vars->mm.size.w, vars->mm.size.h);
 	if (!vars->mm.win)
-		return (EXIT_FAILURE);
+	{
+		mlx_delete_image(vars->mlx, vars->win);
+		return (clean_map(vars, EXIT_FAILURE, "Error: mlx_new_image failed.\n"));
+	}
 	mlx_image_to_window(vars->mlx, vars->win, 0, 0);
 	mlx_image_to_window(vars->mlx, vars->mm.win, vars->mm.pos.X,
 		vars->mm.pos.Y);
@@ -87,7 +90,7 @@ bool	init_mlx(t_vars *vars)
 {
 	vars->mlx = mlx_init(WIDTH, HEIGHT, TITLE, false);
 	if (!vars->mlx)
-		return (EXIT_FAILURE);
+		return (clean_map(vars, EXIT_FAILURE, "Error: mlx_init failed.\n"));
 	return (EXIT_SUCCESS);
 }
 

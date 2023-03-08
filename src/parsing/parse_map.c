@@ -88,6 +88,7 @@ bool	manage_lines_after_map(char **line, int fd, char *set)
 			else
 			{
 				printf("Error: Line not valid after map [%s]\n", *line);
+				free_null(*line);
 				return (false);
 			}
 		}

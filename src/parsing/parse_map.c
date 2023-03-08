@@ -72,7 +72,7 @@ bool	parse_map(t_vars *vars, int fd, char ***buffer)
 	while (gnl(fd, &line) > 0)
 	{
 		vars->m.s.h++;
-		if (!parse_map_line(vars, line))
+		if (line == NULL || !parse_map_line(vars, line))
 			return (false);
 		if (vars->flag & F_ERROR)
 		{

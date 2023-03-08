@@ -12,24 +12,6 @@
 
 #include "../../include/cub3D.h"
 
-void	get_map_size(t_vars *vars, char **raw_file)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	vars->m.s.h = 0;
-	vars->m.s.w = 0;
-	while (raw_file[i])
-	{
-		j = ft_strlen(raw_file[i]);
-		if ((int)vars->m.s.w < j)
-			vars->m.s.w = j;
-		i ++;
-	}
-	vars->m.s.h = i;
-}
-
 void	print_map(t_vars *vars)
 {
 	int	i;
@@ -77,7 +59,6 @@ void	allocate_map_array(t_vars *vars, char **raw_file)
 void	init_map(t_vars *vars, char **raw_file)
 {
 	vars->m.s.h++;
-	get_map_size(vars, raw_file);
 	allocate_map_array(vars, raw_file);
 	vars->mm.size.w = vars->m.s.w * MM_PIXEL_SIZE;
 	vars->mm.size.h = vars->m.s.h * MM_PIXEL_SIZE;

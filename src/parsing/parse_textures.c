@@ -1,9 +1,16 @@
-//
-// Created by Teddy BLANCO on 2023-03-06.
-//
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_textures.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/08 10:06:54 by tonted            #+#    #+#             */
+/*   Updated: 2023/03/08 10:08:22 by tonted           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/cub3D.h"
-#include <stdio.h>
 
 /**
  * @brief Parse the textures, set the flag and load the textures.
@@ -14,11 +21,31 @@
 static void	set_texture(t_vars *vars, char *line, int f_value, int value)
 {
 	if (vars->flag & f_value)
+	{
+		printf("Error: Duplicate texture. (%s)\n", line);
 		vars->flag |= F_ERROR;
+	}
 	vars->flag |= f_value;
 	vars->a.textures[value] = mlx_load_png(line + 2);
 	if (vars->a.textures[value] == NULL)
+	{
+		printf("Error: Failed to load texture. (%s)\n", line);
 		vars->flag |= F_ERROR;
+	}
+}
+
+static bool	is_parts_valid(char **parts, t_vars *vars, int f_value)
+{
+	if (vars->flag & f_value)
+		printf("Error: Duplicate color\n");
+	else if (parts == NULL)
+		printf("Error: Invalid color\n");
+	else if (ft_strtablen(parts) != 3)
+		printf("Error: Invalid color\n");
+	else
+		return (true);
+	vars->flag |= F_ERROR;
+	return (false);
 }
 
 /**
@@ -34,11 +61,8 @@ static void	set_color(char *color, t_vars *vars, int f_value, int value)
 	char	**parts;
 
 	parts = ft_split(color + 1, ',');
-	if (vars->flag & f_value || parts == NULL || ft_strtablen(parts) != 3)
-	{
-		vars->flag |= F_ERROR;
+	if (!is_parts_valid(parts, vars, f_value))
 		return ;
-	}
 	rgb[0] = ft_atoi(parts[0]);
 	rgb[1] = ft_atoi(parts[1]);
 	rgb[2] = ft_atoi(parts[2]);
@@ -47,34 +71,16 @@ static void	set_color(char *color, t_vars *vars, int f_value, int value)
 	while (i < 3)
 	{
 		if ((rgb[i] < 0 || rgb[i] > 255))
+		{
+			printf("Error: Invalid color. [%s]\n", color);
 			vars->flag |= F_ERROR;
+			return ;
+		}
 		i++;
 	}
 	vars->flag |= f_value;
 	vars->a.colors[value] = ((int)(rgb[0] << 24) | (int)(rgb[1] << 16)
 			| (int)(rgb[2] << 8) | (int)(0xFF << 0));
-}
-
-/*
-	Probably have to free the line first or something
-*/
-void	remove_spaces(char **line)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	if (*line)
-	{
-		while ((*line)[i])
-		{
-			if ((*line)[i] != ' ')
-				(*line)[j++] = (*line)[i];
-			i++;
-		}
-		(*line)[j] = '\0';
-	}
 }
 
 /**
@@ -86,17 +92,11 @@ void	remove_spaces(char **line)
  * @return true if the parsing is successful
  * @return false if the parsing failed
  *
- * @todo check if line is not empty and not valid
- *
  */
-
-//TODO trop de lignes ici mais dans le sujet on doit seulement retourner error et non pas le type d'erreur donc au final on peut enlever le print et être oK
 bool	parse_textures(t_vars *vars, int fd)
 {
 	char	*line;
 
-	vars->flag = 0x0;
-	vars->a.textures = (mlx_texture_t **)malloc(sizeof(mlx_texture_t *) * 4);
 	while (vars->flag != TOTAL && gnl(fd, &line) > 0)
 	{
 		if (!line)
@@ -117,9 +117,6 @@ bool	parse_textures(t_vars *vars, int fd)
 		free_null(line);
 	}
 	if (vars->flag != TOTAL)
-	{
-		printf("Error while parsing texture\n");
-		return (false);
-	}
+		return (clean_textures(vars, false, "Error: Parsing texture.\n"));
 	return (true);
 }

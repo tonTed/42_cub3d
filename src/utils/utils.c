@@ -48,3 +48,22 @@ void	free_null(void *ptr)
 		ptr = NULL;
 	}
 }
+
+void	remove_spaces(char **line)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	if (*line)
+	{
+		while ((*line)[i])
+		{
+			if ((*line)[i] != ' ')
+				(*line)[j++] = (*line)[i];
+			i++;
+		}
+		(*line)[j] = '\0';
+	}
+}

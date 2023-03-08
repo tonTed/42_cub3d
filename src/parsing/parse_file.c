@@ -13,6 +13,14 @@
 #include "../../include/cub3D.h"
 #include <stdbool.h>
 
+int	freetab_ret(char ***tab, int ret, char *msg)
+{
+	ft_freetabstr(tab);
+	if (msg)
+		printf("%s", msg);
+	return (ret);
+}
+
 /**
  * @brief Parse the file map and fill the vars struct
  *
@@ -21,8 +29,8 @@
  *
  * @return EXIT_SUCCESS if success, EXIT_FAILURE if error.
  *
+ * @todo refactor false return and free buffer
  */
-
 static bool	open_file(char *file, int *fd)
 {
 	char	**tmp;
@@ -32,17 +40,9 @@ static bool	open_file(char *file, int *fd)
 	i = ft_strtablen(tmp);
 	*fd = open(file, O_RDONLY);
 	if (*fd == -1)
-	{
-		printf("Error\nCould not open file\n");
-		ft_freetabstr(&tmp);
-		return (false);
-	}
+		return (freetab_ret(&tmp, false, "Error: Could not open file\n"));
 	if (ft_strncmp(tmp[i - 1], "cub", 3) != 0 || ft_strlen(tmp[i - 1]) > 3)
-	{
-		printf("Error\nInvalid file extension\n");
-		ft_freetabstr(&tmp);
-		return (false);
-	}
+		return (freetab_ret(&tmp, false, "Error: Invalid file extension\n"));
 	ft_freetabstr(&tmp);
 	return (true);
 }
@@ -53,26 +53,17 @@ bool	parse_file(char *file, t_vars *vars)
 	char	**buffer;
 
 	if (!open_file(file, &fd))
-		return (false);
-	if (!parse_textures(vars, fd))
-		return (false);
-	buffer = ft_calloc(200, sizeof(char *));
-	if (!parse_map(vars, fd, &buffer))
-		return (false);
-	if (!(vars->flag & F_ERROR))
-	{
-		init_map(vars, buffer);
-		ft_freetabstr(&buffer);
-		if (is_map_closed(vars) == false)
-		{
-			printf("Map is not closed\n");
-			return (EXIT_FAILURE);
-		}
-		return (EXIT_SUCCESS);
-	}
-	else
-	{
-		printf("no player found\n");
 		return (EXIT_FAILURE);
-	}
+	if (!parse_textures(vars, fd))
+		return (EXIT_FAILURE);
+	buffer = malloc(sizeof(char *));
+	if (!parse_map(vars, fd, &buffer))
+		return (freetab_ret(&buffer, EXIT_FAILURE, NULL));
+	if (vars->flag & F_ERROR)
+		return (freetab_ret(&buffer, EXIT_FAILURE, NULL));
+	init_map(vars, buffer);
+	ft_freetabstr(&buffer);
+	if (is_map_closed(vars) == false)
+		return (clean_map(vars, EXIT_FAILURE, "Error: Map is not closed\n"));
+	return (EXIT_SUCCESS);
 }

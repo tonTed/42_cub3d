@@ -12,9 +12,6 @@
 
 #include "../../include/cub3D.h"
 
-// TODO remove this function in production.
-bool	mock_init(t_vars *vars);
-
 /**
  * @brief check if the arguments are valid and call the right function for
  * initialize the project.
@@ -33,8 +30,6 @@ bool	check_args(int ac, char *av[], t_vars *vars)
 {
 	if (ac != 2)
 		return (EXIT_FAILURE);
-	if (!ft_strncmp(av[1], "-d", ft_strlen(av[1])))
-		return (mock_init(vars));
 	else
 		return (parse_file(av[1], vars));
 }

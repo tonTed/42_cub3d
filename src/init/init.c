@@ -49,7 +49,7 @@ bool	check_args(int ac, char *av[], t_vars *vars)
 		return (EXIT_FAILURE);
 	}
 	if (!init_textures(vars))
-		return (false);
+		return (EXIT_FAILURE);
 	return (parse_file(av[1], vars));
 }
 

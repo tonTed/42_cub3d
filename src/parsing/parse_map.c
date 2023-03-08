@@ -17,6 +17,7 @@ static void	set_player(t_vars *vars, double angle, t_vectorI p, char **line)
 	if (vars->flag & F_PLAYER)
 	{
 		printf("Error: Player already set\n");
+		free_null(*line);
 		vars->flag |= F_ERROR;
 		return ;
 	}

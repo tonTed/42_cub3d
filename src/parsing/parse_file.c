@@ -21,8 +21,8 @@
  *
  * @return EXIT_SUCCESS if success, EXIT_FAILURE if error.
  *
+ * @todo refactor false return and free buffer
  */
-
 static bool	open_file(char *file, int *fd)
 {
 	char	**tmp;
@@ -33,13 +33,13 @@ static bool	open_file(char *file, int *fd)
 	*fd = open(file, O_RDONLY);
 	if (*fd == -1)
 	{
-		printf("Error\nCould not open file\n");
+		printf("Error: Could not open file\n");
 		ft_freetabstr(&tmp);
 		return (false);
 	}
 	if (ft_strncmp(tmp[i - 1], "cub", 3) != 0 || ft_strlen(tmp[i - 1]) > 3)
 	{
-		printf("Error\nInvalid file extension\n");
+		printf("Error: Invalid file extension\n");
 		ft_freetabstr(&tmp);
 		return (false);
 	}

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/cub3D.h"
+#include "../../../include/cub3D.h"
 
 /**
  * @brief Get the index of the pixel in the array of pixels.

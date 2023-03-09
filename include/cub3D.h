@@ -1,16 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3d.h                                            :+:      :+:    :+:   */
+/*   cub3D.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 13:09:41 by tonted            #+#    #+#             */
-/*   Updated: 2023/03/02 11:17:39 by tonted           ###   ########.fr       */
+/*   Updated: 2023/03/09 14:12:59 by tonted           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-// TODO: Norminette
 
 #ifndef CUB3D_H
 # define CUB3D_H
@@ -28,8 +26,9 @@
 # include "cub3d_configs.h"
 # include "cub3d_utils_structs.h"
 
-
-
+# ifndef BONUS
+#  define BONUS 0
+# endif
 
 /**
  * @brief Assets struct
@@ -172,6 +171,7 @@ void	clean_exit(t_vars *vars);
 void	free_null(void *ptr);
 
 /* bonus */
+bool	init_bonus(t_vars *vars);
 void	mm_draw_squares(t_vars *vars);
 void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i);
 void	draw_dot(int size, int color, mlx_image_t *win, t_vectorD pos);

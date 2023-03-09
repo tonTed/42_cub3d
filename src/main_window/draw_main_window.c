@@ -24,8 +24,6 @@
 void static	draw_ceiling_floor_color(t_vars *vars, int start_ceiling,
 	int start_floor, int x)
 {
-	start_ceiling++;
-	start_floor--;
 	while (start_ceiling >= 0)
 		mlx_put_pixel(vars->win, x, start_ceiling--, vars->a.colors[CEILING]);
 	while (start_floor < HEIGHT)
@@ -65,9 +63,6 @@ void static	fish_eye(t_vars *vars, t_draw_wall *dw)
  * @param dw		struct of the wall.
  * @param x			x position of the pixel.
  *
- * TODO: check if dw->tex_y is not negative
- * TODO: if the wall is = to the height of the texture,
- * 	a pixel is drawn on ceiling and floor.
  */
 void static	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 {
@@ -82,12 +77,14 @@ void static	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 	while (dw->wall_bottom >= dw->wall_top)
 	{
 		color = get_pixel_color(vars->a.textures[dw->orientation],
-				(int)dw->tex_x - 1, (int)dw->tex_y);
+				(int)dw->tex_x, (int)dw->tex_y);
 		mlx_put_pixel(vars->win, x, dw->wall_bottom, color);
 		dw->tex_y -= dw->step_y;
 		dw->wall_bottom--;
 	}
 	dw->wall_bottom = tmp_wall_bottom;
+	if (dw->flag)
+		return ;
 	draw_ceiling_floor_color(vars, (int)dw->wall_top, (int)dw->wall_bottom, x);
 }
 
@@ -111,6 +108,7 @@ void	draw_main_window(t_vars *vars)
 	i = 0;
 	while (i < WIDTH)
 	{
+		dw.flag = 0x0;
 		dw.ray_length = ray_length(&dw, vars);
 		mm_draw_rays(vars, &dw, i);
 		draw_vertical_line(&dw, vars, i);

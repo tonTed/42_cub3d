@@ -30,6 +30,7 @@ void	set_wall_height_bottom_top(t_draw_wall *dw, u_int32_t height)
 	{
 		dw->off_y = (dw->wall_height - (float) HEIGHT) / 2;
 		dw->wall_height = (float) HEIGHT;
+		dw->flag = 0x1;
 	}
 	dw->wall_top = -dw->wall_height / 2 + HEIGHT / 2;
 	if (dw->wall_top < 0)
@@ -68,9 +69,7 @@ void	set_begin_vector_texture(t_vars *vars, t_draw_wall *dw)
 	dw->tex_x = dw->wall_x * vars->a.textures[dw->orientation]->width
 		/ PIXEL_SIZE;
 	if (dw->orientation == SOUTH || dw->orientation == WEST)
-		dw->tex_x = vars->a.textures[dw->orientation]->width - dw->tex_x;
-	else
-		dw->tex_x++;
-	dw->tex_y = vars->a.textures[dw->orientation]->height - dw->off_y
+		dw->tex_x = vars->a.textures[dw->orientation]->width - dw->tex_x - 1;
+	dw->tex_y = (vars->a.textures[dw->orientation]->height) - dw->off_y
 		* dw->step_y;
 }

@@ -51,9 +51,11 @@ OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
 
+BONUS = false
+
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	$(HIDE)$(CC) $(CFLAGS) -iquote$(INCDIR) -iquote$(LIBFTDIR) -c  $< -o $@
+	$(HIDE)$(CC) $(CFLAGS) -iquote$(INCDIR) -iquote$(LIBFTDIR) -D BONUS=$(BONUS) -c  $< -o $@
 
 all			: buildrepo $(NAME)
 
@@ -62,7 +64,7 @@ $(NAME)		: $(OBJS)
 	$(MAKE) -C $(MLXDIR)
 	$(HIDE)$(CC) $(CFLAGS) $(OBJS) $(LIBFTLIB) $(MLXLIB) -o $(NAME)
 	@printf $(GREEN)"[$@] program created\n"$(RESET)
-	
+
 clean		:
 	$(HIDE)rm -rf $(OBJDIR)
 	$(HIDE)$(MAKE) clean -C $(LIBFTDIR)
@@ -74,9 +76,7 @@ fclean		: clean
 	$(HIDE)rm -f $(MLXDIR)/libmlx.a
 	$(HIDE)$(MAKE) fclean -C $(LIBFTDIR)
 
-
-
-reall		: fclean all
+bonus		:  setBonus all
 
 re			:
 	$(HIDE)rm -rf $(OBJDIR)
@@ -85,6 +85,9 @@ re			:
 	
 buildrepo	:
 	$(HIDE)$(call make-repo)
+
+setBonus	:
+	$(eval BONUS := true)
 
 print	:
 	@echo $(DIRS)

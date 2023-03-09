@@ -25,8 +25,8 @@ void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i)
 {
 	if (i % 64 != 0)
 		return ;
-	draw_ray(vars->mm.win, vars->p.mm_c, dw->ray_angle,
-		dw->ray_length / vars->mm.ratio, REDH);
+	draw_ray(vars->mm.win, vars->p.mm_c, dw->ray_angle, dw->ray_length
+		/ vars->mm.ratio);
 }
 
 /**
@@ -38,9 +38,8 @@ void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i)
  * @param angle		Angle of the ray
  * @param length	Length of the ray
  *
- * TODO: remove one parameter
  */
-void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int color)
+void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length)
 {
 	t_vectorD	coord;
 	t_vectorD	inc;
@@ -53,7 +52,7 @@ void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int col
 	i = 0;
 	while (i < length)
 	{
-		mlx_put_pixel(win, coord.X, coord.Y, color);
+		mlx_put_pixel(win, coord.X, coord.Y, RAY_COLOR);
 		coord.X += inc.X;
 		coord.Y += inc.Y;
 		i++;
@@ -70,8 +69,7 @@ void	mm_draw_player(t_vars *vars)
 {
 	draw_dot(DOT_PLAYER_SIZE, DOT_PLAYER_COLOR,
 		vars->mm.win, vars->p.mm_c);
-	draw_ray(vars->mm.win, vars->p.mm_c,
-		vars->p.angle, RAY_LENGTH, RAY_COLOR);
+	draw_ray(vars->mm.win, vars->p.mm_c, vars->p.angle, RAY_LENGTH);
 }
 
 /**

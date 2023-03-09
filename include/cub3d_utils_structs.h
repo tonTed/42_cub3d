@@ -35,6 +35,7 @@ typedef struct s_draw_wall
 	int 	tex_x;
 	double	tex_y;
 	uint8_t orientation;
+	char 	flag;
 } t_draw_wall;
 
 #endif

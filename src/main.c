@@ -14,13 +14,24 @@
 
 #include <memory.h>
 
+bool	is_player_on_map(t_vars *vars)
+{
+	int	x = (int)vars->p.c.X / PIXEL_SIZE;
+	int	y = (int)vars->p.c.Y / PIXEL_SIZE;
+
+	printf("map size: %d, %d - player pos: %d, %d\n", vars->m.s.w, vars->m.s.h, x, y);
+	if (!((x >= 0 && x < (int)vars->m.s.w) && (y >= 0 && y < (int)vars->m.s.h)))
+		return (false);
+	if (vars->m.m[y][x] != 0)
+		return (false);
+	return (true);
+}
 
 /**
  * @brief Hook function for the main loop.
  *
  * @param param	pointer to the vars struct
  *
- * @todo Check if the player out of the map. and if he is, don't draw the map.
  */
 void	hook(void *param)
 {
@@ -28,9 +39,12 @@ void	hook(void *param)
 
 	vars = param;
 	hooks(vars);
-	draw_minimap(vars);
-	draw_main_window(vars);
-	draw_bonus(vars);
+	if (is_player_on_map(vars))
+	{
+		draw_minimap(vars);
+		draw_main_window(vars);
+		draw_bonus(vars);
+	}
 }
 
 int32_t	main(int ac, char *av[])

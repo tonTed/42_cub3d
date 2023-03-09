@@ -209,7 +209,7 @@ void	fill_image(mlx_image_t *img, int color);
 /* utils draw */
 void 	draw_walls(t_vars *vars);
 void	draw_dot(int size, int color, mlx_image_t *win, t_vectorD pos);
-void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length, int color);
+void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length);
 
 double	ray_length(t_draw_wall *dw, t_vars *vars);
 

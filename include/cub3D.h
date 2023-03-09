@@ -176,6 +176,7 @@ void	mm_draw_squares(t_vars *vars);
 void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i);
 void	draw_dot(int size, int color, mlx_image_t *win, t_vectorD pos);
 void	draw_ray(mlx_image_t *win, t_vectorD pos, double angle, int length);
+void	bonus_manage_collisions(t_vars *vars, t_vectorD old_pos);
 
 #endif
 

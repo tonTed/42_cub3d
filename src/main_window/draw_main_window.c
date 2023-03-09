@@ -110,7 +110,8 @@ void	draw_main_window(t_vars *vars)
 	{
 		dw.flag = 0x0;
 		dw.ray_length = ray_length(&dw, vars);
-		mm_draw_rays(vars, &dw, i);
+		if (BONUS)
+			mm_draw_rays(vars, &dw, i);
 		draw_vertical_line(&dw, vars, i);
 		dw.ray_angle += dw.step_angle;
 		i++;

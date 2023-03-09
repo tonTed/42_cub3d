@@ -28,8 +28,9 @@
 # include "cub3d_configs.h"
 # include "cub3d_utils_structs.h"
 
-
-
+# ifndef BONUS
+#  define BONUS 0
+# endif
 
 /**
  * @brief Assets struct
@@ -172,6 +173,7 @@ void	clean_exit(t_vars *vars);
 void	free_null(void *ptr);
 
 /* bonus */
+bool	init_bonus(t_vars *vars);
 void	mm_draw_squares(t_vars *vars);
 void	mm_draw_rays(t_vars *vars, t_draw_wall *dw, int i);
 void	draw_dot(int size, int color, mlx_image_t *win, t_vectorD pos);

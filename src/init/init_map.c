@@ -60,13 +60,6 @@ void	init_map(t_vars *vars, char **raw_file)
 {
 	vars->m.s.h++;
 	allocate_map_array(vars, raw_file);
-	vars->mm.size.w = vars->m.s.w * MM_PIXEL_SIZE;
-	vars->mm.size.h = vars->m.s.h * MM_PIXEL_SIZE;
-	vars->mm.pos.X = 16;
-	vars->mm.pos.Y = 16;
-	vars->mm.ratio = PIXEL_SIZE / MM_PIXEL_SIZE;
-	vars->p.mm_c.X = vars->p.c.X / vars->mm.ratio;
-	vars->p.mm_c.Y = vars->p.c.Y / vars->mm.ratio;
 	vars->p.fov = FOV;
 	vars->p.fov_2 = vars->p.fov / 2.0;
 }

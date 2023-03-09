@@ -14,5 +14,6 @@
 
 void	draw_bonus(t_vars *vars)
 {
-	(void)vars;
+	draw_minimap(vars);
+	draw_main_window(vars);
 }

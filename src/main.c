@@ -16,10 +16,11 @@
 
 bool	is_player_on_map(t_vars *vars)
 {
-	int	x = (int)vars->p.c.X / PIXEL_SIZE;
-	int	y = (int)vars->p.c.Y / PIXEL_SIZE;
+	int	x;
+	int	y;
 
-	printf("map size: %d, %d - player pos: %d, %d\n", vars->m.s.w, vars->m.s.h, x, y);
+	x = (int)vars->p.c.X / PIXEL_SIZE;
+	y = (int)vars->p.c.Y / PIXEL_SIZE;
 	if (!((x >= 0 && x < (int)vars->m.s.w) && (y >= 0 && y < (int)vars->m.s.h)))
 		return (false);
 	if (vars->m.m[y][x] != 0)

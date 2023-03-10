@@ -42,5 +42,6 @@ bool	init_bonus(t_vars *v)
 	init_bonus_data(v);
 	if (init_bonus_windows(v))
 		return (EXIT_FAILURE);
+	mlx_set_mouse_pos(v->mlx, WIDTH / 2, HEIGHT / 2);
 	return (EXIT_SUCCESS);
 }

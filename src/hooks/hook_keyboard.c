@@ -76,6 +76,13 @@ void	hook_moves(t_vars *vars)
 		else
 			vars->p.angle += ROT_SPEED;
 	}
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_SPACE))
+	{
+		if (vars->win->instances->y == 64)
+			vars->win->instances->y = 0;
+		else
+			vars->win->instances->y = 1;
+	}
 }
 
 void	hooks(t_vars *vars)
@@ -85,4 +92,21 @@ void	hooks(t_vars *vars)
 	hook_moves(vars);
 	if (BONUS)
 		bonus_hooks(vars);
+
+	static char flag = 0x0;
+
+	if ((vars->win->instances->y > 0 && vars->win->instances->y < 64) && flag == 0x0)
+	{
+		flag = 0x0;
+		vars->win->instances->y += 1;
+	}
+	else if ((vars->win->instances->y == 64 || flag == 0x1) && vars->win->instances->y >= 0)
+	{
+		flag = 0x1;
+		vars->win->instances->y -= 1;
+	}
+	else
+	{
+		flag = 0x0;
+	}
 }

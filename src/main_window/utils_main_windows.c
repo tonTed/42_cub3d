@@ -38,6 +38,7 @@ void	set_wall_height_bottom_top(t_draw_wall *dw, u_int32_t height)
 	dw->wall_bottom = dw->wall_height / 2 + HEIGHT / 2;
 	if (dw->wall_bottom >= HEIGHT)
 		dw->wall_bottom = HEIGHT - 1;
+	dw->wall_height += 64;
 }
 
 /**

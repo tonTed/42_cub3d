@@ -59,9 +59,10 @@ bool	check_args(int ac, char *av[], t_vars *vars)
  * @return EXIT_SUCCESS if all is ok, EXIT_FAILURE if an error occurred.
  *
  */
+#define JUMP_HEIGHT 64
 bool	init_win_images(t_vars *vars)
 {
-	vars->win = mlx_new_image(vars->mlx, WIDTH, HEIGHT);
+	vars->win = mlx_new_image(vars->mlx, WIDTH, HEIGHT + JUMP_HEIGHT);
 	if (!vars->win)
 		return (clean_map(vars, EXIT_FAILURE, "Error: mlx_new_image failed.\n"));
 	mlx_image_to_window(vars->mlx, vars->win, 0, 0);

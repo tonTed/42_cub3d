@@ -12,6 +12,8 @@
 
 #include "../../include/cub3D.h"
 
+#define JUMP_HEIGHT 64
+
 /**
  * @brief Draw ceiling and floor.
  *

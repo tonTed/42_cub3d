@@ -40,12 +40,10 @@ void	hook(void *param)
 
 	vars = param;
 	hooks(vars);
-	if (is_player_on_map(vars))
-	{
-		draw_minimap(vars);
-		draw_main_window(vars);
+	if (BONUS)
 		draw_bonus(vars);
-	}
+	else if (is_player_on_map(vars))
+		draw_main_window(vars);
 }
 
 int32_t	main(int ac, char *av[])

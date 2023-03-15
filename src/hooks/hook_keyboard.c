@@ -16,27 +16,6 @@
 #define POSITIVE 1
 #define NEGATIVE 0
 
-// double check_collision_y(t_vars *vars, double new_pos){
-// 	int temp;
-// 	temp = (int)new_pos/64;
-// 	if (vars->m.m[temp][(int)vars->p.c.X/64] == 1)
-// 	{
-// 		return (vars->p.c.Y);
-// 	}
-// 	else
-// 		return (new_pos);
-// }
-// double check_collision_x(t_vars *vars, double new_pos){
-// 	int temp;
-// 	temp = (int)new_pos/64;
-// 	if (vars->m.m[(int)vars->p.c.Y/64][temp] == 1)
-// 	{
-// 		return (vars->p.c.X);
-// 	}
-// 	else
-// 		return (new_pos);
-// }
-
 /**
  * @brief Function to update the player position
  * 
@@ -47,6 +26,10 @@
  */
 void	update_player_pos(t_vars *vars, int sign, double add_to_angle)
 {
+	t_vectorD	old_pos;
+
+	old_pos.X = vars->p.c.X;
+	old_pos.Y = vars->p.c.Y;
 	if (sign == POSITIVE)
 	{
 		vars->p.c.X += cos(vars->p.angle + add_to_angle) * MOVE_SPEED;
@@ -57,6 +40,8 @@ void	update_player_pos(t_vars *vars, int sign, double add_to_angle)
 		vars->p.c.X -= cos(vars->p.angle + add_to_angle) * MOVE_SPEED;
 		vars->p.c.Y -= sin(vars->p.angle + add_to_angle) * MOVE_SPEED;
 	}
+	if (BONUS)
+		bonus_manage_collisions(vars, old_pos);
 	vars->p.mm_c.X = vars->p.c.X / vars->mm.ratio;
 	vars->p.mm_c.Y = vars->p.c.Y / vars->mm.ratio;
 }
@@ -93,47 +78,11 @@ void	hook_moves(t_vars *vars)
 	}
 }
 
-/**
- * @brief Hook configs
- *
- * @param vars
- *
- * TODO BONUS: Add config hook
- * 	- Toggle minimap/map
- * 	- Toggle position minimap (top left, top right, bottom left,
- *		bottom right, remove)
- */
-void	hook_configs(t_vars *vars)
-{
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_M))
-	{
-		printf("Toggle Minimap/Map\n");
-	}
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_P))
-	{
-		printf("Toggle position minimap\n");
-	}
-}
-
-/**
- * @brief Hook mouse
- *
- * @param vars
- *
- * TODO BONUS: Add mouse hook
- * 	- Mouse cursor position rotation lateral
- * 	- Mouse click to shoot, launch sprite
- */
-void	hook_mouse(t_vars *vars)
-{
-	(void)vars;
-}
-
 void	hooks(t_vars *vars)
 {
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
 		mlx_close_window(vars->mlx);
 	hook_moves(vars);
-	hook_configs(vars);
-	hook_mouse(vars);
+	if (BONUS)
+		bonus_hooks(vars);
 }

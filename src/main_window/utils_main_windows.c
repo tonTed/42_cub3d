@@ -70,6 +70,6 @@ void	set_begin_vector_texture(t_vars *vars, t_draw_wall *dw)
 		/ PIXEL_SIZE;
 	if (dw->orientation == SOUTH || dw->orientation == WEST)
 		dw->tex_x = vars->a.textures[dw->orientation]->width - dw->tex_x - 1;
-	dw->tex_y = (vars->a.textures[dw->orientation]->height) - dw->off_y
+	dw->tex_y = (vars->a.textures[dw->orientation]->height + 1) - dw->off_y
 		* dw->step_y;
 }

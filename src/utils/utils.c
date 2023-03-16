@@ -33,7 +33,7 @@ uint32_t	get_pixel_color(mlx_texture_t *texture, uint32_t x, uint32_t y)
 {
 	uint32_t	index;
 
-	index = (y * texture->width + x) * texture->bytes_per_pixel;
+	index = ((y - 1) * texture->width + x) * texture->bytes_per_pixel;
 	return (((int)texture->pixels[index + 3] << 0)
 		| ((int)texture->pixels[index + 2] << 8)
 		| ((int)texture->pixels[index + 1] << 16)

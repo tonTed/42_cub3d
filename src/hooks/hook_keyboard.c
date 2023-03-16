@@ -40,8 +40,9 @@ void	update_player_pos(t_vars *vars, int sign, double add_to_angle)
 		vars->p.c.X -= cos(vars->p.angle + add_to_angle) * MOVE_SPEED;
 		vars->p.c.Y -= sin(vars->p.angle + add_to_angle) * MOVE_SPEED;
 	}
-	if (BONUS)
-		bonus_manage_collisions(vars, old_pos);
+	if (!BONUS)
+		return;
+	bonus_manage_collisions(vars, old_pos);
 	vars->p.mm_c.X = vars->p.c.X / vars->mm.ratio;
 	vars->p.mm_c.Y = vars->p.c.Y / vars->mm.ratio;
 }
@@ -78,10 +79,10 @@ void	hook_moves(t_vars *vars)
 	}
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_SPACE))
 	{
-		if (vars->win->instances->y == 64)
-			vars->win->instances->y = 0;
+		if (vars->p.jump == 64)
+			vars->p.jump = 0;
 		else
-			vars->win->instances->y = 1;
+			vars->p.jump = 1;
 	}
 }
 
@@ -95,15 +96,15 @@ void	hooks(t_vars *vars)
 
 	static char flag = 0x0;
 
-	if ((vars->win->instances->y > 0 && vars->win->instances->y < 64) && flag == 0x0)
+	if ((vars->p.jump > 0 && vars->p.jump < 64) && flag == 0x0)
 	{
 		flag = 0x0;
-		vars->win->instances->y += 1;
+		vars->p.jump += 1;
 	}
-	else if ((vars->win->instances->y == 64 || flag == 0x1) && vars->win->instances->y >= 0)
+	else if ((vars->p.jump == 64 || flag == 0x1) && vars->p.jump >= 0)
 	{
 		flag = 0x1;
-		vars->win->instances->y -= 1;
+		vars->p.jump -= 1;
 	}
 	else
 	{

@@ -62,7 +62,7 @@ bool	check_args(int ac, char *av[], t_vars *vars)
 #define JUMP_HEIGHT 64
 bool	init_win_images(t_vars *vars)
 {
-	vars->win = mlx_new_image(vars->mlx, WIDTH, HEIGHT + JUMP_HEIGHT);
+	vars->win = mlx_new_image(vars->mlx, WIDTH, HEIGHT);
 	if (!vars->win)
 		return (clean_map(vars, EXIT_FAILURE, "Error: mlx_new_image failed.\n"));
 	mlx_image_to_window(vars->mlx, vars->win, 0, 0);

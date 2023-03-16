@@ -24,7 +24,7 @@
 void	set_wall_height_bottom_top(t_draw_wall *dw, u_int32_t height)
 {
 	dw->off_y = 0;
-	dw->wall_height = (64 * (float) HEIGHT) / dw->ray_length;
+	dw->wall_height = (PIXEL_SIZE * (float) HEIGHT) / dw->ray_length;
 	dw->step_y = (double) height / dw->wall_height;
 	if (dw->wall_height > (float) HEIGHT)
 	{
@@ -38,7 +38,6 @@ void	set_wall_height_bottom_top(t_draw_wall *dw, u_int32_t height)
 	dw->wall_bottom = dw->wall_height / 2 + HEIGHT / 2;
 	if (dw->wall_bottom >= HEIGHT)
 		dw->wall_bottom = HEIGHT - 1;
-	dw->wall_height += 64;
 }
 
 /**

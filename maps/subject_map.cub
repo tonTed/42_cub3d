@@ -1,5 +1,5 @@
-NO ./assets/north_32.png
-SO ./assets/south_32.png
+NO ./assets/big.png
+SO ./assets/olga.png
 WE ./assets/west_32.png
 EA ./assets/east_32.png
 F 220,100,0

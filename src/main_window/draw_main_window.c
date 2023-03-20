@@ -12,6 +12,8 @@
 
 #include "../../include/cub3D.h"
 
+#define JUMP_HEIGHT 64
+
 /**
  * @brief Draw ceiling and floor.
  *
@@ -71,6 +73,8 @@ void static	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 
 	fish_eye(vars, dw);
 	set_wall_height_bottom_top(dw, vars->a.textures[dw->orientation]->height);
+	dw->wall_bottom += vars->p.jump;
+	dw->wall_top += vars->p.jump;
 	set_wall_x_begin(dw, vars);
 	tmp_wall_bottom = (int)dw->wall_bottom;
 	set_begin_vector_texture(vars, dw);

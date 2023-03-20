@@ -1,6 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
+/*   parse_file.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tblanco <tblanco@student.42quebec.>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/20 14:22:35 by tblanco           #+#    #+#             */
+/*   Updated: 2023/03/20 14:24:08 by tblanco          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
 /*   parse_file_map.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pirichar <pirichar@student.42quebec.com    +#+  +:+       +#+        */
@@ -55,7 +67,7 @@ bool	parse_file(char *file, t_vars *vars)
 		return (EXIT_FAILURE);
 	if (!parse_textures(vars, fd))
 		return (EXIT_FAILURE);
-	buffer = malloc(sizeof(char *));
+	buffer = NULL;
 	if (!parse_map(vars, fd, &buffer))
 		return (freetab_ret(&buffer, EXIT_FAILURE, NULL));
 	if (vars->flag & F_ERROR)

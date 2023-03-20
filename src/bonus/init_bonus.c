@@ -21,6 +21,7 @@ static void	init_bonus_data(t_vars *v)
 	v->mm.ratio = PIXEL_SIZE / MM_PIXEL_SIZE;
 	v->p.mm_c.X = v->p.c.X / v->mm.ratio;
 	v->p.mm_c.Y = v->p.c.Y / v->mm.ratio;
+	v->p.jump = 0;
 }
 
 static int	init_bonus_windows(t_vars *v)

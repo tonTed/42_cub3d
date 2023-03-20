@@ -85,6 +85,7 @@ typedef struct s_map_config {
 typedef struct s_player {
 	t_vectorD	c;
 	t_vectorD	mm_c;
+	int 		jump;
 	double 		angle;
 	double 		fov;
 	double 		fov_2;

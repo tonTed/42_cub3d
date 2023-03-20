@@ -1,6 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
+/*   hook_keyboard.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tblanco <tblanco@student.42quebec.>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/16 08:24:48 by tblanco           #+#    #+#             */
+/*   Updated: 2023/03/20 14:29:14 by tblanco          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
 /*   hooks.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
@@ -41,10 +53,28 @@ void	update_player_pos(t_vars *vars, int sign, double add_to_angle)
 		vars->p.c.Y -= sin(vars->p.angle + add_to_angle) * MOVE_SPEED;
 	}
 	if (!BONUS)
-		return;
+		return ;
 	bonus_manage_collisions(vars, old_pos);
 	vars->p.mm_c.X = vars->p.c.X / vars->mm.ratio;
 	vars->p.mm_c.Y = vars->p.c.Y / vars->mm.ratio;
+}
+
+void	hook_rotation(t_vars *vars)
+{
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
+	{
+		if (vars->p.angle < 0)
+			vars->p.angle += 2 * M_PI;
+		else
+			vars->p.angle -= ROT_SPEED;
+	}
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT))
+	{
+		if (vars->p.angle > 2 * M_PI)
+			vars->p.angle -= 2 * M_PI;
+		else
+			vars->p.angle += ROT_SPEED;
+	}
 }
 
 /**
@@ -63,20 +93,7 @@ void	hook_moves(t_vars *vars)
 		update_player_pos(vars, NEGATIVE, M_PI / 2);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_D))
 		update_player_pos(vars, POSITIVE, M_PI / 2);
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
-	{
-		if (vars->p.angle < 0)
-			vars->p.angle += 2 * M_PI;
-		else
-			vars->p.angle -= ROT_SPEED;
-	}
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT))
-	{
-		if (vars->p.angle > 2 * M_PI)
-			vars->p.angle -= 2 * M_PI;
-		else
-			vars->p.angle += ROT_SPEED;
-	}
+	hook_rotation(vars);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_SPACE))
 	{
 		if (vars->p.jump == 64)
@@ -88,14 +105,13 @@ void	hook_moves(t_vars *vars)
 
 void	hooks(t_vars *vars)
 {
+	static char	flag = 0x0;
+
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
 		mlx_close_window(vars->mlx);
 	hook_moves(vars);
 	if (BONUS)
 		bonus_hooks(vars);
-
-	static char flag = 0x0;
-
 	if ((vars->p.jump > 0 && vars->p.jump < 64) && flag == 0x0)
 	{
 		flag = 0x0;

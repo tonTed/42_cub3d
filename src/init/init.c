@@ -6,7 +6,7 @@
 /*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 10:58:13 by tonted            #+#    #+#             */
-/*   Updated: 2023/03/02 10:58:43 by tonted           ###   ########.fr       */
+/*   Updated: 2023/03/20 14:29:27 by tblanco          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ bool	check_args(int ac, char *av[], t_vars *vars)
  * @return EXIT_SUCCESS if all is ok, EXIT_FAILURE if an error occurred.
  *
  */
-#define JUMP_HEIGHT 64
 bool	init_win_images(t_vars *vars)
 {
 	vars->win = mlx_new_image(vars->mlx, WIDTH, HEIGHT);

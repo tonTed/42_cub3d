@@ -6,7 +6,7 @@
 /*   By: tblanco <tblanco@student.42quebec.>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 08:24:48 by tblanco           #+#    #+#             */
-/*   Updated: 2023/03/20 14:29:14 by tblanco          ###   ########.fr       */
+/*   Updated: 2023/03/20 15:26:31 by tblanco          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,13 +94,6 @@ void	hook_moves(t_vars *vars)
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_D))
 		update_player_pos(vars, POSITIVE, M_PI / 2);
 	hook_rotation(vars);
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_SPACE))
-	{
-		if (vars->p.jump == 64)
-			vars->p.jump = 0;
-		else
-			vars->p.jump = 1;
-	}
 }
 
 void	hooks(t_vars *vars)

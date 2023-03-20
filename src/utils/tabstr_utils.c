@@ -6,7 +6,7 @@
 /*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 14:56:31 by tonted            #+#    #+#             */
-/*   Updated: 2023/03/08 14:56:35 by tonted           ###   ########.fr       */
+/*   Updated: 2023/03/20 14:24:37 by tblanco          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,13 @@ void	add_line_tabstr(char ***tabstr, char *line)
 	char	**new_tabstr;
 	int		i;
 
+	if (!(*tabstr))
+	{
+		*tabstr = (char **)malloc(sizeof(char *) * 2);
+		(*tabstr)[0] = line;
+		(*tabstr)[1] = NULL;
+		return ;
+	}
 	new_tabstr = (char **)malloc(sizeof(char *) * (ft_strtablen(*tabstr)
 				+ 2));
 	i = 0;

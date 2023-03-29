@@ -98,25 +98,10 @@ void	hook_moves(t_vars *vars)
 
 void	hooks(t_vars *vars)
 {
-	static char	flag = 0x0;
 
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
 		mlx_close_window(vars->mlx);
 	hook_moves(vars);
 	if (BONUS)
 		bonus_hooks(vars);
-	if ((vars->p.jump > 0 && vars->p.jump < 64) && flag == 0x0)
-	{
-		flag = 0x0;
-		vars->p.jump += 1;
-	}
-	else if ((vars->p.jump == 64 || flag == 0x1) && vars->p.jump >= 0)
-	{
-		flag = 0x1;
-		vars->p.jump -= 1;
-	}
-	else
-	{
-		flag = 0x0;
-	}
 }

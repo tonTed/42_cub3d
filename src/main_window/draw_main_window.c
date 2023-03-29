@@ -6,7 +6,7 @@
 /*   By: tonted <tonted@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 10:37:06 by tonted            #+#    #+#             */
-/*   Updated: 2023/03/02 10:40:08 by tonted           ###   ########.fr       */
+/*   Updated: 2023/03/20 16:13:01 by tblanco          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void static	draw_vertical_line(t_draw_wall *dw, t_vars *vars, int x)
 	set_wall_x_begin(dw, vars);
 	tmp_wall_bottom = (int)dw->wall_bottom;
 	set_begin_vector_texture(vars, dw);
-	while (dw->wall_bottom >= dw->wall_top)
+	while (dw->wall_bottom >= 0 && dw->wall_bottom >= dw->wall_top)
 	{
 		color = get_pixel_color(vars->a.textures[dw->orientation],
 				(int)dw->tex_x, (int)dw->tex_y);

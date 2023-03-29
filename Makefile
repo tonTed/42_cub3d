@@ -21,7 +21,7 @@ LIBFTLIB	= -L$(LIBFTDIR) -lft
 
 # mlx
 MLXDIR		= libraries/MLX42
-MLXLIB		= -L$(MLXDIR) -lmlx42 -lglfw -L /Users/tblanco/.brew/Cellar/glfw/3.3.8/lib/ -framework OpenGL -framework AppKit
+MLXLIB		= -L$(MLXDIR) -lmlx42 -lglfw -L /Users/${USER}/.brew/Cellar/glfw/3.3.8/lib/ -framework OpenGL -framework AppKit
 #MLXLIB		= -L$(MLXDIR) -lmlx42 -lglfw -L /opt/homebrew/Cellar/glfw/3.3.8/lib/ -framework OpenGL -framework AppKit
 
 # Name of the final executable

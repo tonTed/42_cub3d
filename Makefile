@@ -151,4 +151,4 @@ else
     HIDE = @
 endif
 
-# src/draw_frame.c src/draw_utils.c src/free.c src/is_valid_map.c src/read_map.c src/so_long.c src/animation/collectables_animation_bonus.c src/engine/enemy_moves.c src/engine/enemy_moves_utils.c src/engine/hook.c src/engine/moves.c src/engine/moves_utils.c src/errors/errors_input.c src/errors/errors_map_1.c src/errors/errors_map_2.c src/errors/errors_utils.c src/init/init.c src/init/init_assets.c src/init/init_assets_utils.c src/puts/puts_map.c src/utils/gnl.c src/utils/img_creation.c
+# src/clean_exit.c src/main.c src/bonus/bonus_hook.c src/bonus/collision_bonus.c src/bonus/draw_bonus.c src/bonus/init_bonus.c src/bonus/minimap/draw_minimap.c src/bonus/minimap/minimap_background.c src/hooks/hook_keyboard.c src/init/init.c src/init/init_map.c src/init/is_map_closed.c src/main_window/draw_main_window.c src/main_window/get_ray_length.c src/main_window/utils_main_windows.c src/parsing/parse_file.c src/parsing/parse_map.c src/parsing/parse_textures.c src/utils/draw_utils.c src/utils/gnl.c src/utils/tabstr_utils.c src/utils/utils.c src/utils/utils_image.c
